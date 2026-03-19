@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -38,8 +37,11 @@ public class UserEntity {
     @Column(name = "phone", length = 10, nullable = false)
     private String phone;
 
-    @ManyToMany(mappedBy = "userEntities", fetch = FetchType.LAZY)
-    List<BuildingEntity> buildingEntities = new ArrayList<>();
+    @OneToMany(mappedBy = "staff")
+    List<AssignmentBuildingEntity> buildingAssignments;
+
+
+
 
 
 

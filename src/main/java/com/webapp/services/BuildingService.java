@@ -11,7 +11,7 @@ import java.util.Map;
 public interface BuildingService {
     List<BuildingSearchResponseDTO> findAll(Map<String, String> params, List<String> typeCode);
 
-    void deleteAllById(List<Long> ids);
+    void delete(List<Long> ids);
 
     void create(BuildingDTO buildingDTO);
 

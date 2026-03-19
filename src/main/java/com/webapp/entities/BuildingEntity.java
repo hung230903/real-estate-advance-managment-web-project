@@ -68,13 +68,9 @@ public class BuildingEntity {
     @Column(name = "direction")
     String direction;
 
-    @OneToMany(mappedBy = "building", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "building")
     List<RentAreaEntity> rentAreaEntities = new ArrayList<>();
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "assignmentbuilding",
-            joinColumns = @JoinColumn(name = "buildingid", nullable = false),
-            inverseJoinColumns = @JoinColumn(name = "staffid", nullable = false)
-    )
-    List<UserEntity> userEntities = new ArrayList<>();
+    @OneToMany(mappedBy = "building")
+    List<AssignmentBuildingEntity> assignments;
 }
