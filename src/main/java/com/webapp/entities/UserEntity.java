@@ -14,6 +14,11 @@ import java.util.List;
 @Table(name = "user")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserEntity {
+
+    public static final String ROLE_MANAGER = "MANAGER";
+    public static final String ROLE_EMPLOYEE = "STAFF";
+    public static final String ROLE_USER = "USER";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -39,10 +44,6 @@ public class UserEntity {
 
     @OneToMany(mappedBy = "staff")
     List<AssignmentBuildingEntity> buildingAssignments;
-
-
-
-
 
 
 }

@@ -68,6 +68,36 @@ public class BuildingEntity {
     @Column(name = "direction")
     String direction;
 
+    @Column(name = "carfee")
+    String carFee;
+
+    @Column(name = "waterfee")
+    String waterFee;
+
+    @Column(name = "motofee")
+    String motoFee;
+
+    @Column(name = "overtimefee")
+    String overtimeFee;
+
+    @Column(name = "electricityfee")
+    String electricityFee;
+
+    @Column(name = "deposit")
+    String deposit;
+
+    @Column(name = "payment")
+    String payment;
+
+    @Column(name = "renttime")
+    String rentTime;
+
+    @Column(name = "decorationtime")
+    String decorationTime;
+
+    @Column(name = "note")
+    String note;
+
     @OneToMany(mappedBy = "building")
     List<RentAreaEntity> rentAreaEntities = new ArrayList<>();
 

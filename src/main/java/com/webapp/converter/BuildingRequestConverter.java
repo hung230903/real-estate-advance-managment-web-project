@@ -18,7 +18,7 @@ public class BuildingRequestConverter {
                 .district(ModelMapperUtils.getObject(params, "district", String.class))
                 .street(ModelMapperUtils.getObject(params, "street", String.class))
                 .managerName(ModelMapperUtils.getObject(params, "managerName", String.class))
-                .managerPhone(ModelMapperUtils.getObject(params, "managerPhoneNumber", String.class))
+                .managerPhone(ModelMapperUtils.getObject(params, "managerPhone", String.class))
                 .direction(ModelMapperUtils.getObject(params, "direction", String.class))
                 .level(ModelMapperUtils.getObject(params, "level", String.class))
                 .rentPriceFrom(ModelMapperUtils.getObject(params, "rentPriceFrom", Long.class))

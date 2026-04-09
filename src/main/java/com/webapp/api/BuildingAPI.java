@@ -1,5 +1,6 @@
 package com.webapp.api;
 
+import com.webapp.models.dtos.AssignmentBuildingDTO;
 import com.webapp.models.dtos.BuildingDTO;
 import com.webapp.models.dtos.ResponseDTO;
 import com.webapp.models.response.BuildingSearchResponseDTO;
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/buildings")
+@RequestMapping("/admin/api/buildings")
 public class BuildingAPI {
 
     @Autowired
@@ -76,6 +77,17 @@ public class BuildingAPI {
             responseDTO.setErrorDetails(e.getMessage());
             return ResponseEntity.internalServerError().body(responseDTO);
         }
+    }
+
+    @GetMapping("/{id}/staff")
+    public ResponseEntity<ResponseDTO> getStaff(@PathVariable("id") Long staffId) {
+        ResponseDTO responseDTO = buildingService.loadStaffsByBuildingId(staffId);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @PutMapping("/assign")
+    public ResponseEntity<ResponseDTO> updateAssignmentBuilding(@RequestBody AssignmentBuildingDTO assignmentBuildingDTO) {
+        return ResponseEntity.ok(buildingService.updateAssignmentBuilding(assignmentBuildingDTO));
     }
 
 }

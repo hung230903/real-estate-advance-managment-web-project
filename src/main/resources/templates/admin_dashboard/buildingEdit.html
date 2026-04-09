@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+
+    <title>Gyan Uday</title>
+
+    <!-- Custom fonts for this template-->
+    <link th:href="@{/admin_dashboard/vendor/fontawesome-free/css/all.min.css}" rel="stylesheet" type="text/css" />
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet" />
+
+    <!-- Custom styles for this template-->
+    <link th:href="@{/admin_dashboard/css/sb-admin-2.css?v=2}" rel="stylesheet" />
+    <link th:href="@{/admin_dashboard/css/style.css?v=2}" rel="stylesheet" />
+    <!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">-->
+</head>
+
+<body id="page-top">
+    <!-- Page Wrapper 603 -->
+    <div id="wrapper">
+        <!-- Sidebar -->
+        <div id="mySidepanel" class="sidepanel">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
+            <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+                <!-- Sidebar - Brand -->
+                <a class="sidebar-brand d-flex align-items-center justify-content-center"
+                    th:href="@{/templates/admin_dashboard/buildingList.html}">
+                    <div class="sidebar-brand-icon rotate-n-15">
+                        <i class="fa fa-book" style="font-size: 36px; color: white"></i>
+                    </div>
+                    <div class="sidebar-brand-text mx-4">Gyan-Uday</div>
+                </a>
+
+                <!-- Nav Item - Dashboard -->
+                <li class="nav-item active">
+                    <a class="nav-link" th:href="@{/templates/admin_dashboard/buildingList.html}">
+                        <i class="fas fa-fw fa-tachometer-alt"></i>
+                        <span>Dashboard</span></a>
+                </li>
+                <!-- Nav Item - My Task -->
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#">
+                        <i class="fas fa-fw fa-cog"></i>
+                        <span>My Task</span>
+                    </a>
+                </li>
+                <!-- Nav Item - My Project -->
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#">
+                        <i class="fas fa-fw fa-wrench"></i>
+                        <span>MY Project</span>
+                    </a>
+                </li>
+                <!-- Nav Item - My Wallet -->
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#">
+                        <i class="fas fa-fw fa-folder"></i>
+                        <span>My Wallet</span>
+                    </a>
+                </li>
+                <!-- Nav Item - History Data -->
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-fw fa-chart-area"></i>
+                        <span>History Data</span></a>
+                </li>
+                <!-- Nav Item - Invoice -->
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-fw fa-table"></i>
+                        <span>Invoice</span></a>
+                </li>
+                <!-- Nav Item - Helps -->
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-fw fa-table"></i>
+                        <span>Helps</span></a>
+                </li>
+
+                <!-- Divider -->
+                <hr class="sidebar-divider d-none d-md-block" />
+            </ul>
+        </div>
+
+        <!-- End of Sidebar -->
+        <div id="main">
+            <button class="openbtn" onclick="openNav()">☰</button>
+        </div>
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+            <!-- Main Content -->
+            <div id="content">
+                <!-- Topbar -->
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow topbar">
+                    <!-- Topbar Search -->
+
+                    <!--                <form-->
+                    <!--                        class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">-->
+                    <!--                    <div class="input-group">-->
+                    <!--                        <select class="form-control" style="border-radius: 10px; background-color: #f7f9ff">-->
+                    <!--                            <option>All Category</option>-->
+                    <!--                            <option>By Date</option>-->
+                    <!--                            <option>By Name</option>-->
+                    <!--                        </select>-->
+                    <!--                        <input type="text" class="form-control bg-light border-0 small" placeholder="Search "-->
+                    <!--                               aria-label="Search" aria-describedby="basic-addon2" style="border-radius: 10px"/>-->
+                    <!--                        <div class="input-group-append">-->
+                    <!--                            <button class="btn btn-primary" type="button">-->
+                    <!--                                <i class="fas fa-search fa-sm"></i>-->
+                    <!--                            </button>-->
+                    <!--                        </div>-->
+                    <!--                    </div>-->
+                    <!--                </form>-->
+
+                    <!-- Topbar Navbar -->
+                    <ul class="navbar-nav ml-auto">
+                        <!-- Nav It em - Search Dropdown (Visible Only XS) -->
+                        <li class="nav-item dropdown no-arrow d-sm-none">
+                            <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-search fa-fw icon search"></i>
+                            </a>
+                            <!-- Dropdown - Messages -->
+                            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
+                                aria-labelledby="searchDropdown">
+                                <form class="form-inline mr-auto w-100 navbar-search">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control bg-light border-0 small"
+                                            placeholder="Search for..." aria-label="Search"
+                                            aria-describedby="basic-addon2" />
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary" type="button">
+                                                <i class="fas fa-search fa-sm"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </li>
+
+                        <!-- Nav Item - Alerts -->
+                        <li class="nav-item">
+                            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-bell fa-fw icon"></i>
+                                <span class="badge badge-danger badge-counter count">3+</span>
+                            </a>
+                        </li>
+
+                        <!-- Nav Item - Messages -->
+                        <li class="nav-item">
+                            <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-envelope fa-fw icon"></i>
+                                <!-- Counter - Messages -->
+                                <span class="badge badge-danger badge-counter">7+</span>
+                            </a>
+                        </li>
+
+                        <div class="topbar-divider d-none d-sm-block"></div>
+
+                        <!-- Nav Item - User Information -->
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Pushpak Patil</span>
+                                <img class="img-profile rounded-circle" th:src="@{/admin_dashboard/img/user.jpg}" />
+                            </a>
+                            <!-- Dropdown - User Information -->
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                aria-labelledby="userDropdown">
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    View Profile
+                                </a>
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Settings
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Logout
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+                </nav>
+                <!-- End of Topbar -->
+
+                <!-- Begin Page Content -->
+                <div class="page-content container-fluid">
+                    <!-- Building Search Card -->
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card shadow mb-4">
+                                <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Building Form</h6>
+                                </div>
+                                <div class="card-body">
+                                    <form class="form-horizontal" id="form-edit-buildingEntity" method="get"
+                                        th:object="${buildings}">
+                                        <div class="form-group row mb-4">
+                                            <label class="col-lg-2 col-form-label no-padding-right text-right"
+                                                for="name"> Tên tòa
+                                                nhà </label>
+                                            <div class="col-lg-9">
+                                                <input type="text" placeholder="Tên tòa nhà" class="form-control"
+                                                    name="name" id="name" th:value="${buildings.name}">
+                                                <span class="error-message" id="noNameBuilding"
+                                                    style="display: none; color: red;">Please enter the building
+                                                    name</span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mb-4">
+                                            <label class="col-lg-2 col-form-label no-padding-right text-right"
+                                                for="district">
+                                                Quận </label>
+                                            <div class="col-lg-5">
+                                                <select name="district" id="district" class="form-control">
+                                                    <option value="">Chọn quận</option>
+                                                    <option th:each="district: ${districts}" th:value="${district.key}"
+                                                        th:text="${district.value}"
+                                                        th:selected="${district.key==buildings.district}">
+                                                    </option>
+                                                </select>
+                                                <span class="error-message" id="noDistrict"
+                                                    style="display: none; color: red;">Please choose the district</span>
+
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mb-4">
+                                            <label class="col-lg-2 col-form-label no-padding-right text-right"
+                                                for="ward">
+                                                Phường </label>
+                                            <div class="col-lg-9">
+                                                <input type="text" placeholder="Phường" class="form-control" name="ward"
+                                                    id="ward" th:value="${buildings.ward}">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mb-4">
+                                            <label class="col-lg-2 col-form-label no-padding-right text-right"
+                                                for="street">
+                                                Đường </label>
+                                            <div class="col-lg-9">
+                                                <input type="text" placeholder="Đường" class="form-control"
+                                                    name="street" id="street" th:value="${buildings.street}">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mb-4">
+                                            <label class="col-lg-2 col-form-label no-padding-right text-right"
+                                                for="structure"> Kết
+                                                cấu </label>
+                                            <div class="col-lg-9">
+                                                <input type="text" placeholder="Kết cấu" class="form-control"
+                                                    name="structure" id="structure" th:value="${buildings.structure}">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mb-4">
+                                            <label class="col-lg-2 col-form-label no-padding-right text-right"
+                                                for="numberOfBasement"> Số tầng hầm </label>
+                                            <div class="col-lg-9">
+                                                <input type="number" placeholder="Số tầng hầm" class="form-control"
+                                                    name="numberOfBasement" id="numberOfBasement"
+                                                    th:value="${buildings.numberOfBasement}">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mb-4">
+                                            <label class="col-lg-2 col-form-label no-padding-right text-right"
+                                                for="floorArea">
+                                                Diện
+                                                tích sàn
+                                            </label>
+                                            <div class="col-lg-5">
+                                                <input type="number" placeholder="Diện tích sàn" class="form-control"
+                                                    name="floorArea" id="floorArea" th:value="${buildings.floorArea}">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mb-4">
+                                            <label class="col-lg-2 col-form-label no-padding-right text-right"
+                                                for="direction">
+                                                Hướng </label>
+                                            <div class="col-lg-9">
+                                                <input type="text" placeholder="Hướng" class="form-control"
+                                                    name="direction" id="direction" th:value="${buildings.direction}">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mb-4">
+                                            <label class="col-lg-2 col-form-label no-padding-right text-right"
+                                                for="level">
+                                                Hạng </label>
+                                            <div class="col-lg-9">
+                                                <input type="text" placeholder="Hạng" class="form-control" name="level"
+                                                    id="level" th:value="${buildings.level}">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mb-4">
+                                            <label class="col-lg-2 col-form-label no-padding-right text-right"
+                                                for="rentArea">
+                                                Diện tích thuê
+                                            </label>
+                                            <div class="col-lg-9">
+                                                <input type="text" placeholder="Diện tích thuê" class="form-control"
+                                                    name="rentArea" id="rentArea" th:value="${buildings.rentArea}">
+                                                <span class="error-message" id="noRentArea"
+                                                    style="display: none; color: red;">Please enter the rent area</span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mb-4">
+                                            <label class="col-lg-2 col-form-label no-padding-right text-right"
+                                                for="rentPrice"> Giá
+                                                thuê </label>
+                                            <div class="col-lg-9">
+                                                <input type="number" placeholder="Giá thuê" class="form-control"
+                                                    name="rentPrice" id="rentPrice" th:value="${buildings.rentPrice}">
+                                                <span class="error-message" id="noRentPrice"
+                                                    style="display: none; color: red;">Please enter the rent
+                                                    price</span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mb-4">
+                                            <label class="col-lg-2 col-form-label no-padding-right text-right"
+                                                for="rentPriceDescription"> Mô tả giá </label>
+                                            <div class="col-lg-9">
+                                                <input type="text" placeholder="Mô tả giá" class="form-control"
+                                                    name="rentPriceDescription" id="rentPriceDescription"
+                                                    th:value="${buildings.rentPriceDescription}">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mb-4">
+                                            <label class="col-lg-2 col-form-label no-padding-right text-right"
+                                                for="serviceFee">
+                                                Phí
+                                                dịch vụ </label>
+                                            <div class="col-lg-9">
+                                                <input type="number" placeholder="Phí dịch vụ" class="form-control"
+                                                    name="serviceFee" id="serviceFee"
+                                                    th:value="${buildings.serviceFee}">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mb-4">
+                                            <label class="col-lg-2 col-form-label no-padding-right text-right"
+                                                for="carFee"> Phí ô
+                                                tô </label>
+                                            <div class="col-lg-9">
+                                                <input type="number" placeholder="Phí ô tô" class="form-control"
+                                                    name="carFee" id="carFee" th:value="${buildings.carFee}">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mb-4">
+                                            <label class="col-lg-2 col-form-label no-padding-right text-right"
+                                                for="motorbikeFee">
+                                                Phí mô tô </label>
+                                            <div class="col-lg-9">
+                                                <input type="number" placeholder="Phí mô tô" class="form-control"
+                                                    name="motoFee" id="motorbikeFee" th:value="${buildings.motoFee}">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mb-4">
+                                            <label class="col-lg-2 col-form-label no-padding-right text-right"
+                                                for="overTimeFee">
+                                                Phí ngoài giờ
+                                            </label>
+                                            <div class="col-lg-9">
+                                                <input type="number" placeholder="Phí ngoài giờ" class="form-control"
+                                                    name="overtimeFee" id="overTimeFee"
+                                                    th:value="${buildings.overtimeFee}">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mb-4">
+                                            <label class="col-lg-2 col-form-label no-padding-right text-right"
+                                                for="electricityFee">
+                                                Tiền điện </label>
+                                            <div class="col-lg-9">
+                                                <input type="number" placeholder="Tiền điện" class="form-control"
+                                                    name="electricityFee" id="electricityFee"
+                                                    th:value="${buildings.electricityFee}">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mb-4">
+                                            <label class="col-lg-2 col-form-label no-padding-right text-right"
+                                                for="waterFee"> Tiền
+                                                nước </label>
+                                            <div class="col-lg-9">
+                                                <input type="number" placeholder="Tiền nước" class="form-control"
+                                                    name="waterFee" id="waterFee" th:value="${buildings.waterFee}">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mb-4">
+                                            <label class="col-lg-2 col-form-label no-padding-right text-right"
+                                                for="deposit"> Đặt
+                                                cọc </label>
+                                            <div class="col-lg-9">
+                                                <input type="number" placeholder="Đặt cọc" class="form-control"
+                                                    name="deposit" id="deposit" th:value="${buildings.deposit}">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mb-4">
+                                            <label class="col-lg-2 col-form-label no-padding-right text-right"
+                                                for="payment"> Thanh
+                                                toán </label>
+                                            <div class="col-lg-9">
+                                                <input type="number" placeholder="Thanh toán" class="form-control"
+                                                    name="payment" id="payment" th:value="${buildings.payment}">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mb-4">
+                                            <label class="col-lg-2 col-form-label no-padding-right text-right"
+                                                for="decorationTime">
+                                                Thời gian trang trí
+                                            </label>
+                                            <div class="col-lg-9">
+                                                <input type="text" placeholder="Thời gian trang trí"
+                                                    class="form-control" name="decorationTime" id="decorationTime"
+                                                    th:value="${buildings.decorationTime}">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mb-4">
+                                            <label class="col-lg-2 col-form-label no-padding-right text-right"
+                                                for="managerName">
+                                                Tên quản lý </label>
+                                            <div class="col-lg-9">
+                                                <input type="text" placeholder="Tên quản lý" class="form-control"
+                                                    name="managerName" id="managerName"
+                                                    th:value="${buildings.managerName}">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mb-4">
+                                            <label class="col-lg-2 col-form-label no-padding-right text-right"
+                                                for="managerPhone">
+                                                SĐT quản lý </label>
+                                            <div class="col-lg-9">
+                                                <input type="text" placeholder="SĐT quản lý" class="form-control"
+                                                    name="managerPhone" id="managerPhone"
+                                                    th:value="${buildings.managerPhone}">
+                                                <span class="error-message" id="noManagerPhone"
+                                                    style="display: none; color: red;">Manager
+                                                    phone number must have 10 digits</span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mb-4">
+                                            <label class="col-lg-2 col-form-label no-padding-right text-right">
+                                                Loại tòa nhà</label>
+                                            <div class="col-lg-9 d-flex align-items-center">
+                                                <label class="form-check form-check-inline mr-3"
+                                                    th:each="typeCode : ${typeCodes}">
+                                                    <input type="checkbox" class="form-check-input" name="typeCode"
+                                                        th:value="${typeCode.key}"
+                                                        th:checked="${buildings.typeCode != null and buildings.typeCode.contains(typeCode.key)}">
+                                                    <span class="form-check-label" th:text="${typeCode.value}"></span>
+                                                </label>
+                                                <span class="error-message" id="noTypeCode"
+                                                    style="display: none;color: red">
+                                                    Please choose at least 1 building type
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row mb-4">
+                                            <label class="col-lg-2 col-form-label no-padding-right text-right"
+                                                for="brokerageFee">
+                                                Phí mô giới </label>
+                                            <div class="col-lg-9">
+                                                <input type="number" placeholder="Phí mô giới" class="form-control"
+                                                    name="brokerageFee" id="brokerageFee"
+                                                    th:value="${buildings.brokerageFee}">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mb-4">
+                                            <label class="col-lg-2 col-form-label no-padding-right text-right"
+                                                for="note"> Ghi
+                                                chú </label>
+                                            <div class="col-lg-9">
+                                                <input type="text" placeholder="Ghi chú" class="form-control"
+                                                    name="note" id="note" th:value="${buildings.note}">
+                                            </div>
+                                        </div>
+                                        <!-- <div class="form-group">
+                              <label class="col-lg-3 control-label no-padding-right" for="form-field-1"> Hình đại diện
+                              </label>
+                              <div class="col-lg-5">
+                              </div>
+                            </div> -->
+
+                                        <div class="text-center mt-4 mb-4">
+                                            <a th:href="@{/admin/buildings/list}"
+                                                class="btn btn-danger px-4 mx-2 border-0 shadow-sm"
+                                                style="background-color: #e74a3b; color: #fff;">
+                                                <i class="fas fa-times mr-2"></i>Hủy thao tác
+                                            </a>
+                                            <button type="button" class="btn btn-success px-4 mx-2 border-0 shadow-sm"
+                                                id="btnAddBuilding" style="background-color: #1cc88a; color: #fff;">
+                                                <i class="fas fa-check mr-2"></i>
+                                                <span
+                                                    th:text="${buildings.id} != null ? 'Cập nhật thông tin' : 'Thêm tòa nhà'">Thêm
+                                                    tòa nhà</span>
+                                            </button>
+                                        </div>
+                                        <input type="hidden" name="id" id="buildingId" th:value="${buildings.id}">
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- End of Main Content -->
+                </div>
+                <!-- End of Content Wrapper -->
+            </div>
+            <!-- End of Page Wrapper -->
+
+            <!-- Bootstrap core JavaScript-->
+            <script th:src="@{/admin_dashboard/vendor/jquery/jquery.min.js}"></script>
+            <script th:src="@{/admin_dashboard/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+            <!-- Core plugin JavaScript-->
+            <script th:src="@{/admin_dashboard/vendor/jquery-easing/jquery.easing.min.js}"></script>
+
+            <!-- Custom scripts for all pages-->
+            <script th:src="@{/admin_dashboard/js/sb-admin-2.min.js}"></script>
+
+            <!-- Page level plugins -->
+
+            <!-- Page level custom scripts -->
+
+
+            <script>
+                function openNav() {
+                    document.getElementById("mySidepanel").style.width = "250px";
+                }
+
+                function closeNav() {
+                    document.getElementById("mySidepanel").style.width = "0";
+                }
+            </script>
+
+            <script>
+                function resetErrorMessages() {
+                    document.getElementById("noNameBuilding").style.display = "none";
+                    document.getElementById("noTypeCode").style.display = "none";
+                    document.getElementById("noManagerPhone").style.display = "none";
+                    document.getElementById("noRentPrice").style.display = "none";
+                    document.getElementById("noDistrict").style.display = "none";
+                    document.getElementById("noRentArea").style.display = "none";
+                }
+
+                function validateData(json) {
+                    resetErrorMessages();
+                    let check = true;
+                    if (json["name"] === "") {
+                        document.getElementById("noNameBuilding").style.display = "block";
+                        check = false;
+                    }
+                    if (json["typeCode"].length === 0) {
+                        document.getElementById("noTypeCode").style.display = "block";
+                        check = false;
+                    }
+                    const phonePattern = /^\d{10}$/;
+                    if (!phonePattern.test(json["managerPhone"])) {
+                        document.getElementById("noManagerPhone").style.display = "block";
+                        check = false;
+                    }
+                    if (json["rentPrice"] === "") {
+                        document.getElementById("noRentPrice").style.display = "block";
+                        check = false;
+                    }
+                    if (json["district"] === "") {
+                        document.getElementById("noDistrict").style.display = "block";
+                        check = false;
+                    }
+                    if (json["rentArea"] === "") {
+                        document.getElementById("noRentArea").style.display = "block";
+                        check = false;
+                    }
+
+                    return check;
+                }
+
+                $("#btnAddBuilding").click(function (e) {
+                    e.preventDefault();
+                    const json = {};
+                    const typeCode = [];
+
+                    const formArray = $("#form-edit-buildingEntity").serializeArray();
+                    $.each(formArray, function (i, field) {
+                        if (field.name === "typeCode") {
+                            typeCode.push(field.value);
+                        } else {
+                            json[field.name] = field.value;
+                        }
+                    });
+                    json["typeCode"] = typeCode;
+                    json["id"] = $('#buildingId').val();
+                    if (!validateData(json)) return;
+                    console.log(JSON.stringify(json));
+                    if (json['id'] && json['id'].trim() !== "") {
+                        updateBuilding(json);
+                    } else {
+                        addBuilding(json);
+                    }
+                });
+
+                // Send data to server by AJAX
+                function addBuilding(json) {
+                    $.ajax({
+                        url: "/admin/api/buildings",
+                        type: "POST", // request method
+                        data: JSON.stringify(json), // convert json to string
+                        contentType: "application/json", // send data type (from client to server)
+                        dataType: "json", // expected data type (from server to client)
+                        success: function (response) {
+                            alert(response.message);
+                            window.location.href = "/admin/buildings/list";
+                        },
+                        error: function (error) {
+                            alert(error.responseJSON.message || "An error occurred");
+                        },
+                    });
+                }
+
+                function updateBuilding(json) {
+                    $.ajax({
+                        url: "/admin/api/buildings",
+                        data: JSON.stringify(json), // convert json to string
+                        type: "PUT", // request method
+                        contentType: "application/json", // send data type (from client to server)
+                        dataType: "json", // expected data type (from server to client)
+                        success: function (response) {
+                            alert(response.message);
+                            window.location.href = "/admin/buildings/list";
+                        },
+                        error: function (error) {
+                            alert(error.responseJSON.message || "An error occurred");
+                        },
+                    });
+                }
+            </script>
+</body>
+
+</html>
