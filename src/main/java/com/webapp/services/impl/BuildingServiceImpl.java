@@ -6,6 +6,7 @@ import com.webapp.entities.AssignmentBuildingEntity;
 import com.webapp.entities.BuildingEntity;
 import com.webapp.entities.RentAreaEntity;
 import com.webapp.entities.UserEntity;
+import com.webapp.exceptions.InvalidEntityException;
 import com.webapp.models.dtos.AssignmentBuildingDTO;
 import com.webapp.models.dtos.BuildingDTO;
 import com.webapp.models.dtos.ResponseDTO;
@@ -81,7 +82,7 @@ public class BuildingServiceImpl implements BuildingService {
 
     @Override
     public BuildingDTO findById(Long id) {
-        BuildingEntity buildingEntity = buildingRepository.findById(id).get();
+        BuildingEntity buildingEntity = buildingRepository.findById(id).orElseThrow(() -> new InvalidEntityException("Building not found"));
         return buildingConverter.toBuildingDTO(buildingEntity);
     }
 
