@@ -19,6 +19,13 @@ public class BuildingRepositoryImpl implements BuildingRepositoryCustom {
     @PersistenceContext
     private EntityManager entityManager;
 
+    private void buildJoin(BuildingSearchRequestDTO buildingSearchRequestDTO, StringBuilder sql) {
+        Long staffId = buildingSearchRequestDTO.getStaffId();
+        if (staffId != null) {
+            sql.append(" JOIN assignmentbuilding ab ON b.id = ab.buildingid ");
+        }
+    }
+
     public void buildWhere(StringBuilder sql, BuildingSearchRequestDTO buildingSearchRequestDTO) {
         try {
             Field[] fields = BuildingSearchRequestDTO.class.getDeclaredFields();
@@ -29,13 +36,12 @@ public class BuildingRepositoryImpl implements BuildingRepositoryCustom {
                         && !fieldName.equals("typeCode")
                         && !fieldName.startsWith("rentArea")
                         && !fieldName.contains("rentPrice")
-                        && !fieldName.equals("district")) {
+                ) {
                     Object value = field.get(buildingSearchRequestDTO);
-                    if (value != null) {
-                        if (field.getType().getName().equals("java.lang.Long")
-                                || field.getType().getName().equals("java.lang.Integer")) {
-                            sql.append(" And b.").append(fieldName.toLowerCase()).append(" = ").append(value);
-                        } else if (field.getType().getName().equals("java.lang.String")) {
+                    if (value != null && value != "") {
+                        if (value.toString().matches("^\\d+(\\.\\d+)?$")) {
+                            sql.append(" AND b.").append(fieldName.toLowerCase()).append(" = ").append(value);
+                        } else {
                             sql.append(" AND b.").append(fieldName.toLowerCase()).append(" LIKE '%").append(value).append("%'");
                         }
                     }
@@ -44,6 +50,42 @@ public class BuildingRepositoryImpl implements BuildingRepositoryCustom {
         } catch (Exception e) {
             log.error("Reflection error in buildWhere: ", e);
         }
+
+        // Handle special cases
+        Long staffId = buildingSearchRequestDTO.getStaffId();
+        if (staffId != null) {
+            sql.append(" AND ab.staffid = ").append(staffId);
+        }
+
+        // rentArea
+        Long rentAreaFrom = buildingSearchRequestDTO.getRentAreaFrom();
+        Long rentAreaTo = buildingSearchRequestDTO.getRentAreaTo();
+        if (rentAreaFrom != null || rentAreaTo != null) {
+            sql.append(" AND EXISTS (SELECT * FROM rentarea ra WHERE b.id = ra.buildingid ");
+            if (rentAreaFrom != null) {
+                sql.append(" AND ra.value >= ").append(rentAreaFrom);
+            }
+            if (rentAreaTo != null) {
+                sql.append(" AND ra.value <= ").append(rentAreaTo);
+            }
+            sql.append(") ");
+        }
+
+        // rentPrice
+        Long rentPriceFrom = buildingSearchRequestDTO.getRentPriceFrom();
+        Long rentPriceTo = buildingSearchRequestDTO.getRentPriceTo();
+        if (rentPriceFrom != null) {
+            sql.append(" AND b.rentprice >= ").append(rentPriceFrom);
+        }
+        if (rentPriceTo != null) {
+            sql.append(" AND b.rentprice <= ").append(rentPriceTo);
+        }
+
+        // typeCode
+        List<String> typeCode = buildingSearchRequestDTO.getTypeCode();
+        if (typeCode != null && !typeCode.isEmpty()) {
+            sql.append(" AND b.type REGEXP '").append(String.join("|", typeCode)).append("' ");
+        }
     }
 
 
@@ -51,10 +93,15 @@ public class BuildingRepositoryImpl implements BuildingRepositoryCustom {
     public List<BuildingEntity> findAll(BuildingSearchRequestDTO buildingSearchRequestDTO) {
         StringBuilder sql = new StringBuilder("SELECT * FROM building b");
 
+        // Build Join
+        buildJoin(buildingSearchRequestDTO, sql);
+
         // Build Where
         StringBuilder whereSql = new StringBuilder(" WHERE 1=1 ");
         buildWhere(whereSql, buildingSearchRequestDTO);
         sql.append(whereSql);
+        sql.append(" GROUP BY b.id ");
+        sql.append(" ORDER BY b.name ASC ");
 
         log.info("Final SQL Query: {}", sql.toString());
 

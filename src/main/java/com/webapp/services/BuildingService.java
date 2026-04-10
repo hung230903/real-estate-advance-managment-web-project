@@ -1,6 +1,9 @@
 package com.webapp.services;
 
+import com.webapp.entities.BuildingEntity;
+import com.webapp.models.dtos.AssignmentBuildingDTO;
 import com.webapp.models.dtos.BuildingDTO;
+import com.webapp.models.dtos.ResponseDTO;
 import com.webapp.models.response.BuildingSearchResponseDTO;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +16,13 @@ public interface BuildingService {
 
     void deleteAllById(List<Long> ids);
 
-    void create(BuildingDTO buildingDTO);
+    BuildingEntity create(BuildingDTO buildingDTO);
 
-    void update(BuildingDTO buildingDTO);
+    BuildingEntity update(BuildingDTO buildingDTO);
+
+    BuildingDTO findById(Long id);
+
+    ResponseDTO loadStaffsByBuildingId(Long id);
+
+    ResponseDTO updateAssignmentBuilding(AssignmentBuildingDTO assignmentBuildingDTO);
 }

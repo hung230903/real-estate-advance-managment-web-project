@@ -68,9 +68,46 @@ public class BuildingEntity {
     @Column(name = "direction")
     String direction;
 
-    @OneToMany(mappedBy = "building", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Column(name = "carfee")
+    String carFee;
+
+    @Column(name = "waterfee")
+    String waterFee;
+
+    @Column(name = "motofee")
+    String motoFee;
+
+    @Column(name = "overtimefee")
+    String overtimeFee;
+
+    @Column(name = "electricityfee")
+    String electricityFee;
+
+    @Column(name = "deposit")
+    String deposit;
+
+    @Column(name = "payment")
+    String payment;
+
+    @Column(name = "renttime")
+    String rentTime;
+
+    @Column(name = "decorationtime")
+    String decorationTime;
+
+    @Column(name = "note")
+    String note;
+
+    // Quan hệ với bảng rentarea - One
+    @OneToMany(mappedBy = "building",
+            fetch = FetchType.LAZY,
+            // PERSIST: save, MERGE: update
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+            orphanRemoval = true
+    )
     List<RentAreaEntity> rentAreaEntities = new ArrayList<>();
 
+    // Quan hệ với bảng assignmentbuilding - ManyToMany
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "assignmentbuilding",
             joinColumns = @JoinColumn(name = "buildingid", nullable = false),

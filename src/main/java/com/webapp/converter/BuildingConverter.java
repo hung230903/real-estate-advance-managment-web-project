@@ -9,6 +9,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,5 +57,20 @@ public class BuildingConverter {
         return buildingEntity;
     }
 
-
+    public BuildingDTO toBuildingDTO(BuildingEntity buildingEntity) {
+        BuildingDTO buildingDTO = modelMapper.map(buildingEntity, BuildingDTO.class);
+        buildingDTO.setAddress(buildingEntity.getStreet() + ", " + buildingEntity.getWard() + ", " + buildingEntity.getDistrict());
+        List<RentAreaEntity> rentAreas = buildingEntity.getRentAreaEntities();
+        List<String> typeCodes = new ArrayList<>();
+        if (buildingEntity.getTypeCode() != null) {
+            String[] typeCode = buildingEntity.getTypeCode().split(",");
+            typeCodes.addAll(Arrays.asList(typeCode));
+        }
+        buildingDTO.setTypeCode(typeCodes);
+        if (rentAreas != null) {
+            String rentArea = rentAreas.stream().map(it -> it.getValue().toString()).collect(Collectors.joining(", "));
+            buildingDTO.setRentArea(rentArea);
+        }
+        return buildingDTO;
+    }
 }
