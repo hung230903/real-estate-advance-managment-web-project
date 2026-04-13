@@ -12,6 +12,7 @@ import com.webapp.models.dtos.ResponseDTO;
 import com.webapp.models.dtos.StaffResponseDTO;
 import com.webapp.models.request.BuildingSearchRequestDTO;
 import com.webapp.models.response.BuildingSearchResponseDTO;
+import com.webapp.pagination.PaginationResult;
 import com.webapp.repositories.BuildingRepository;
 import com.webapp.repositories.UserRepository;
 import com.webapp.services.BuildingService;
@@ -62,6 +63,21 @@ public class BuildingServiceImpl implements BuildingService {
         return staffResponses;
     }
 
+    @Override
+    public PaginationResult<BuildingSearchResponseDTO> searchBuildings(Map<String, String> params, List<String> typeCode, int page, int maxResult, int maxNavigationPage) {
+        BuildingSearchRequestDTO searchRequest = buildingSearchConverter.toBuildingBuilderDTO(params, typeCode);
+        int totalRecords = buildingRepository.countAll(searchRequest);
+        List<BuildingEntity> buildingEntities = buildingRepository.searchBuildings(searchRequest, page, maxResult);
+
+        List<BuildingSearchResponseDTO> responses = new ArrayList<>();
+        for (BuildingEntity buildingEntity : buildingEntities) {
+            responses.add(buildingConverter.toBuildingSearchResponseDTO(buildingEntity));
+        }
+
+        return new PaginationResult<>(responses, totalRecords, page, maxResult, maxNavigationPage);
+    }
+
+    @Override
     public List<BuildingSearchResponseDTO> findAll(Map<String, String> params, List<String> typeCode) {
         log.info("Request to search buildings with params: {} and typeCode: {}", params, typeCode);
         BuildingSearchRequestDTO buildingSearchRequestDTO = buildingSearchConverter.toBuildingBuilderDTO(params, typeCode);

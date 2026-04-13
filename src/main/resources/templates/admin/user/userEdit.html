@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{admin/common/header :: header}"></head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <th:block th:replace="~{admin/common/sidebar :: sidebar(menu='user')}"></th:block>
+
+        <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+                <th:block th:replace="~{admin/common/menu :: menu}"></th:block>
+
+                <!-- Begin Page Content -->
+                <div class="page-content container-fluid">
+                    <div class="page-header mb-4">
+                        <h1 class="h3 mb-0 text-gray-800"
+                            th:text="${user.id != null ? 'Cập nhật người dùng' : 'Thêm mới người dùng'}">Người dùng</h1>
+                    </div>
+
+                    <div th:if="${messageResponse != null}" th:class="'alert alert-block alert-' + ${alert}">
+                        <button type="button" class="close" data-dismiss="alert">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        <span th:text="${messageResponse}"></span>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Thông tin người dùng</h6>
+                                </div>
+                                <div class="card-body">
+                                    <form id="formEdit" th:object="${user}" method="post">
+                                        <div class="form-horizontal">
+                                            <div class="form-group row">
+                                                <label class="col-sm-2 col-form-label">Tên đăng nhập</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" class="form-control" th:field="*{userName}"
+                                                        th:readonly="${user.id != null}" />
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group row">
+                                                <label class="col-sm-2 col-form-label">Họ và tên</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" class="form-control" th:field="*{fullName}" />
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group row">
+                                                <label class="col-sm-2 col-form-label">Số điện thoại</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" class="form-control" th:field="*{phone}" />
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group row">
+                                                <label class="col-sm-2 col-form-label">Vai trò</label>
+                                                <div class="col-sm-8">
+                                                    <select class="form-control" th:field="*{roleCode}">
+                                                        <option value="">-- Chọn vai trò --</option>
+                                                        <option th:each="entry : ${user.roleDTO}"
+                                                            th:value="${entry.key}" th:text="${entry.value}"></option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group row" th:if="${user.id == null}">
+                                                <label class="col-sm-2 col-form-label">Mật khẩu</label>
+                                                <div class="col-sm-8">
+                                                    <input type="password" class="form-control"
+                                                        th:field="*{password}" />
+                                                </div>
+                                            </div>
+
+                                            <div class="row justify-content-center mb-4">
+                                                <div class="col-sm-12 text-center">
+                                                    <div class="avatar-upload"
+                                                        style="position: relative; max-width: 205px; margin: 0 auto;">
+                                                        <div class="avatar-edit"
+                                                            style="position: absolute; right: 12px; z-index: 1; top: 10px;">
+                                                            <input type='file' id="imageUpload" th:field="*{fileData}"
+                                                                accept=".png, .jpg, .jpeg" style="display: none;" />
+                                                            <label for="imageUpload"
+                                                                style="display: inline-block; width: 34px; height: 34px; margin-bottom: 0; border-radius: 100%; background: #FFFFFF; border: 1px solid transparent; box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.12); cursor: pointer; font-weight: normal; transition: all .2s ease-in-out; line-height: 34px; text-align: center;">
+                                                                <i class="fas fa-pencil-alt text-muted"></i>
+                                                            </label>
+                                                        </div>
+                                                        <div class="avatar-preview"
+                                                            style="width: 192px; height: 192px; position: relative; border-radius: 100%; border: 6px solid #f8f9fc; box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.1);">
+                                                            <div id="imagePreview"
+                                                                th:style="'background-image: url(' + @{|/admin/users/userImage?userName=${user.userName}|} + '); width: 100%; height: 100%; border-radius: 100%; background-size: cover; background-repeat: no-repeat; background-position: center;'">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <small class="text-muted mt-2 d-block">Ảnh đại diện người
+                                                        dùng</small>
+                                                </div>
+                                            </div>
+
+                                            <div class="text-center mt-4 mb-4">
+                                                <button type="button" class="btn btn-primary shadow-sm"
+                                                    id="btnUpdateUser" style="min-width: 160px;">
+                                                    <i class="fas fa-save mr-2"></i> Lưu người dùng
+                                                </button>
+                                                <a th:href="@{/admin/users/list}" class="btn ml-2 shadow-sm text-white"
+                                                    style="min-width: 160px; background-color: #858796;">
+                                                    <i class="fas fa-arrow-left mr-2"></i> Trở lại
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <input type="hidden" th:field="*{id}" id="userId" />
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <th:block th:replace="~{admin/common/footer :: footer}"></th:block>
+        </div>
+    </div>
+
+    <th:block th:replace="~{admin/common/common-scripts :: jquery}"></th:block>
+
+    <script type="text/javascript">
+        // Instant Image Preview
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#imagePreview').css('background-image', 'url(' + e.target.result + ')');
+                    $('#imagePreview').hide();
+                    $('#imagePreview').fadeIn(650);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        $("#imageUpload").change(function () {
+            readURL(this);
+        });
+
+        $('#btnUpdateUser').click(function (e) {
+            e.preventDefault();
+
+            let form = $('#formEdit')[0];
+            let formData = new FormData(form);
+
+            const id = $('#userId').val();
+            if (id === "") {
+                submitUser(formData, 'POST');
+            } else {
+                submitUser(formData, 'PUT');
+            }
+        });
+
+        function submitUser(formData, method) {
+            $.ajax({
+                url: '/admin/api/users',
+                type: method,
+                data: formData,
+                processData: false, // Tell jQuery not to process the data
+                contentType: false, // Tell jQuery not to set contentType
+                success: function (res) {
+                    Swal.fire({
+                        title: "Thành công",
+                        text: method === 'POST' ? "Đã thêm người dùng thành công" : "Đã cập nhật người dùng thành công",
+                        icon: "success"
+                    }).then(() => {
+                        window.location.href = "/admin/users/list";
+                    });
+                },
+                error: function (err) {
+                    Swal.fire("Lỗi", err.responseJSON ? err.responseJSON.message : "Thao tác thất bại", "error");
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

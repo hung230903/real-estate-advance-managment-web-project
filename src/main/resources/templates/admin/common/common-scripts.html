@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="jquery">
+    <script th:src="@{/admin_dashboard/vendor/jquery/jquery.min.js}"></script>
+    <script th:src="@{/admin_dashboard/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+    <script th:src="@{/admin_dashboard/vendor/jquery-easing/jquery.easing.min.js}"></script>
+    <script th:src="@{/admin_dashboard/js/sb-admin-2.min.js}"></script>
+    <script>
+        function openNav() { document.getElementById("mySidepanel").style.width = "250px"; }
+        function closeNav() { document.getElementById("mySidepanel").style.width = "0"; }
+    </script>
+</th:block>
+
+</html>

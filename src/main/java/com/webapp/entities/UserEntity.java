@@ -17,7 +17,7 @@ import java.util.List;
 public class UserEntity {
 
     public static final String ROLE_MANAGER = "MANAGER";
-    public static final String ROLE_EMPLOYEE = "STAFF";
+    public static final String ROLE_EMPLOYEE = "EMPLOYEE";
     public static final String ROLE_USER = "USER";
 
     @Id
@@ -43,8 +43,19 @@ public class UserEntity {
     @Column(name = "phone", length = 10, nullable = false)
     private String phone;
 
+    @Lob
+    @Column(name = "image", length = Integer.MAX_VALUE, nullable = true)
+    private byte[] image;
+
+    public UserEntity(Long id, String userName, boolean active, String userRole, String fullName, String phone) {
+        this.id = id;
+        this.userName = userName;
+        this.active = active;
+        this.userRole = userRole;
+        this.fullName = fullName;
+        this.phone = phone;
+    }
+
     @ManyToMany(mappedBy = "userEntities", fetch = FetchType.LAZY)
     List<BuildingEntity> buildingEntities = new ArrayList<>();
-
-
 }

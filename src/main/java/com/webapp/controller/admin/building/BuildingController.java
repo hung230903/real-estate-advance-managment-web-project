@@ -1,10 +1,9 @@
-package com.webapp.controller.building;
+package com.webapp.controller.admin.building;
 
 import com.webapp.enums.District;
 import com.webapp.enums.RentType;
 import com.webapp.models.dtos.BuildingDTO;
 import com.webapp.models.request.BuildingSearchRequestDTO;
-import com.webapp.models.response.BuildingSearchResponseDTO;
 import com.webapp.services.BuildingService;
 import com.webapp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,18 +28,22 @@ public class BuildingController {
     public String buildingList(@ModelAttribute BuildingSearchRequestDTO buildingSearchRequestDTO,
                                @RequestParam Map<String, String> params,
                                @RequestParam(name = "typeCode", required = false) List<String> typeCode,
+                               @RequestParam(value = "page", defaultValue = "1") int page,
                                Model model) {
 
         model.addAttribute("modelSearch", buildingSearchRequestDTO);
         model.addAttribute("districts", District.getDistrictCode());
         model.addAttribute("typeCodes", RentType.getRentType());
         model.addAttribute("staffs", userService.getAllStaff());
-        // Controller -> Service: trả response theo request param
-        List<BuildingSearchResponseDTO> buildingSearchResponses = buildingService.findAll(params, typeCode);
-        // Bind data ra UI
-        model.addAttribute("buildingSearchResponses", buildingSearchResponses);
-        return "admin_dashboard/buildingList";
 
+        final int MAX_RESULT = 3;
+        final int MAX_NAVIGATION_PAGE = 3;
+
+        // Controller -> Service: trả PaginationResult
+        model.addAttribute("model",
+                buildingService.searchBuildings(params, typeCode, page, MAX_RESULT, MAX_NAVIGATION_PAGE));
+
+        return "admin/building/buildingList";
     }
 
     @GetMapping("/edit")
@@ -48,7 +51,7 @@ public class BuildingController {
         model.addAttribute("districts", District.getDistrictCode());
         model.addAttribute("typeCodes", RentType.getRentType());
         model.addAttribute("buildings", new BuildingDTO());
-        return "admin_dashboard/buildingEdit";
+        return "admin/building/buildingEdit";
     }
 
     @GetMapping("/update/{id}")
@@ -57,7 +60,7 @@ public class BuildingController {
         model.addAttribute("districts", District.getDistrictCode());
         model.addAttribute("typeCodes", RentType.getRentType());
         model.addAttribute("buildings", buildingDTO);
-        return "admin_dashboard/buildingEdit";
+        return "admin/building/buildingEdit";
     }
 
 }

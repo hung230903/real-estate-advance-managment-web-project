@@ -102,7 +102,7 @@ public class BuildingEntity {
     @OneToMany(mappedBy = "building",
             fetch = FetchType.LAZY,
             // PERSIST: save, MERGE: update
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+            cascade = {CascadeType.ALL},
             orphanRemoval = true
     )
     List<RentAreaEntity> rentAreaEntities = new ArrayList<>();

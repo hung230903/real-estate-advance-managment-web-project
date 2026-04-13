@@ -56,7 +56,7 @@ public class BuildingAPI {
 
             // Service
             BuildingEntity buildingEntity = buildingService.create(buildingDTO);
-            responseDTO.setData(buildingEntity);
+            responseDTO.setData(buildingEntity.getId());
             responseDTO.setMessage("Create building successfully");
             return ResponseEntity.ok(responseDTO);
         } catch (Exception e) {
@@ -84,7 +84,7 @@ public class BuildingAPI {
 
             // Service
             BuildingEntity buildingEntity = buildingService.update(buildingDTO);
-            responseDTO.setData(buildingEntity);
+            responseDTO.setData(buildingEntity.getId());
             responseDTO.setMessage("Update building successfully");
             return ResponseEntity.ok(responseDTO);
         } catch (Exception e) {

@@ -90,18 +90,19 @@ public class BuildingRepositoryImpl implements BuildingRepositoryCustom {
 
 
     @Override
-    public List<BuildingEntity> findAll(BuildingSearchRequestDTO buildingSearchRequestDTO) {
-        StringBuilder sql = new StringBuilder("SELECT * FROM building b");
-
-        // Build Join
+    public List<BuildingEntity> searchBuildings(BuildingSearchRequestDTO buildingSearchRequestDTO, int page, int maxResult) {
+        StringBuilder sql = new StringBuilder("SELECT b.* FROM building b");
         buildJoin(buildingSearchRequestDTO, sql);
-
-        // Build Where
         StringBuilder whereSql = new StringBuilder(" WHERE 1=1 ");
         buildWhere(whereSql, buildingSearchRequestDTO);
         sql.append(whereSql);
         sql.append(" GROUP BY b.id ");
         sql.append(" ORDER BY b.name ASC ");
+        
+        // Add Pagination
+        if (page > 0 && maxResult > 0) {
+            sql.append(" LIMIT ").append(maxResult).append(" OFFSET ").append((page - 1) * maxResult);
+        }
 
         log.info("Final SQL Query: {}", sql.toString());
 
@@ -112,5 +113,29 @@ public class BuildingRepositoryImpl implements BuildingRepositoryCustom {
             log.error("Error when executing search query: ", e);
             throw e;
         }
+    }
+
+    @Override
+    public int countAll(BuildingSearchRequestDTO buildingSearchRequestDTO) {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(DISTINCT b.id) FROM building b");
+        buildJoin(buildingSearchRequestDTO, sql);
+        StringBuilder whereSql = new StringBuilder(" WHERE 1=1 ");
+        buildWhere(whereSql, buildingSearchRequestDTO);
+        sql.append(whereSql);
+
+        log.info("Final Count SQL Query: {}", sql.toString());
+
+        try {
+            Query queryObject = entityManager.createNativeQuery(sql.toString());
+            return ((Number) queryObject.getSingleResult()).intValue();
+        } catch (Exception e) {
+            log.error("Error when executing count query: ", e);
+            throw e;
+        }
+    }
+
+    @Override
+    public List<BuildingEntity> findAll(BuildingSearchRequestDTO buildingSearchRequestDTO) {
+        return searchBuildings(buildingSearchRequestDTO, -1, -1);
     }
 }
