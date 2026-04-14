@@ -2,7 +2,6 @@ package com.webapp.converter;
 
 import com.webapp.entities.UserEntity;
 import com.webapp.models.dtos.UserDTO;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -12,8 +11,6 @@ import java.util.Base64;
 @Component
 public class UserConverter {
 
-    @Autowired
-    ModelMapper modelMapper;
 
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -27,12 +24,8 @@ public class UserConverter {
         userDTO.setFullName(userEntity.getFullName());
         userDTO.setRoleCode(userEntity.getUserRole());
         userDTO.setPhone(userEntity.getPhone());
-
+        userDTO.setStatus(userEntity.isActive() ? 1 : 0);
         userDTO.initRoles();
-
-//        UserDTO userDTO = modelMapper.map(userEntity, UserDTO.class);
-//        userDTO.initRoles();
-
 
         return userDTO;
     }
@@ -40,7 +33,13 @@ public class UserConverter {
     public UserEntity toUserEntity(UserDTO userDTO) {
         if (userDTO == null) return null;
 
-        UserEntity userEntity = modelMapper.map(userDTO, UserEntity.class);
+        UserEntity userEntity = new UserEntity();
+        if (userDTO.getId() != null) {
+            userEntity.setId(userDTO.getId());
+        }
+        userEntity.setUserName(userDTO.getUserName());
+        userEntity.setFullName(userDTO.getFullName());
+        userEntity.setPhone(userDTO.getPhone());
         if (userDTO.getPassword() != null && !userDTO.getPassword().isEmpty()) {
             userEntity.setEncrytedPassword(
                     passwordEncoder.encode(userDTO.getPassword())
@@ -65,13 +64,13 @@ public class UserConverter {
         if (userDTO == null || userEntity == null) return;
 
         userEntity.setUserName(userDTO.getUserName());
-        
+
         if (userDTO.getStatus() != null) {
             userEntity.setActive(userDTO.getStatus() == 1);
         } else {
             userEntity.setActive(true);
         }
-        
+
         userEntity.setFullName(userDTO.getFullName());
         userEntity.setPhone(userDTO.getPhone());
 

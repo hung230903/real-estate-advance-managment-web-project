@@ -81,9 +81,11 @@ public class UserServiceImpl implements UserService {
 
         UserEntity userEntity = userConverter.toUserEntity(userDTO);
 
-        userEntity.setEncrytedPassword(
-                passwordEncoder.encode(SystemConstant.PASSWORD_DEFAULT)
-        );
+        if (userEntity.getEncrytedPassword() == null || userEntity.getEncrytedPassword().isEmpty()) {
+            userEntity.setEncrytedPassword(
+                    passwordEncoder.encode(SystemConstant.PASSWORD_DEFAULT)
+            );
+        }
         
         if (userDTO.getStatus() != null) {
             userEntity.setActive(userDTO.getStatus() == 1);
@@ -101,6 +103,11 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("Username is required");
         }
 
+        UserEntity existingUserWithSameName = userRepository.findByUserName(userName);
+        if (existingUserWithSameName != null && !existingUserWithSameName.getId().equals(userDTO.getId())) {
+             throw new EntityExistsException("UserEntity with name " + userName + " already exists");
+        }
+
         UserEntity userEntity = userRepository.findById(userDTO.getId()).orElseThrow(
                 () -> new RuntimeException("User not found"));
 
@@ -113,7 +120,6 @@ public class UserServiceImpl implements UserService {
         for (Long id : ids) {
             Optional<UserEntity> userEntity = userRepository.findById(id);
             userEntity.ifPresent(value -> value.setActive(false));
-            userRepository.flush();
         }
     }
 
