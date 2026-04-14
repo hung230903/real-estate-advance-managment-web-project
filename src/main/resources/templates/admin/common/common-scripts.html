@@ -8,6 +8,13 @@
     <script>
         function openNav() { document.getElementById("mySidepanel").style.width = "250px"; }
         function closeNav() { document.getElementById("mySidepanel").style.width = "0"; }
+
+        // Giải quyết lỗi Back/Forward Cache khi quay lại bằng nút back của trình duyệt
+        window.addEventListener("pageshow", function (event) {
+            if (event.persisted) {
+                window.location.reload();
+            }
+        });
     </script>
 </th:block>
 

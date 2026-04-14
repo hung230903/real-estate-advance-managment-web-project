@@ -7,7 +7,10 @@ import com.webapp.models.dtos.UserDTO;
 import com.webapp.pagination.PaginationResult;
 import com.webapp.repositories.UserRepository;
 import com.webapp.services.UserService;
-import jakarta.persistence.*;
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -86,7 +89,7 @@ public class UserServiceImpl implements UserService {
                     passwordEncoder.encode(SystemConstant.PASSWORD_DEFAULT)
             );
         }
-        
+
         if (userDTO.getStatus() != null) {
             userEntity.setActive(userDTO.getStatus() == 1);
         } else {
@@ -105,7 +108,7 @@ public class UserServiceImpl implements UserService {
 
         UserEntity existingUserWithSameName = userRepository.findByUserName(userName);
         if (existingUserWithSameName != null && !existingUserWithSameName.getId().equals(userDTO.getId())) {
-             throw new EntityExistsException("UserEntity with name " + userName + " already exists");
+            throw new EntityExistsException("UserEntity with name " + userName + " already exists");
         }
 
         UserEntity userEntity = userRepository.findById(userDTO.getId()).orElseThrow(

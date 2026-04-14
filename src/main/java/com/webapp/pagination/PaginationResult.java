@@ -10,14 +10,14 @@ public class PaginationResult<E> {
 
     private int totalRecords;
     private int currentPage;
-    private List<E> buildingList;
+    private List<E> entityList;
     private int maxResult;
     private int totalPages;
     private int maxNavigationPage;
     private List<Integer> navigationPages;
 
-    public PaginationResult(List<E> buildingList, int totalRecords, int page, int maxResult, int maxNavigationPage) {
-        this.buildingList = buildingList;
+    public PaginationResult(List<E> entityList, int totalRecords, int page, int maxResult, int maxNavigationPage) {
+        this.entityList = entityList;
         this.totalRecords = totalRecords;
         this.currentPage = Math.max(page, 1);
         this.maxResult = maxResult;
@@ -37,8 +37,11 @@ public class PaginationResult<E> {
         // 2. Tính tổng số trang
         this.totalPages = (int) Math.ceil((double) totalRecords / maxResult);
 
+        // Clamp currentPage so it does not exceed totalPages
+        this.currentPage = Math.min(this.currentPage, Math.max(this.totalPages, 1));
+
         // 3. Lấy dữ liệu phân trang
-        this.buildingList = query.setFirstResult((currentPage - 1) * maxResult).setMaxResults(maxResult).getResultList();
+        this.entityList = query.setFirstResult((currentPage - 1) * maxResult).setMaxResults(maxResult).getResultList();
 
         // 4. Tính navigation
         this.maxNavigationPage = Math.min(maxNavigationPage, totalPages);
@@ -80,8 +83,8 @@ public class PaginationResult<E> {
         return currentPage;
     }
 
-    public List<E> getBuildingList() {
-        return buildingList;
+    public List<E> getEntityList() {
+        return entityList;
     }
 
     public int getMaxResult() {

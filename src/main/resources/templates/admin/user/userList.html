@@ -4,198 +4,275 @@
 <head th:replace="~{admin/common/header :: header}"></head>
 
 <body id="page-top">
-<div id="wrapper">
-    <th:block th:replace="~{admin/common/sidebar :: sidebar(menu='user')}"></th:block>
+    <div id="wrapper">
+        <th:block th:replace="~{admin/common/sidebar :: sidebar(menu='user')}"></th:block>
 
-    <div id="content-wrapper" class="d-flex flex-column">
-        <div id="content">
-            <th:block th:replace="~{admin/common/menu :: menu}"></th:block>
+        <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+                <th:block th:replace="~{admin/common/menu :: menu}"></th:block>
 
-            <!-- Begin Page Content -->
-            <div class="page-content container-fluid">
-                <div class="page-header mb-4">
-                    <h1 class="h3 mb-0 text-gray-800">Danh sách người dùng</h1>
-                </div>
+                <!-- Begin Page Content -->
+                <div class="page-content container-fluid">
+                    <div class="page-header mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">Danh sách người dùng</h1>
+                    </div>
 
-                <div th:if="${messageResponse != null}" th:class="'alert alert-block alert-' + ${alert}">
-                    <button type="button" class="close" data-dismiss="alert">
-                        <i class="ace-icon fa fa-times"></i>
-                    </button>
-                    <span th:text="${messageResponse}"></span>
-                </div>
+                    <div th:if="${messageResponse != null}" th:class="'alert alert-block alert-' + ${alert}">
+                        <button type="button" class="close" data-dismiss="alert">
+                            <i class="ace-icon fa fa-times"></i>
+                        </button>
+                        <span th:text="${messageResponse}"></span>
+                    </div>
 
-                <!-- Form Search -->
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="card shadow mb-4">
-                            <div class="card-header py-3">
-                                <h6 class="m-0 font-weight-bold text-primary">Tìm kiếm</h6>
-                            </div>
-                            <div class="card-body">
-                                <form th:action="@{/admin/users/list}" id="listForm" method="get">
-                                    <div class="form-group row">
-                                        <label class="col-sm-2 col-form-label">Giá trị cần tìm</label>
-                                        <div class="col-sm-8">
-                                            <input type="text" class="form-control" name="key"
-                                                   th:value="${param.key}"/>
+                    <!-- Form Search -->
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Tìm kiếm</h6>
+                                </div>
+                                <div class="card-body">
+                                    <form th:action="@{/admin/users/list}" id="listForm" method="get">
+                                        <div class="form-group row">
+                                            <label class="col-sm-2 col-form-label">Giá trị cần tìm</label>
+                                            <div class="col-sm-8">
+                                                <input type="text" class="form-control" name="key"
+                                                    th:value="${param.key}" />
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <button id="btnSearch" type="submit" class="btn btn-primary">
+                                                    <i class="fas fa-search"></i> Tìm kiếm
+                                                </button>
+                                            </div>
                                         </div>
-                                        <div class="col-sm-2">
-                                            <button id="btnSearch" type="submit" class="btn btn-primary">
-                                                <i class="fas fa-search"></i> Tìm kiếm
-                                            </button>
-                                        </div>
-                                    </div>
-                                </form>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="d-flex justify-content-end mb-3 pr-3">
-                    <a th:href="@{/admin/users}">
-                        <button class="btn btn-app btn-success btn-xs" title="Thêm người dùng">
+                    <div class="d-flex justify-content-end mb-3 pr-3">
+                        <a th:href="@{/admin/users}">
+                            <button class="btn btn-app btn-success btn-xs" title="Thêm người dùng">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor"
+                                    class="bi bi-person-plus" viewBox="0 0 16 16">
+                                    <path
+                                        d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H1s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C9.516 10.68 8.289 10 6 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z" />
+                                    <path fill-rule="evenodd"
+                                        d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5" />
+                                </svg>
+                            </button>
+                        </a>
+
+                        <button id="btnDelete" class="btn btn-app btn-danger btn-xs ml-2"
+                            onclick="warningBeforeDelete()" title="Xóa người dùng">
                             <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor"
-                                 class="bi bi-person-plus" viewBox="0 0 16 16">
+                                class="bi bi-trash" viewBox="0 0 16 16">
                                 <path
-                                        d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H1s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C9.516 10.68 8.289 10 6 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/>
-                                <path fill-rule="evenodd"
-                                      d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5"/>
+                                    d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z" />
+                                <path
+                                    d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z" />
                             </svg>
                         </button>
-                    </a>
+                    </div>
 
-                    <button id="btnDelete" class="btn btn-app btn-danger btn-xs ml-2"
-                            onclick="warningBeforeDelete()" title="Xóa người dùng">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor"
-                             class="bi bi-trash" viewBox="0 0 16 16">
-                            <path
-                                    d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"/>
-                            <path
-                                    d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"/>
-                        </svg>
-                    </button>
-                </div>
+                    <!-- List Users -->
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Danh sách kết quả</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover" id="dataTable" width="100%"
+                                            cellspacing="0">
+                                            <thead class="bg-light">
+                                                <tr>
+                                                    <th class="text-center">
+                                                        <input type="checkbox" id="checkAll">
+                                                    </th>
+                                                    <th>User Name</th>
+                                                    <th>Full Name</th>
+                                                    <th>Phone</th>
+                                                    <th class="text-center">Thao tác</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr th:each="u : ${model.entityList}">
+                                                    <td class="text-center">
+                                                        <input type="checkbox" name="checkList" th:value="${u.id}"
+                                                            class="check-box-element" />
+                                                    </td>
+                                                    <td th:text="${u.userName}"></td>
+                                                    <td th:text="${u.fullName}"></td>
+                                                    <td th:text="${u.phone}"></td>
+                                                    <td class="text-center">
+                                                        <div class="btn-group">
+                                                            <a class="btn btn-sm btn-info"
+                                                                th:href="@{|/admin/users/${u.userName}|}"
+                                                                title="Cập nhật">
+                                                                <i class="fas fa-edit"></i>
+                                                            </a>
+                                                            <button class="btn btn-sm btn-outline-danger" title="Xóa"
+                                                                th:onclick="'warningBeforeDelete('+ ${u.id} + ')'">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <div class="page-navigator text-center mt-4" th:if="${model.totalPages > 1}">
+                                            <th:block th:each="page: ${model.navigationPages}">
+                                                <a th:if="${page != -1}" class="nav-item"
+                                                    th:classappend="${page == model.currentPage} ? 'active' : ''"
+                                                    th:href="@{|/admin/users/list?page=${page}|}"
+                                                    th:utext="${page}"></a>
 
-                <!-- List Users -->
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="card shadow mb-4">
-                            <div class="card-header py-3">
-                                <h6 class="m-0 font-weight-bold text-primary">Danh sách kết quả</h6>
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered table-hover" id="dataTable" width="100%"
-                                           cellspacing="0">
-                                        <thead class="bg-light">
-                                        <tr>
-                                            <th class="text-center">
-                                                <input type="checkbox" id="checkAll">
-                                            </th>
-                                            <th>User Name</th>
-                                            <th>Full Name</th>
-                                            <th>Phone</th>
-                                            <th class="text-center">Thao tác</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr th:each="u : ${model.buildingList}">
-                                            <td class="text-center">
-                                                <input type="checkbox" name="checkList" th:value="${u.id}"
-                                                       class="check-box-element"/>
-                                            </td>
-                                            <td th:text="${u.userName}"></td>
-                                            <td th:text="${u.fullName}"></td>
-                                            <td th:text="${u.phone}"></td>
-                                            <td class="text-center">
-                                                <a class="btn btn-sm btn-info"
-                                                   th:href="@{|/admin/users/${u.userName}|}" title="Cập nhật">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                    <div class="page-navigator text-center mt-4" th:if="${model.totalPages > 1}">
-                                        <th:block th:each="page: ${model.navigationPages}">
-                                            <a th:if="${page != -1}" class="nav-item"
-                                               th:classappend="${page == model.currentPage} ? 'active' : ''"
-                                               th:href="@{|/admin/users/list?page=${page}|}"
-                                               th:utext="${page}"></a>
+                                                <span th:if="${page == -1}" class="nav-item"> ... </span>
+                                            </th:block>
+                                        </div>
 
-                                            <span th:if="${page == -1}" class="nav-item"> ... </span>
-                                        </th:block>
                                     </div>
 
                                 </div>
-
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <th:block th:replace="~{admin/common/footer :: footer}"></th:block>
         </div>
-        <th:block th:replace="~{admin/common/footer :: footer}"></th:block>
     </div>
-</div>
 
-<th:block th:replace="~{admin/common/common-scripts :: jquery}"></th:block>
+    <th:block th:replace="~{admin/common/common-scripts :: jquery}"></th:block>
 
-<script type="text/javascript">
-    $('#checkAll').on('change', function () {
-        const isChecked = $(this).prop('checked');
-        $('.check-box-element').prop('checked', isChecked);
-    });
+    <script th:inline="javascript">
+        const SELECTED_KEY = 'selectedUserIds';
 
-    $('.check-box-element').on('change', function () {
-        const total = $('.check-box-element').length;
-        const checked = $('.check-box-element:checked').length;
-        $('#checkAll').prop('checked', total === checked);
-    });
+        function getSelectedIds() {
+            let ids = sessionStorage.getItem(SELECTED_KEY);
+            return ids ? JSON.parse(ids) : [];
+        }
 
-    function warningBeforeDelete() {
-        Swal.fire({
-            title: "Bạn chắc chắn muốn xóa?",
-            text: "Không thể hoàn tác hành động này!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: "Xóa",
-            cancelButtonText: "Hủy"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                const ids = $('.check-box-element:checked').map(function () {
-                    return $(this).val();
-                }).get();
+        function saveSelectedIds(ids) {
+            sessionStorage.setItem(SELECTED_KEY, JSON.stringify(ids));
+        }
 
-                if (ids.length === 0) {
-                    Swal.fire("Cảnh báo", "Vui lòng chọn ít nhất một người dùng", "warning");
-                    return;
+        function clearSelectedIds() {
+            sessionStorage.removeItem(SELECTED_KEY);
+        }
+
+        $(document).ready(function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const requestedPage = parseInt(urlParams.get('page')) || 1;
+            const actualPage = /*[[${model.currentPage}]]*/ 1;
+
+            if (actualPage && requestedPage !== actualPage) {
+                urlParams.set('page', actualPage);
+                window.history.replaceState({}, '', window.location.pathname + '?' + urlParams.toString());
+            }
+
+            const selectedIds = getSelectedIds();
+            $('.check-box-element').each(function () {
+                if (selectedIds.includes($(this).val())) {
+                    $(this).prop('checked', true);
                 }
-                deleteUser(ids);
-            }
-        });
-    }
+            });
 
-    function deleteUser(ids) {
-        $.ajax({
-            url: '/admin/api/users',
-            type: 'DELETE',
-            data: JSON.stringify(ids),
-            contentType: 'application/json',
-            success: function (res) {
-                Swal.fire("Thành công", "Đã xóa người dùng thành công", "success").then(() => {
-                    window.location.reload();
-                });
-            },
-            error: function (err) {
-                Swal.fire("Lỗi", "Không thể xóa người dùng", "error");
-                console.error(err);
+            const total = $('.check-box-element').length;
+            const checked = $('.check-box-element:checked').length;
+            if (total > 0 && total === checked) {
+                $('#checkAll').prop('checked', true);
             }
         });
-    }
-</script>
+
+        $(document).on('change', '.check-box-element', function () {
+            const id = $(this).val();
+            let ids = getSelectedIds();
+            if ($(this).is(':checked')) {
+                if (!ids.includes(id)) ids.push(id);
+            } else {
+                ids = ids.filter(item => item !== id);
+            }
+            saveSelectedIds(ids);
+
+            const total = $('.check-box-element').length;
+            const checked = $('.check-box-element:checked').length;
+            $('#checkAll').prop('checked', total > 0 && total === checked);
+        });
+
+        $('#checkAll').change(function () {
+            const isChecked = $(this).prop('checked');
+            let ids = getSelectedIds();
+            $('.check-box-element').each(function () {
+                $(this).prop('checked', isChecked);
+                const id = $(this).val();
+                if (isChecked) {
+                    if (!ids.includes(id)) ids.push(id);
+                } else {
+                    ids = ids.filter(item => item !== id);
+                }
+            });
+            saveSelectedIds(ids);
+        });
+
+        $('#listForm').submit(function () {
+            clearSelectedIds();
+        });
+
+        function warningBeforeDelete(userId) {
+            let userIds = [];
+            if (userId) {
+                userIds = [userId];
+            } else {
+                userIds = getSelectedIds();
+                if (userIds.length === 0) {
+                    userIds = $('.check-box-element:checked').map(function () { return $(this).val(); }).get();
+                }
+            }
+
+            if (userIds.length === 0) {
+                Swal.fire("Cảnh báo", "Vui lòng chọn ít nhất một người dùng để xóa.", "warning");
+                return;
+            }
+
+            Swal.fire({
+                title: "Bạn chắc chắn muốn xóa?",
+                text: "Không thể hoàn tác hành động này!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: "Xóa",
+                cancelButtonText: "Hủy"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    deleteUser(userIds);
+                }
+            });
+        }
+
+        function deleteUser(ids) {
+            $.ajax({
+                url: '/admin/api/users',
+                type: 'DELETE',
+                data: JSON.stringify(ids),
+                contentType: 'application/json',
+                success: function (res) {
+                    clearSelectedIds();
+                    Swal.fire("Thành công", "Đã xóa người dùng thành công", "success").then(() => {
+                        window.location.reload();
+                    });
+                },
+                error: function (err) {
+                    Swal.fire("Lỗi", "Không thể xóa người dùng", "error");
+                    console.error(err);
+                }
+            });
+        }
+    </script>
 </body>
 
 </html>
