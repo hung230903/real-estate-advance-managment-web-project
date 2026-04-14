@@ -1,7 +1,5 @@
 package com.webapp.pagination;
 
-import jakarta.persistence.TypedQuery;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,31 +17,12 @@ public class PaginationResult<E> {
     public PaginationResult(List<E> entityList, int totalRecords, int page, int maxResult, int maxNavigationPage) {
         this.entityList = entityList;
         this.totalRecords = totalRecords;
-        this.currentPage = Math.max(page, 1);
         this.maxResult = maxResult;
         this.totalPages = (int) Math.ceil((double) totalRecords / maxResult);
-        this.maxNavigationPage = Math.min(maxNavigationPage, totalPages);
-        calcNavigationPages();
-    }
 
-    public PaginationResult(TypedQuery<E> query, TypedQuery<Long> countQuery, int page, int maxResult, int maxNavigationPage) {
+        // Clamp currentPage so it does not exceed totalPages (If exceeded, return to page 1)
+        this.currentPage = (page > 1 && page > this.totalPages) ? 1 : Math.max(page, 1);
 
-        this.maxResult = maxResult;
-        this.currentPage = Math.max(page, 1);
-
-        // 1. Đếm số bản ghi
-        this.totalRecords = countQuery.getSingleResult().intValue();
-
-        // 2. Tính tổng số trang
-        this.totalPages = (int) Math.ceil((double) totalRecords / maxResult);
-
-        // Clamp currentPage so it does not exceed totalPages
-        this.currentPage = Math.min(this.currentPage, Math.max(this.totalPages, 1));
-
-        // 3. Lấy dữ liệu phân trang
-        this.entityList = query.setFirstResult((currentPage - 1) * maxResult).setMaxResults(maxResult).getResultList();
-
-        // 4. Tính navigation
         this.maxNavigationPage = Math.min(maxNavigationPage, totalPages);
         calcNavigationPages();
     }

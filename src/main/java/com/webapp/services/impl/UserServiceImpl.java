@@ -68,11 +68,24 @@ public class UserServiceImpl implements UserService {
             query.setParameter("key", searchKey);
             countQuery.setParameter("key", searchKey);
         }
-        return new PaginationResult<>(query, countQuery, page, maxResult, maxNavigationPage);
+
+        // 1. Đếm số bản ghi
+        int totalRecords = countQuery.getSingleResult().intValue();
+
+        // 2. Tính toán số trang và gàn số trang (clamp)
+        int totalPages = (int) Math.ceil((double) totalRecords / maxResult);
+        int actualPage = (page > 1 && page > totalPages) ? 1 : Math.max(page, 1);
+
+        // 3. Lấy dữ liệu phân trang
+        List<UserEntity> userEntities = query.setFirstResult((actualPage - 1) * maxResult)
+                .setMaxResults(maxResult)
+                .getResultList();
+
+        return new PaginationResult<>(userEntities, totalRecords, page, maxResult, maxNavigationPage);
     }
 
     @Override
-    public void save(UserDTO userDTO) {
+    public UserEntity save(UserDTO userDTO) {
         String userName = userDTO.getUserName();
 
         if (userName != null && !userName.isEmpty()) {
@@ -96,7 +109,7 @@ public class UserServiceImpl implements UserService {
             userEntity.setActive(true);
         }
 
-        userRepository.save(userEntity);
+        return userRepository.save(userEntity);
     }
 
     @Override

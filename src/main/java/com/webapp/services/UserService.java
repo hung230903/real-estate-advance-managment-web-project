@@ -12,7 +12,7 @@ public interface UserService {
 
     PaginationResult<UserEntity> listUserInfo(String key, int page, int maxResult, int maxNavigationPage);
 
-    void save(UserDTO userDTO);
+    UserEntity save(UserDTO userDTO);
 
     UserEntity update(UserDTO userDTO);
 
