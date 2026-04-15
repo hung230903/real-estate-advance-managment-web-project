@@ -14,7 +14,7 @@
                 <!-- Begin Page Content -->
                 <div class="page-content container-fluid">
                     <div class="page-header mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Danh sách người dùng</h1>
+                        <h1 class="h3 mb-0 text-gray-800">User List</h1>
                     </div>
 
                     <div th:if="${messageResponse != null}" th:class="'alert alert-block alert-' + ${alert}">
@@ -29,19 +29,19 @@
                         <div class="col-lg-12">
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Tìm kiếm</h6>
+                                    <h6 class="m-0 font-weight-bold text-primary">Search</h6>
                                 </div>
                                 <div class="card-body">
                                     <form th:action="@{/admin/users/list}" id="listForm" method="get">
                                         <div class="form-group row">
-                                            <label class="col-sm-2 col-form-label">Giá trị cần tìm</label>
+                                            <label class="col-sm-2 col-form-label">Search Keyword</label>
                                             <div class="col-sm-8">
                                                 <input type="text" class="form-control" name="key"
                                                     th:value="${param.key}" />
                                             </div>
                                             <div class="col-sm-2">
                                                 <button id="btnSearch" type="submit" class="btn btn-primary">
-                                                    <i class="fas fa-search"></i> Tìm kiếm
+                                                    <i class="fas fa-search"></i> Search
                                                 </button>
                                             </div>
                                         </div>
@@ -53,7 +53,7 @@
 
                     <div class="d-flex justify-content-end mb-3 pr-3">
                         <a th:href="@{/admin/users}">
-                            <button class="btn btn-app btn-success btn-xs" title="Thêm người dùng">
+                            <button class="btn btn-app btn-success btn-xs" title="Add User">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor"
                                     class="bi bi-person-plus" viewBox="0 0 16 16">
                                     <path
@@ -65,7 +65,7 @@
                         </a>
 
                         <button id="btnDelete" class="btn btn-app btn-danger btn-xs ml-2"
-                            onclick="warningBeforeDelete()" title="Xóa người dùng">
+                            onclick="warningBeforeDelete()" title="Delete User">
                             <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor"
                                 class="bi bi-trash" viewBox="0 0 16 16">
                                 <path
@@ -81,7 +81,7 @@
                         <div class="col-lg-12">
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Danh sách kết quả</h6>
+                                    <h6 class="m-0 font-weight-bold text-primary">Result List</h6>
                                 </div>
                                 <div class="card-body">
                                     <div class="table-responsive">
@@ -95,27 +95,27 @@
                                                     <th>User Name</th>
                                                     <th>Full Name</th>
                                                     <th>Phone</th>
-                                                    <th class="text-center">Thao tác</th>
+                                                    <th class="text-center">Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr th:each="u : ${model.entityList}">
+                                                <tr th:each="user : ${model.entityList}">
                                                     <td class="text-center">
-                                                        <input type="checkbox" name="checkList" th:value="${u.id}"
+                                                        <input type="checkbox" name="checkList" th:value="${user.id}"
                                                             class="check-box-element" />
                                                     </td>
-                                                    <td th:text="${u.userName}"></td>
-                                                    <td th:text="${u.fullName}"></td>
-                                                    <td th:text="${u.phone}"></td>
+                                                    <td th:text="${user.userName}"></td>
+                                                    <td th:text="${user.fullName}"></td>
+                                                    <td th:text="${user.phone}"></td>
                                                     <td class="text-center">
                                                         <div class="btn-group">
                                                             <a class="btn btn-sm btn-info"
-                                                                th:href="@{|/admin/users/${u.userName}|}"
-                                                                title="Cập nhật">
+                                                                th:href="@{|/admin/users/${user.userName}|}"
+                                                                title="Update">
                                                                 <i class="fas fa-edit"></i>
                                                             </a>
-                                                            <button class="btn btn-sm btn-outline-danger" title="Xóa"
-                                                                th:onclick="'warningBeforeDelete('+ ${u.id} + ')'">
+                                                            <button class="btn btn-sm btn-outline-danger" title="Delete"
+                                                                th:onclick="'warningBeforeDelete('+ ${user.id} + ')'">
                                                                 <i class="fas fa-trash"></i>
                                                             </button>
                                                         </div>
@@ -133,7 +133,6 @@
                                                 <span th:if="${page == -1}" class="nav-item"> ... </span>
                                             </th:block>
                                         </div>
-
                                     </div>
 
                                 </div>
@@ -229,24 +228,26 @@
             } else {
                 userIds = getSelectedIds();
                 if (userIds.length === 0) {
-                    userIds = $('.check-box-element:checked').map(function () { return $(this).val(); }).get();
+                    userIds = $('.check-box-element:checked').map(function () {
+                        return $(this).val();
+                    }).get();
                 }
             }
 
             if (userIds.length === 0) {
-                Swal.fire("Cảnh báo", "Vui lòng chọn ít nhất một người dùng để xóa.", "warning");
+                Swal.fire("Warning", "Please select at least one user to delete.", "warning");
                 return;
             }
 
             Swal.fire({
-                title: "Bạn chắc chắn muốn xóa?",
-                text: "Không thể hoàn tác hành động này!",
+                title: "Are you sure you want to delete?",
+                text: "This action cannot be undone!",
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonColor: '#d33',
                 cancelButtonColor: '#3085d6',
-                confirmButtonText: "Xóa",
-                cancelButtonText: "Hủy"
+                confirmButtonText: "Delete",
+                cancelButtonText: "Cancel"
             }).then((result) => {
                 if (result.isConfirmed) {
                     deleteUser(userIds);
@@ -262,12 +263,12 @@
                 contentType: 'application/json',
                 success: function (res) {
                     clearSelectedIds();
-                    Swal.fire("Thành công", "Đã xóa người dùng thành công", "success").then(() => {
+                    Swal.fire("Success", "User deleted successfully", "success").then(() => {
                         window.location.reload();
                     });
                 },
                 error: function (err) {
-                    Swal.fire("Lỗi", "Không thể xóa người dùng", "error");
+                    Swal.fire("Error", "Could not delete user", "error");
                     console.error(err);
                 }
             });

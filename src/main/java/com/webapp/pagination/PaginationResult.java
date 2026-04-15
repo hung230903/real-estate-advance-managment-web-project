@@ -19,10 +19,7 @@ public class PaginationResult<E> {
         this.totalRecords = totalRecords;
         this.maxResult = maxResult;
         this.totalPages = (int) Math.ceil((double) totalRecords / maxResult);
-
-        // Clamp currentPage so it does not exceed totalPages (If exceeded, return to page 1)
         this.currentPage = (page > 1 && page > this.totalPages) ? 1 : Math.max(page, 1);
-
         this.maxNavigationPage = Math.min(maxNavigationPage, totalPages);
         calcNavigationPages();
     }

@@ -122,10 +122,12 @@ public class BuildingServiceImpl implements BuildingService {
     public BuildingEntity update(BuildingDTO buildingDTO) {
         BuildingEntity buildingEntity = buildingRepository.findById(buildingDTO.getId())
                 .orElseThrow(() -> new RuntimeException("Building not found"));
-        buildingEntity.getRentAreaEntities().clear();
 
-        BuildingEntity updatedBuilding = buildingConverter.toBuildingEntity(buildingDTO);
-        List<RentAreaEntity> newRentAreas = updatedBuilding.getRentAreaEntities();
+        buildingConverter.updateEntity(buildingDTO, buildingEntity);
+
+        buildingEntity.getRentAreaEntities().clear();
+        BuildingEntity tempBuilding = buildingConverter.toBuildingEntity(buildingDTO);
+        List<RentAreaEntity> newRentAreas = tempBuilding.getRentAreaEntities();
         for (RentAreaEntity r : newRentAreas) {
             r.setBuilding(buildingEntity);
             buildingEntity.getRentAreaEntities().add(r);
@@ -168,5 +170,11 @@ public class BuildingServiceImpl implements BuildingService {
         ResponseDTO responseDTO = new ResponseDTO();
         responseDTO.setMessage("Assign success");
         return responseDTO;
+    }
+
+    @Override
+    public byte[] getImage(Long id) {
+        BuildingEntity buildingEntity = buildingRepository.findById(id).orElse(null);
+        return (buildingEntity != null) ? buildingEntity.getImage() : null;
     }
 }

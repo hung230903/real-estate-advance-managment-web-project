@@ -28,4 +28,5 @@ public interface BuildingService {
     ResponseDTO loadStaffsByBuildingId(Long id);
 
     ResponseDTO updateAssignmentBuilding(AssignmentBuildingDTO assignmentBuildingDTO);
+    byte[] getImage(Long id);
 }

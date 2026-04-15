@@ -42,7 +42,7 @@ public class BuildingAPI {
     }
 
     @PostMapping()
-    public ResponseEntity<ResponseDTO> create(@RequestBody @Valid BuildingDTO buildingDTO,
+    public ResponseEntity<ResponseDTO> create(@ModelAttribute @Valid BuildingDTO buildingDTO,
                                               BindingResult bindingResult) {
         ResponseDTO responseDTO = new ResponseDTO();
         try {
@@ -66,7 +66,7 @@ public class BuildingAPI {
     }
 
     @PutMapping()
-    public ResponseEntity<ResponseDTO> update(@RequestBody @Valid BuildingDTO buildingDTO,
+    public ResponseEntity<ResponseDTO> update(@ModelAttribute @Valid BuildingDTO buildingDTO,
                                               BindingResult bindingResult) {
         ResponseDTO responseDTO = new ResponseDTO();
         try {

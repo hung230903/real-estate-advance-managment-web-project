@@ -63,4 +63,9 @@ public class BuildingController {
         return "admin/building/buildingEdit";
     }
 
+    @GetMapping("/buildingImage")
+    @ResponseBody
+    public byte[] buildingImage(@RequestParam("id") Long id) {
+        return buildingService.getImage(id);
+    }
 }

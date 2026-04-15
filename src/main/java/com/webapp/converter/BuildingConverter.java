@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,8 +54,48 @@ public class BuildingConverter {
         // Rent area
         buildingEntity.setRentAreaEntities(rentAreaConverter.toRentAreaEntities(buildingDTO, buildingEntity));
 
+        byte[] image = extractImage(buildingDTO);
+        if (image != null && image.length > 0) {
+            buildingEntity.setImage(image);
+        }
 
         return buildingEntity;
+    }
+
+    public void updateEntity(BuildingDTO buildingDTO, BuildingEntity buildingEntity) {
+        modelMapper.map(buildingDTO, buildingEntity);
+
+        // Type code
+        if (buildingDTO.getTypeCode() != null) {
+            String typeCode = buildingDTO.getTypeCode().stream()
+                    .map(Object::toString)
+                    .collect(Collectors.joining(", "));
+            buildingEntity.setTypeCode(typeCode);
+        }
+
+        byte[] image = extractImage(buildingDTO);
+        if (image != null && image.length > 0) {
+            buildingEntity.setImage(image);
+        }
+    }
+
+    private byte[] extractImage(BuildingDTO buildingDTO) {
+        try {
+            if (buildingDTO.getFileData() != null && !buildingDTO.getFileData().isEmpty()) {
+                return buildingDTO.getFileData().getBytes();
+            }
+
+            if (buildingDTO.getBase64Image() != null && !buildingDTO.getBase64Image().isEmpty()) {
+                String base64 = buildingDTO.getBase64Image();
+                if (base64.contains(",")) {
+                    base64 = base64.split(",")[1];
+                }
+                return Base64.getDecoder().decode(base64);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Invalid image data", e);
+        }
+        return null;
     }
 
     public BuildingDTO toBuildingDTO(BuildingEntity buildingEntity) {

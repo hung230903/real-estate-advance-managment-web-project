@@ -14,8 +14,8 @@
                 <!-- Begin Page Content -->
                 <div class="page-content container-fluid">
                     <div class="page-header mb-4">
-                        <h1 class="h3 mb-0 text-gray-800"
-                            th:text="${user.id != null ? 'Cập nhật người dùng' : 'Thêm mới người dùng'}">Người dùng</h1>
+                        <h1 class="h3 mb-0 text-gray-800" th:text="${user.id != null ? 'Update User' : 'Add New User'}">
+                            User</h1>
                     </div>
 
                     <div th:if="${messageResponse != null}" th:class="'alert alert-block alert-' + ${alert}">
@@ -29,13 +29,13 @@
                         <div class="col-lg-12">
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Thông tin người dùng</h6>
+                                    <h6 class="m-0 font-weight-bold text-primary">User Information</h6>
                                 </div>
                                 <div class="card-body">
                                     <form id="formEdit" th:object="${user}" method="post">
                                         <div class="form-horizontal">
                                             <div class="form-group row">
-                                                <label class="col-sm-2 col-form-label">Tên đăng nhập</label>
+                                                <label class="col-sm-2 col-form-label">Username</label>
                                                 <div class="col-sm-8">
                                                     <input type="text" class="form-control" th:field="*{userName}"
                                                         th:readonly="${user.id != null}" />
@@ -43,24 +43,24 @@
                                             </div>
 
                                             <div class="form-group row">
-                                                <label class="col-sm-2 col-form-label">Họ và tên</label>
+                                                <label class="col-sm-2 col-form-label">Full Name</label>
                                                 <div class="col-sm-8">
                                                     <input type="text" class="form-control" th:field="*{fullName}" />
                                                 </div>
                                             </div>
 
                                             <div class="form-group row">
-                                                <label class="col-sm-2 col-form-label">Số điện thoại</label>
+                                                <label class="col-sm-2 col-form-label">Phone Number</label>
                                                 <div class="col-sm-8">
                                                     <input type="text" class="form-control" th:field="*{phone}" />
                                                 </div>
                                             </div>
 
                                             <div class="form-group row">
-                                                <label class="col-sm-2 col-form-label">Vai trò</label>
+                                                <label class="col-sm-2 col-form-label">Role</label>
                                                 <div class="col-sm-8">
                                                     <select class="form-control" th:field="*{roleCode}">
-                                                        <option value="">-- Chọn vai trò --</option>
+                                                        <option value="">-- Select Role --</option>
                                                         <option th:each="entry : ${user.roleDTO}"
                                                             th:value="${entry.key}" th:text="${entry.value}"></option>
                                                     </select>
@@ -68,7 +68,7 @@
                                             </div>
 
                                             <div class="form-group row" th:if="${user.id == null}">
-                                                <label class="col-sm-2 col-form-label">Mật khẩu</label>
+                                                <label class="col-sm-2 col-form-label">Password</label>
                                                 <div class="col-sm-8">
                                                     <input type="password" class="form-control"
                                                         th:field="*{password}" />
@@ -95,19 +95,18 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <small class="text-muted mt-2 d-block">Ảnh đại diện người
-                                                        dùng</small>
+                                                    <small class="text-muted mt-2 d-block">User Avatar</small>
                                                 </div>
                                             </div>
 
                                             <div class="text-center mt-4 mb-4">
                                                 <button type="button" class="btn btn-primary shadow-sm"
                                                     id="btnUpdateUser" style="min-width: 160px;">
-                                                    <i class="fas fa-save mr-2"></i> Lưu người dùng
+                                                    <i class="fas fa-save mr-2"></i> Save User
                                                 </button>
                                                 <a th:href="@{/admin/users/list}" class="btn ml-2 shadow-sm text-white"
                                                     style="min-width: 160px; background-color: #858796;">
-                                                    <i class="fas fa-arrow-left mr-2"></i> Trở lại
+                                                    <i class="fas fa-arrow-left mr-2"></i> Back
                                                 </a>
                                             </div>
                                         </div>
@@ -166,15 +165,15 @@
                 contentType: false, // Tell jQuery not to set contentType
                 success: function (res) {
                     Swal.fire({
-                        title: "Thành công",
-                        text: method === 'POST' ? "Đã thêm người dùng thành công" : "Đã cập nhật người dùng thành công",
+                        title: "Success",
+                        text: method === 'POST' ? "User added successfully" : "User updated successfully",
                         icon: "success"
                     }).then(() => {
                         window.location.href = "/admin/users/list";
                     });
                 },
                 error: function (err) {
-                    Swal.fire("Lỗi", err.responseJSON ? err.responseJSON.message : "Thao tác thất bại", "error");
+                    Swal.fire("Error", err.responseJSON ? err.responseJSON.message : "Action failed", "error");
                 }
             });
         }

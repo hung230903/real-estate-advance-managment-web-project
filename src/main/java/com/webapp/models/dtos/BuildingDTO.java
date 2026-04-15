@@ -3,6 +3,8 @@ package com.webapp.models.dtos;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 
 @Getter
@@ -40,4 +42,7 @@ public class BuildingDTO {
     Double brokerageFee;
     String note;
     List<String> typeCode;
+    MultipartFile fileData;
+    String base64Image;
+    String imageName;
 }

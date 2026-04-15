@@ -98,6 +98,10 @@ public class BuildingEntity {
     @Column(name = "note")
     String note;
 
+    @Lob
+    @Column(name = "image", length = Integer.MAX_VALUE, nullable = true)
+    private byte[] image;
+
     // Quan hệ với bảng rentarea - One
     @OneToMany(mappedBy = "building",
             fetch = FetchType.LAZY,

@@ -8,9 +8,6 @@ import com.webapp.pagination.PaginationResult;
 import com.webapp.repositories.UserRepository;
 import com.webapp.services.UserService;
 import jakarta.persistence.EntityExistsException;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,9 +22,6 @@ import java.util.stream.Collectors;
 @Transactional
 public class UserServiceImpl implements UserService {
 
-    @PersistenceContext
-    private EntityManager entityManager;
-
     @Autowired
     private UserRepository userRepository;
 
@@ -36,7 +30,6 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserConverter userConverter;
-
 
     @Override
     public Map<Long, String> getAllStaff() {
@@ -47,41 +40,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public PaginationResult<UserEntity> listUserInfo(String key, int page, int maxResult, int maxNavigationPage) {
-        StringBuilder sql = new StringBuilder("SELECT NEW " + UserEntity.class.getName() + "(u.id, u.userName, u.active, u.userRole, u.fullName, u.phone) " + "FROM " + UserEntity.class.getName() + " u ");
-        StringBuilder countSql = new StringBuilder("SELECT COUNT(u.id) FROM " + UserEntity.class.getName() + " u ");
-
-        sql.append("WHERE u.active = true ");
-        countSql.append("WHERE u.active = true ");
-
-        if (key != null && !key.trim().isEmpty()) {
-            sql.append("AND (LOWER(u.userName) LIKE :key OR LOWER(u.fullName) LIKE :key OR LOWER(u.phone) LIKE :key) ");
-            countSql.append("AND (LOWER(u.userName) LIKE :key OR LOWER(u.fullName) LIKE :key OR LOWER(u.phone) LIKE :key) ");
-        }
-
-        sql.append("ORDER BY u.userName DESC");
-
-        TypedQuery<UserEntity> query = entityManager.createQuery(sql.toString(), UserEntity.class);
-        TypedQuery<Long> countQuery = entityManager.createQuery(countSql.toString(), Long.class);
-
-        if (key != null && !key.trim().isEmpty()) {
-            String searchKey = "%" + key.toLowerCase() + "%";
-            query.setParameter("key", searchKey);
-            countQuery.setParameter("key", searchKey);
-        }
-
         // 1. Đếm số bản ghi
-        int totalRecords = countQuery.getSingleResult().intValue();
+        int totalRecords = userRepository.countUsers(key);
 
-        // 2. Tính toán số trang và gàn số trang (clamp)
+        // 2. Tính toán số trang và gán số trang (clamp)
         int totalPages = (int) Math.ceil((double) totalRecords / maxResult);
         int actualPage = (page > 1 && page > totalPages) ? 1 : Math.max(page, 1);
 
         // 3. Lấy dữ liệu phân trang
-        List<UserEntity> userEntities = query.setFirstResult((actualPage - 1) * maxResult)
-                .setMaxResults(maxResult)
-                .getResultList();
+        List<UserEntity> userEntities = userRepository.findUsers(key, actualPage, maxResult);
 
-        return new PaginationResult<>(userEntities, totalRecords, page, maxResult, maxNavigationPage);
+        return new PaginationResult<>(userEntities, totalRecords, actualPage, maxResult, maxNavigationPage);
     }
 
     @Override
