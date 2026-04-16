@@ -1,6 +1,7 @@
 package com.webapp.security;
 
 import com.webapp.constant.SystemConstant;
+import com.webapp.enums.UserRole;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -51,10 +52,11 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     }
 
     private boolean isAdmin(List<String> roles) {
-        return roles.stream().anyMatch(role -> role.startsWith(SystemConstant.MANAGER_ROLE) || role.startsWith(SystemConstant.STAFF_ROLE));
+        return roles.stream().anyMatch(role -> role.equalsIgnoreCase(UserRole.ROLE_MANAGER.name())
+                || role.equalsIgnoreCase(UserRole.ROLE_EMPLOYEE.name()));
     }
 
     private boolean isUser(List<String> roles) {
-        return roles.contains(SystemConstant.USER_ROLE);
+        return roles.contains(UserRole.ROLE_USER.name());
     }
 }

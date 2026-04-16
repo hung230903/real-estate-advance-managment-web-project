@@ -6,8 +6,30 @@
     <script th:src="@{/admin_dashboard/vendor/jquery-easing/jquery.easing.min.js}"></script>
     <script th:src="@{/admin_dashboard/js/sb-admin-2.min.js}"></script>
     <script>
-        function openNav() { document.getElementById("mySidepanel").style.width = "250px"; }
-        function closeNav() { document.getElementById("mySidepanel").style.width = "0"; }
+        function openNav() {
+            document.getElementById("mySidepanel").style.width = "250px";
+        }
+
+        function closeNav() {
+            document.getElementById("mySidepanel").style.width = "0";
+        }
+
+        function confirmLogout() {
+            Swal.fire({
+                title: 'Ready to Leave?',
+                text: "Select 'Logout' below if you are ready to end your current session.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#4e73df',
+                cancelButtonColor: '#858796',
+                confirmButtonText: 'Logout',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '/logout';
+                }
+            })
+        }
 
         // Giải quyết lỗi Back/Forward Cache khi quay lại bằng nút back của trình duyệt
         window.addEventListener("pageshow", function (event) {

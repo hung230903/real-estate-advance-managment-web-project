@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head th:replace="~{admin/common/header :: header}"></head>
 
@@ -124,7 +124,7 @@
                                                     placeholder="Manager Phone" class="form-control"
                                                     th:value="${modelSearch.managerPhone}">
                                             </div>
-                                            <div class="col-lg-2">
+                                            <div class="col-lg-2" sec:authorize="hasRole('MANAGER')">
                                                 <label for="staffId">Select Staff</label>
                                                 <select name="staffId" id="staffId" class="form-control">
                                                     <option value="">Select Staff</option>
@@ -159,8 +159,8 @@
                         </div>
                     </div>
 
-                    <!-- Create Building Button -->
-                    <div class="d-flex justify-content-end mb-3 pr-3">
+                    <!-- Create/Delete Building Buttons (Admin only) -->
+                    <div class="d-flex justify-content-end mb-3 pr-3" sec:authorize="hasRole('MANAGER')">
                         <a th:href="@{/admin/buildings/edit}">
                             <button class="btn btn-app btn-success btn-xs" title="Add Building">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor"
@@ -232,11 +232,12 @@
                                                                 <i class="fas fa-edit"></i>
                                                             </a>
                                                             <button class="btn btn-sm btn-outline-danger" title="Delete"
+                                                                sec:authorize="hasRole('MANAGER')"
                                                                 th:onclick="'warningBeforeDelete('+ ${buildingSearchResponse.id} + ')'">
                                                                 <i class="fas fa-trash"></i>
                                                             </button>
                                                             <button type="button" class="btn btn-sm btn-outline-success"
-                                                                title="Assign"
+                                                                title="Assign" sec:authorize="hasRole('MANAGER')"
                                                                 th:onclick="'assignmentBuilding('+ ${buildingSearchResponse.id} + ')'">
                                                                 <i class="fas fa-users"></i></button>
                                                         </div>
@@ -399,7 +400,9 @@
             } else {
                 buildingIds = getSelectedIds();
                 if (buildingIds.length === 0) {
-                    buildingIds = $('#dataTable tbody input[type="checkbox"]:checked').map(function () { return $(this).val(); }).get();
+                    buildingIds = $('#dataTable tbody input[type="checkbox"]:checked').map(function () {
+                        return $(this).val();
+                    }).get();
                 }
             }
 

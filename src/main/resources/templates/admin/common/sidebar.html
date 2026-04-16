@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <div th:fragment="sidebar(menu)">
     <div id="mySidepanel" class="sidepanel">
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
@@ -15,7 +15,7 @@
                     <i class="fas fa-fw fa-building"></i>
                     <span>Building Management</span></a>
             </li>
-            <li class="nav-item" th:classappend="${menu == 'user' ? 'active' : ''}">
+            <li class="nav-item" th:classappend="${menu == 'user' ? 'active' : ''}" sec:authorize="hasRole('MANAGER')">
                 <a class="nav-link" th:href="@{/admin/users/list}">
                     <i class="fas fa-fw fa-users"></i>
                     <span>User Management</span></a>

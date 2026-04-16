@@ -2,10 +2,12 @@ package com.webapp.controller.admin.building;
 
 import com.webapp.enums.District;
 import com.webapp.enums.RentType;
+import com.webapp.enums.UserRole;
 import com.webapp.models.dtos.BuildingDTO;
 import com.webapp.models.request.BuildingSearchRequestDTO;
 import com.webapp.services.BuildingService;
 import com.webapp.services.UserService;
+import com.webapp.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,10 +33,20 @@ public class BuildingController {
                                @RequestParam(value = "page", defaultValue = "1") int page,
                                Model model) {
 
+        List<String> authorities = SecurityUtils.getAuthorities();
+        if (authorities.contains(UserRole.ROLE_EMPLOYEE.name())) {
+            Long staffId = SecurityUtils.getPrincipal().getId();
+            buildingSearchRequestDTO.setStaffId(staffId);
+            params.put("staffId", String.valueOf(staffId));
+        }
+
         model.addAttribute("modelSearch", buildingSearchRequestDTO);
         model.addAttribute("districts", District.getDistrictCode());
         model.addAttribute("typeCodes", RentType.getRentType());
-        model.addAttribute("staffs", userService.getAllStaff());
+
+        if (authorities.contains(UserRole.ROLE_MANAGER.name())) {
+            model.addAttribute("staffs", userService.getAllStaff());
+        }
 
         final int MAX_RESULT = 3;
         final int MAX_NAVIGATION_PAGE = 3;

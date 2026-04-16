@@ -3,6 +3,7 @@ package com.webapp.services.impl;
 import com.webapp.entities.UserEntity;
 import com.webapp.repositories.AccountRepository;
 import com.webapp.repositories.UserRepository;
+import com.webapp.security.MyUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -37,7 +38,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         List<GrantedAuthority> grantList = new ArrayList<GrantedAuthority>();
 
-        // ROLE_EMPLOYEE, ROLE_MANAGER
+        // Ensure role has ROLE_ prefix for Spring Security
+        if (role != null && !role.startsWith("ROLE_")) {
+            role = "ROLE_" + role;
+        }
+
         GrantedAuthority authority = new SimpleGrantedAuthority(role);
 
         grantList.add(authority);
@@ -47,10 +52,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         boolean credentialsNonExpired = true;
         boolean accountNonLocked = true;
 
-        UserDetails userDetails = (UserDetails) new org.springframework.security.core.userdetails
-                .User(userEntity.getUserName(), //
-                userEntity.getEncrytedPassword(), enabled, accountNonExpired, //
+        MyUser userDetails = new MyUser(userEntity.getUserName(),
+                userEntity.getEncrytedPassword(), enabled, accountNonExpired,
                 credentialsNonExpired, accountNonLocked, grantList);
+
+        userDetails.setId(userEntity.getId());
+        userDetails.setFullName(userEntity.getFullName());
 
         return userDetails;
     }

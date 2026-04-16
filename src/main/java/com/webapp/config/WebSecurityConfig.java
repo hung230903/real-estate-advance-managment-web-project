@@ -1,5 +1,6 @@
 package com.webapp.config;
 
+import com.webapp.enums.UserRole;
 import com.webapp.security.CustomSuccessHandler;
 import com.webapp.services.impl.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -39,17 +40,17 @@ public class WebSecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/login/**").permitAll()
-                        .requestMatchers("/admin/**").hasAnyRole("EMPLOYEE", "MANAGER")
+                        .requestMatchers("/login", "/login/**", "/access-denied").permitAll()
+                        .requestMatchers("/admin/**").hasAnyAuthority(UserRole.ROLE_EMPLOYEE.name(), UserRole.ROLE_MANAGER.name())
                         .anyRequest().permitAll()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/login")
-                        .defaultSuccessUrl("/admin/buildings/list", true)
+                        .successHandler(myAuthenticationSuccessHandler())
                         .usernameParameter("username")
                         .passwordParameter("password")
-                        .failureUrl("/login?error=true")
+                        .failureUrl("/login?incorrectAccount")
                         .permitAll()
                 )
                 .logout(logout -> logout

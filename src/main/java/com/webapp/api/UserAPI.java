@@ -4,10 +4,14 @@ package com.webapp.api;
 import com.webapp.models.dtos.PasswordDTO;
 import com.webapp.models.dtos.ResponseDTO;
 import com.webapp.models.dtos.UserDTO;
+import com.webapp.security.MyUser;
 import com.webapp.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -55,6 +59,17 @@ public class UserAPI {
                 return ResponseEntity.badRequest().body(responseDTO);
             }
             userService.update(userDTO);
+
+            // Refresh SecurityContext if current user updated their own profile
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (auth != null && auth.getPrincipal() instanceof MyUser principal) {
+                if (principal.getUsername().equals(userDTO.getUserName())) {
+                    principal.setFullName(userDTO.getFullName());
+                    Authentication newAuth = new UsernamePasswordAuthenticationToken(principal, auth.getCredentials(), auth.getAuthorities());
+                    SecurityContextHolder.getContext().setAuthentication(newAuth);
+                }
+            }
+
             responseDTO.setMessage("Update Successfully");
             return ResponseEntity.ok().body(responseDTO);
         } catch (Exception e) {
