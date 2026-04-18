@@ -40,8 +40,9 @@ public class WebSecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/login/**", "/access-denied").permitAll()
+                        .requestMatchers("/admin/users/**", "/admin/api/buildings/assign", "/admin/api/buildings/{id}/staff").hasAuthority(UserRole.ROLE_MANAGER.name())
                         .requestMatchers("/admin/**").hasAnyAuthority(UserRole.ROLE_EMPLOYEE.name(), UserRole.ROLE_MANAGER.name())
+                        .requestMatchers("/login", "/login/**", "/access-denied", "/", "/assets/**", "/web/**").permitAll()
                         .anyRequest().permitAll()
                 )
                 .formLogin(form -> form
@@ -50,8 +51,7 @@ public class WebSecurityConfig {
                         .successHandler(myAuthenticationSuccessHandler())
                         .usernameParameter("username")
                         .passwordParameter("password")
-                        .failureUrl("/login?incorrectAccount")
-                        .permitAll()
+                        .failureUrl("/login?incorrectAccount").permitAll()
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")

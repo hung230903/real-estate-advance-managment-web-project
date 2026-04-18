@@ -67,11 +67,11 @@ public class BuildingServiceImpl implements BuildingService {
     public PaginationResult<BuildingSearchResponseDTO> searchBuildings(Map<String, String> params, List<String> typeCode, int page, int maxResult, int maxNavigationPage) {
         BuildingSearchRequestDTO searchRequest = buildingSearchConverter.toBuildingBuilderDTO(params, typeCode);
         int totalRecords = buildingRepository.countAll(searchRequest);
-        
+
         // Tính toán lại số trang để tránh trường hợp page truyền vào vượt quá số trang hiện có
         int totalPages = (int) Math.ceil((double) totalRecords / maxResult);
         int actualPage = (page > 1 && page > totalPages) ? 1 : Math.max(page, 1);
-        
+
         List<BuildingEntity> buildingEntities = buildingRepository.searchBuildings(searchRequest, actualPage, maxResult);
 
         List<BuildingSearchResponseDTO> responses = new ArrayList<>();
