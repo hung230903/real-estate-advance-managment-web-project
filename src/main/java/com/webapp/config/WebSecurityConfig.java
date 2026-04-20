@@ -40,6 +40,7 @@ public class WebSecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/admin/users/userImage").hasAnyAuthority(UserRole.ROLE_EMPLOYEE.name(), UserRole.ROLE_MANAGER.name())
                         .requestMatchers("/admin/users/**", "/admin/api/buildings/assign", "/admin/api/buildings/{id}/staff").hasAuthority(UserRole.ROLE_MANAGER.name())
                         .requestMatchers("/admin/**").hasAnyAuthority(UserRole.ROLE_EMPLOYEE.name(), UserRole.ROLE_MANAGER.name())
                         .requestMatchers("/login", "/login/**", "/access-denied", "/", "/assets/**", "/web/**").permitAll()

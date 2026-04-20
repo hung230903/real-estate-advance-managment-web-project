@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+import static com.webapp.constant.SystemConstant.MAX_NAVIGATION_PAGE;
+import static com.webapp.constant.SystemConstant.MAX_RESULT;
+
 @Controller
 @RequestMapping("/admin/buildings")
 public class BuildingController {
@@ -47,9 +50,6 @@ public class BuildingController {
         if (authorities.contains(UserRole.ROLE_MANAGER.name())) {
             model.addAttribute("staffs", userService.getAllStaff());
         }
-
-        final int MAX_RESULT = 3;
-        final int MAX_NAVIGATION_PAGE = 3;
 
         // Controller -> Service: trả PaginationResult
         model.addAttribute("model",

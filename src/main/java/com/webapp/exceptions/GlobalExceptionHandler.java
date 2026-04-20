@@ -12,6 +12,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ResponseDTO> invalidEntityException(InvalidEntityException e) {
         ResponseDTO responseDTO = new ResponseDTO();
         responseDTO.setMessage(e.getMessage());
-        return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);
     }
 }
