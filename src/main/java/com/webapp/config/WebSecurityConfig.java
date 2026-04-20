@@ -43,7 +43,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/admin/users/userImage").hasAnyAuthority(UserRole.ROLE_EMPLOYEE.name(), UserRole.ROLE_MANAGER.name())
                         .requestMatchers("/admin/users/**", "/admin/api/buildings/assign", "/admin/api/buildings/{id}/staff").hasAuthority(UserRole.ROLE_MANAGER.name())
                         .requestMatchers("/admin/**").hasAnyAuthority(UserRole.ROLE_EMPLOYEE.name(), UserRole.ROLE_MANAGER.name())
-                        .requestMatchers("/login", "/login/**", "/access-denied", "/", "/assets/**", "/web/**").permitAll()
+                        .requestMatchers("/login", "/login/**", "/register", "/access-denied", "/", "/assets/**", "/web/**").permitAll()
                         .anyRequest().permitAll()
                 )
                 .formLogin(form -> form
