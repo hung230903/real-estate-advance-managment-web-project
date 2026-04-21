@@ -8,7 +8,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -42,17 +44,22 @@ public class WebSecurityConfig {
     }
 
     @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
+    }
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .addFilterBefore(jwtTokenFilter, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/login", "/login/**", "/register", String.format("%s/users/login", apiPrefix), String.format("%s/users/register", apiPrefix), "/access-denied", "/", "/assets/**", "/web/**").permitAll()
                         .requestMatchers(String.format("%s/users/userImage", apiPrefix)).hasAnyAuthority(UserRole.ROLE_EMPLOYEE.name(), UserRole.ROLE_MANAGER.name())
                         .requestMatchers(String.format("%s/users/**", apiPrefix),
                                 String.format("%s/buildings/assign", apiPrefix),
                                 String.format("%s/buildings/{id}/staff", apiPrefix)).hasAuthority(UserRole.ROLE_MANAGER.name())
                         .requestMatchers("/admin/**").hasAnyAuthority(UserRole.ROLE_EMPLOYEE.name(), UserRole.ROLE_MANAGER.name())
-                        .requestMatchers("/login", "/login/**", "/register", "/access-denied", "/", "/assets/**", "/web/**").permitAll()
                         .anyRequest().permitAll()
                 )
                 .formLogin(form -> form

@@ -10,7 +10,6 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PasswordDTO {
-
     private String oldPassword;
     private String newPassword;
     private String confirmPassword;

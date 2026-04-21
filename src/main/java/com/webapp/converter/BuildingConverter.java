@@ -103,8 +103,8 @@ public class BuildingConverter {
         List<RentAreaEntity> rentAreas = buildingEntity.getRentAreaEntities();
         List<String> typeCodes = new ArrayList<>();
         if (buildingEntity.getTypeCode() != null) {
-            String[] typeCodeArray = buildingEntity.getTypeCode().split(",");
-            for (String s : typeCodeArray) {
+            String[] typeCode = buildingEntity.getTypeCode().split(",");
+            for (String s : typeCode) {
                 typeCodes.add(s.trim());
             }
         }

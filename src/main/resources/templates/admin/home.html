@@ -4,45 +4,46 @@
 <head th:replace="~{admin/common/header :: header}"></head>
 
 <body id="page-top">
-    <div id="wrapper">
-        <th:block th:replace="~{admin/common/sidebar :: sidebar(menu='home')}"></th:block>
+<div id="wrapper">
+    <th:block th:replace="~{admin/common/sidebar :: sidebar(menu='home')}"></th:block>
 
-        <div id="content-wrapper" class="d-flex flex-column">
-            <div id="content">
-                <th:block th:replace="~{admin/common/menu :: menu}"></th:block>
+    <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+            <th:block th:replace="~{admin/common/menu :: menu}"></th:block>
 
-                <div class="container-fluid">
-                    <h1 class="h3 mb-4 text-gray-800">Welcome to Gyan Uday Admin System</h1>
-                    <div class="row">
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-primary shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                Building Management</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">Building Management
-                                            </div>
+            <div class="container-fluid">
+                <h1 class="h3 mb-4 text-gray-800">Welcome to Gyan Uday Admin System</h1>
+                <div class="row">
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-primary shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                            Building Management
                                         </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-building fa-2x text-gray-300"></i>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">Building Management
                                         </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-building fa-2x text-gray-300"></i>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-success shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                User Management</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">User Management</div>
+                    </div>
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-success shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                            User Management
                                         </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-users fa-2x text-gray-300"></i>
-                                        </div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">User Management</div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-users fa-2x text-gray-300"></i>
                                     </div>
                                 </div>
                             </div>
@@ -50,10 +51,11 @@
                     </div>
                 </div>
             </div>
-            <th:block th:replace="~{admin/common/footer :: footer}"></th:block>
         </div>
+        <th:block th:replace="~{admin/common/footer :: footer}"></th:block>
     </div>
-    <th:block th:replace="~{admin/common/common-scripts :: jquery}"></th:block>
+</div>
+<th:block th:replace="~{admin/common/common-scripts :: jquery}"></th:block>
 </body>
 
 </html>

@@ -57,6 +57,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         userDetails.setId(userEntity.getId());
         userDetails.setFullName(userEntity.getFullName());
+        userDetails.setRole(role);
 
         return userDetails;
     }

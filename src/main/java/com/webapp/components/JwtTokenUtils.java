@@ -22,6 +22,7 @@ import java.util.function.Function;
 public class JwtTokenUtils {
     @Value("${jwt.expiration}")
     private int expiration; //save to an environment variable
+
     @Value("${jwt.secretKey}")
     private String secretKey;
 
@@ -29,6 +30,9 @@ public class JwtTokenUtils {
         //properties => claims
         Map<String, Object> claims = new HashMap<>();
         claims.put("userName", user.getUsername());
+        claims.put("role", user.getRole());
+        claims.put("fullName", user.getFullName());
+
         try {
             String token = Jwts.builder()
                     .setClaims(claims)
