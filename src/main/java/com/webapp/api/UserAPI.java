@@ -37,7 +37,7 @@ public class UserAPI {
     private JwtTokenUtils jwtTokenUtils;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO) {
+    public ResponseEntity<?> login(@Valid @RequestBody LoginDTO loginDTO) {
         ResponseDTO responseDTO = new ResponseDTO();
         try {
             Authentication authentication = authenticationManager.authenticate(
@@ -45,24 +45,6 @@ public class UserAPI {
             );
 
             MyUser myUser = (MyUser) authentication.getPrincipal();
-
-            // Kiểm tra Role dựa trên chuỗi role gửi lên
-            if (loginDTO.getRole() != null && !loginDTO.getRole().isEmpty()) {
-                String roleToCheck = loginDTO.getRole();
-                // Tự động thêm tiền tố ROLE_ nếu Client quên gửi
-                if (!roleToCheck.startsWith("ROLE_")) {
-                    roleToCheck = "ROLE_" + roleToCheck.toUpperCase();
-                }
-
-                final String finalRole = roleToCheck;
-                boolean isMatch = myUser.getAuthorities().stream()
-                        .anyMatch(a -> a.getAuthority().equals(finalRole));
-
-                if (!isMatch) {
-                    responseDTO.setMessage("Login failed: Unauthorized portal for this user role.");
-                    return ResponseEntity.status(403).body(responseDTO);
-                }
-            }
 
             String token = jwtTokenUtils.generateToken(myUser);
 
