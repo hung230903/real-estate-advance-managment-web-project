@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -105,7 +104,9 @@ public class BuildingConverter {
         List<String> typeCodes = new ArrayList<>();
         if (buildingEntity.getTypeCode() != null) {
             String[] typeCode = buildingEntity.getTypeCode().split(",");
-            typeCodes.addAll(Arrays.asList(typeCode));
+            for (String t: typeCode) {
+                typeCodes.add(t.trim());
+            }
         }
         buildingDTO.setTypeCode(typeCodes);
         if (rentAreas != null) {
