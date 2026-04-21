@@ -6,6 +6,7 @@ A full-stack web application built with **Spring Boot 3** for managing real esta
 
 ## 📋 Table of Contents
 
+- [Branches](#-branches)
 - [Tech Stack](#-tech-stack)
 - [Project Structure](#-project-structure)
 - [Features](#-features)
@@ -17,6 +18,72 @@ A full-stack web application built with **Spring Boot 3** for managing real esta
 - [User Roles](#-user-roles)
 
 ---
+
+## 🌿 Branches
+
+This project is organized into progressive branches, each building on top of the previous one. You can checkout any branch to see the project at a specific development stage.
+
+| Branch                                                      | Description                                                                                                                                                     |
+| ----------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `main`                                                      | Initial project setup                                                                                                                                           |
+| `SpringDataJPA`                                             | Core application with Spring Data JPA, building & user CRUD, admin dashboard UI, staff assignment, pagination                                                   |
+| `SpringDataJPA+Cascade+OrphanRemoval+SpringSecurity`        | Added Spring Security (Session-based authentication), role-based authorization (Manager/Employee), user registration, homepage UI integration                   |
+| `SpringDataJPA+Cascade+OrphanRemoval+SpringSecurity+JWT` ⭐ | **(Latest)** Added JWT authentication for REST APIs, hybrid auth architecture (Session + JWT), API login & register endpoints, JWT token generation with claims |
+
+### Branch Details
+
+#### `main`
+
+> Initial commit. Empty project skeleton.
+
+#### `SpringDataJPA`
+
+> **Core CRUD & Admin Dashboard**
+>
+> - Spring Data JPA integration with MySQL
+> - Building management: search, create, update, delete with dynamic filters
+> - User management: list, create, update, soft-delete
+> - Admin dashboard UI (Bootstrap 4 + SB Admin 2 template)
+> - Staff assignment to buildings
+> - Pagination with custom `PaginationResult`
+> - Custom exception handling
+
+#### `SpringDataJPA+Cascade+OrphanRemoval+SpringSecurity`
+
+> **Security & Registration**
+>
+> - Spring Security 6 with session-based authentication
+> - Role-based access control: `ROLE_MANAGER`, `ROLE_EMPLOYEE`, `ROLE_USER`
+> - Custom login page with error/success messages
+> - User registration (Web) with confirm password validation
+> - `CustomSuccessHandler` for role-based redirect after login
+> - Homepage UI integration
+> - Thymeleaf Security Extras for displaying authenticated user info
+
+#### `SpringDataJPA+Cascade+OrphanRemoval+SpringSecurity+JWT` ⭐
+
+> **JWT & REST API** (Current branch)
+>
+> - JWT token generation & validation (`JwtTokenUtils`)
+> - `JwtTokenFilter` for API request authentication
+> - REST API endpoints: `POST /admin/api/users/login`, `POST /admin/api/users/register`
+> - Hybrid authentication: Session for Web, JWT for API
+> - JWT claims include: `userName`, `role`, `fullName`
+> - `AuthenticationManager` exposed as Bean
+> - Security config updated with proper `permitAll` ordering
+> - `application.properties.example` for safe credential sharing
+
+### How to Switch Branches
+
+```bash
+# View all branches
+git branch -a
+
+# Switch to a specific branch
+git checkout SpringDataJPA
+git checkout "SpringDataJPA+Cascade+OrphanRemoval+SpringSecurity"
+git checkout "SpringDataJPA+Cascade+OrphanRemoval+SpringSecurity+JWT"
+```
 
 ## 🛠 Tech Stack
 
