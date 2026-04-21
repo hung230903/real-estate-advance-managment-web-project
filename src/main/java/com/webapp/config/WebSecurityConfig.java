@@ -1,9 +1,11 @@
 package com.webapp.config;
 
 import com.webapp.enums.UserRole;
+import com.webapp.filters.JwtTokenFilter;
 import com.webapp.security.CustomSuccessHandler;
 import com.webapp.services.impl.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -21,6 +23,10 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 public class WebSecurityConfig {
 
     private final UserDetailsServiceImpl userDetailsService;
+    private final JwtTokenFilter jwtTokenFilter;
+
+    @Value("${api.prefix}")
+    private String apiPrefix;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -39,9 +45,12 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
+                .addFilterBefore(jwtTokenFilter, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/admin/users/userImage").hasAnyAuthority(UserRole.ROLE_EMPLOYEE.name(), UserRole.ROLE_MANAGER.name())
-                        .requestMatchers("/admin/users/**", "/admin/api/buildings/assign", "/admin/api/buildings/{id}/staff").hasAuthority(UserRole.ROLE_MANAGER.name())
+                        .requestMatchers(String.format("%s/users/userImage", apiPrefix)).hasAnyAuthority(UserRole.ROLE_EMPLOYEE.name(), UserRole.ROLE_MANAGER.name())
+                        .requestMatchers(String.format("%s/users/**", apiPrefix),
+                                String.format("%s/buildings/assign", apiPrefix),
+                                String.format("%s/buildings/{id}/staff", apiPrefix)).hasAuthority(UserRole.ROLE_MANAGER.name())
                         .requestMatchers("/admin/**").hasAnyAuthority(UserRole.ROLE_EMPLOYEE.name(), UserRole.ROLE_MANAGER.name())
                         .requestMatchers("/login", "/login/**", "/register", "/access-denied", "/", "/assets/**", "/web/**").permitAll()
                         .anyRequest().permitAll()
