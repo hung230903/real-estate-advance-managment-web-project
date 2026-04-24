@@ -17,3 +17,13 @@ spring.jpa.properties.hibernate.current_session_context_class=org.springframewor
 api.prefix=/admin/api
 jwt.expiration=2592000
 jwt.secretKey=YOUR_BASE64_ENCODED_SECRET_KEY_AT_LEAST_32_BYTES
+
+# OAuth2 Google
+spring.security.oauth2.client.registration.google.client-id=YOUR_GOOGLE_CLIENT_ID
+spring.security.oauth2.client.registration.google.client-secret=YOUR_GOOGLE_CLIENT_SECRET
+spring.security.oauth2.client.registration.google.scope=profile,email
+
+# OAuth2 Facebook
+spring.security.oauth2.client.registration.facebook.client-id=YOUR_FACEBOOK_CLIENT_ID
+spring.security.oauth2.client.registration.facebook.client-secret=YOUR_FACEBOOK_CLIENT_SECRET
+spring.security.oauth2.client.registration.facebook.scope=email,public_profile

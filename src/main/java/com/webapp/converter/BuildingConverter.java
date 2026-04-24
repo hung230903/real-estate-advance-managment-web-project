@@ -5,22 +5,20 @@ import com.webapp.entities.RentAreaEntity;
 import com.webapp.enums.District;
 import com.webapp.models.dtos.BuildingDTO;
 import com.webapp.models.response.BuildingSearchResponseDTO;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 public class BuildingConverter {
-    @Autowired
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
 
-    @Autowired
-    private RentAreaConverter rentAreaConverter;
+    private final RentAreaConverter rentAreaConverter;
 
     public BuildingSearchResponseDTO toBuildingSearchResponseDTO(BuildingEntity buildingEntity) {
         BuildingSearchResponseDTO buildingSearchResponseDTO = modelMapper.map(buildingEntity, BuildingSearchResponseDTO.class);
@@ -45,10 +43,7 @@ public class BuildingConverter {
         BuildingEntity buildingEntity = modelMapper.map(buildingDTO, BuildingEntity.class);
 
         // Type code
-        String typeCode = buildingDTO.getTypeCode().stream()
-                .map(it -> it.toString())
-                .collect(Collectors.joining(", "));
-        buildingEntity.setTypeCode(typeCode);
+        buildingEntity.setTypeCode(joinTypeCodes(buildingDTO.getTypeCode()));
 
         // Rent area
         buildingEntity.setRentAreaEntities(rentAreaConverter.toRentAreaEntities(buildingDTO, buildingEntity));
@@ -61,15 +56,19 @@ public class BuildingConverter {
         return buildingEntity;
     }
 
+    private String joinTypeCodes(List<String> typeCodes) {
+        if (typeCodes == null) return "";
+        return typeCodes.stream()
+                .map(Object::toString)
+                .collect(Collectors.joining(", "));
+    }
+
     public void updateEntity(BuildingDTO buildingDTO, BuildingEntity buildingEntity) {
         modelMapper.map(buildingDTO, buildingEntity);
 
         // Type code
         if (buildingDTO.getTypeCode() != null) {
-            String typeCode = buildingDTO.getTypeCode().stream()
-                    .map(Object::toString)
-                    .collect(Collectors.joining(", "));
-            buildingEntity.setTypeCode(typeCode);
+            buildingEntity.setTypeCode(joinTypeCodes(buildingDTO.getTypeCode()));
         }
 
         byte[] image = extractImage(buildingDTO);
@@ -94,21 +93,19 @@ public class BuildingConverter {
         } catch (Exception e) {
             throw new RuntimeException("Invalid image data", e);
         }
-        return null;
+
+        return new byte[0];
     }
 
     public BuildingDTO toBuildingDTO(BuildingEntity buildingEntity) {
         BuildingDTO buildingDTO = modelMapper.map(buildingEntity, BuildingDTO.class);
         buildingDTO.setAddress(buildingEntity.getStreet() + ", " + buildingEntity.getWard() + ", " + buildingEntity.getDistrict());
         List<RentAreaEntity> rentAreas = buildingEntity.getRentAreaEntities();
-        List<String> typeCodes = new ArrayList<>();
         if (buildingEntity.getTypeCode() != null) {
-            String[] typeCode = buildingEntity.getTypeCode().split(",");
-            for (String s : typeCode) {
-                typeCodes.add(s.trim());
-            }
+            buildingDTO.setTypeCode(java.util.Arrays.stream(buildingEntity.getTypeCode().split(","))
+                    .map(String::trim)
+                    .toList());
         }
-        buildingDTO.setTypeCode(typeCodes);
         if (rentAreas != null) {
             String rentArea = rentAreas.stream().map(it -> it.getValue().toString()).collect(Collectors.joining(", "));
             buildingDTO.setRentArea(rentArea);

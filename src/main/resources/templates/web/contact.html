@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/assets/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/variables.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+        rel="stylesheet">
+    <title>Contact Us | A & A Designs</title>
+</head>
+
+<body>
+    <!--header-section-->
+    <header class="header-section">
+        <div class="container">
+            <div class="row d-flex flex-row py-3">
+                <div class="col-2">
+                    <a href="/"><img th:src="@{/assets/img/header/aanda_design_logo.png}" alt="A & A design logo"
+                            height="50px"></a>
+                </div>
+                <div class="col-10 justify-content-end align-items-center d-none d-lg-flex">
+                    <nav id="desktop-nav" class="d-flex align-items-center">
+                        <ul class="d-flex m-0">
+                            <li><a href="/">Home</a></li>
+                            <li><a href="/assets/pages/shop.html">Shop</a></li>
+                            <li><a href="/assets/pages/blog.html">Blog</a></li>
+                            <li><a href="/assets/pages/about.html">About</a></li>
+                            <li><a class="active" href="/contact">Contact</a></li>
+                        </ul>
+                    </nav>
+                    <div class="call-to-action d-flex align-items-center">
+                        <a class="call-to-action-btn btn btn-primary px-3 py-1 text-white" th:href="@{/login}">Login</a>
+                    </div>
+                </div>
+                <div class="hamburg col-8 d-block d-lg-none"></div>
+                <div class="hamburg col-2 d-flex d-lg-none align-items-center justify-content-end">
+                    <i class="fa-solid fa-bars fs-3"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contact Page Style Wrapper to center the form -->
+    <main style="margin-top: 120px; min-height: 70vh;">
+        <section id="contact-us" class="contact-section">
+            <div class="container">
+                <div class="row d-flex flex-column align-items-center">
+                    <h2 class="text-center">Get in Touch</h2>
+                    <div class="underline"></div>
+                    <p class="text-center mt-3">Ready to start your dream project? Send us a message and we'll get back
+                        to you shortly.</p>
+                </div>
+                <div class="row mt-5 d-flex justify-content-center">
+                    <div class="col-12 col-md-8">
+                        <form id="contactForm" class="contact-form p-4 card shadow">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="fullname" class="form-label">Full Name</label>
+                                    <input type="text" class="form-control" id="fullname"
+                                        placeholder="Enter your full name" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="email" placeholder="Enter your email"
+                                        required>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <label for="phone" class="form-label">Phone Number</label>
+                                    <input type="tel" class="form-control" id="phone"
+                                        placeholder="Enter your phone number" required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="content" class="form-label">Message</label>
+                                <textarea class="form-control" id="content" rows="6"
+                                    placeholder="Tell us about your requirements..." required></textarea>
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary px-5 py-2 custom-design-btn">Send
+                                    Message</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer-Section -->
+    <footer>
+        <div class="container mt-5 py-5">
+            <div class="row">
+                <div class="col-4 d-none d-lg-block">
+                    <div class="map mt-2">
+                        <img class="img-fluid" th:src="@{/assets/img/footer/location_embed_map.PNG}" alt="location map">
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-lg-4 text-white">
+                    <div>
+                        <h3>Contact Info</h3>
+                        <p class="mt-4">Address: 123 Architecture Lane, Colombo</p>
+                        <p>Phone: 0112122324</p>
+                        <p>Email: info@aanda-designs.com</p>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-lg-4">
+                    <div class="social-media text-white">
+                        <h3>Social Media</h3>
+                        <div class="d-flex mt-3">
+                            <a class="me-3" href="#">
+                                <div id="facebook"
+                                    style="width: 40px; height: 40px; background-color: #444; border-radius: 10px;">
+                                </div>
+                            </a>
+                            <a class="me-3" href="#">
+                                <div id="instagram"
+                                    style="width: 40px; height: 40px; background-color: #444; border-radius: 10px;">
+                                </div>
+                            </a>
+                            <a class="me-3" href="#">
+                                <div id="linkedin"
+                                    style="width: 40px; height: 40px; background-color: #444; border-radius: 10px;">
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row border-top mt-5 pt-3">
+                <div class="rights d-flex justify-content-center text-white">
+                    <span>Ⓒ A&A Designs Pvt Ltd. All Rights Reserved</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/569015700f.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script th:src="@{/assets/js/script.js}"></script>
+    <script>
+        $(document).ready(function () {
+            $('#contactForm').submit(function (e) {
+                e.preventDefault();
+
+                const data = {
+                    fullName: $('#fullname').val(),
+                    email: $('#email').val(),
+                    phone: $('#phone').val(),
+                    demand: $('#content').val()
+                };
+
+                $.ajax({
+                    type: "POST",
+                    url: "/api/contact",
+                    data: JSON.stringify(data),
+                    dataType: "json",
+                    contentType: "application/json",
+                    success: function (response) {
+                        Swal.fire({
+                            title: 'Success!',
+                            text: response.message,
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            $('#contactForm')[0].reset();
+                        });
+                    },
+                    error: function (error) {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Failed to send message. Please try again later.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

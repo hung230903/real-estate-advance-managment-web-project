@@ -1,7 +1,7 @@
 package com.webapp.services.impl;
 
 import com.webapp.converter.BuildingConverter;
-import com.webapp.converter.BuildingRequestConverter;
+import com.webapp.converter.RentAreaConverter;
 import com.webapp.entities.BuildingEntity;
 import com.webapp.entities.RentAreaEntity;
 import com.webapp.entities.UserEntity;
@@ -16,33 +16,26 @@ import com.webapp.pagination.PaginationResult;
 import com.webapp.repositories.BuildingRepository;
 import com.webapp.repositories.UserRepository;
 import com.webapp.services.BuildingService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 @Transactional
+@RequiredArgsConstructor
 public class BuildingServiceImpl implements BuildingService {
 
-    @Autowired
-    BuildingRepository buildingRepository;
-
-    @Autowired
-    BuildingRequestConverter buildingSearchConverter;
-
-    @Autowired
-    BuildingConverter buildingConverter;
-
-    @Autowired
-    UserRepository userRepository;
+    private final BuildingRepository buildingRepository;
+    private final UserRepository userRepository;
+    private final BuildingConverter buildingConverter;
+    private final RentAreaConverter rentAreaConverter;
 
     private static List<StaffResponseDTO> getStaffResponseDTOS(List<UserEntity> staffList, Set<Long> assignedStaffIds) {
         List<StaffResponseDTO> staffResponses = new ArrayList<>();
@@ -64,8 +57,7 @@ public class BuildingServiceImpl implements BuildingService {
     }
 
     @Override
-    public PaginationResult<BuildingSearchResponseDTO> searchBuildings(Map<String, String> params, List<String> typeCode, int page, int maxResult, int maxNavigationPage) {
-        BuildingSearchRequestDTO searchRequest = buildingSearchConverter.toBuildingBuilderDTO(params, typeCode);
+    public PaginationResult<BuildingSearchResponseDTO> searchBuildings(BuildingSearchRequestDTO searchRequest, int page, int maxResult, int maxNavigationPage) {
         int totalRecords = buildingRepository.countAll(searchRequest);
 
         // Tính toán lại số trang để tránh trường hợp page truyền vào vượt quá số trang hiện có
@@ -82,23 +74,6 @@ public class BuildingServiceImpl implements BuildingService {
         return new PaginationResult<>(responses, totalRecords, page, maxResult, maxNavigationPage);
     }
 
-    @Override
-    public List<BuildingSearchResponseDTO> findAll(Map<String, String> params, List<String> typeCode) {
-        log.info("Request to search buildings with params: {} and typeCode: {}", params, typeCode);
-        BuildingSearchRequestDTO buildingSearchRequestDTO = buildingSearchConverter.toBuildingBuilderDTO(params, typeCode);
-
-        List<BuildingEntity> buildingEntities = buildingRepository.findAll(buildingSearchRequestDTO);
-
-        List<BuildingSearchResponseDTO> responses = new ArrayList<>();
-
-        for (BuildingEntity buildingEntity : buildingEntities) {
-            responses.add(buildingConverter.toBuildingSearchResponseDTO(buildingEntity));
-        }
-
-
-        log.info("Found {} result(s).", responses.size());
-        return responses;
-    }
 
     @Override
     public BuildingDTO findById(Long id) {
@@ -126,12 +101,8 @@ public class BuildingServiceImpl implements BuildingService {
         buildingConverter.updateEntity(buildingDTO, buildingEntity);
 
         buildingEntity.getRentAreaEntities().clear();
-        BuildingEntity tempBuilding = buildingConverter.toBuildingEntity(buildingDTO);
-        List<RentAreaEntity> newRentAreas = tempBuilding.getRentAreaEntities();
-        for (RentAreaEntity r : newRentAreas) {
-            r.setBuilding(buildingEntity);
-            buildingEntity.getRentAreaEntities().add(r);
-        }
+        List<RentAreaEntity> newRentAreas = rentAreaConverter.toRentAreaEntities(buildingDTO, buildingEntity);
+        buildingEntity.getRentAreaEntities().addAll(newRentAreas);
 
         return buildingRepository.save(buildingEntity);
     }

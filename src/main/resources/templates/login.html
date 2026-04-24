@@ -42,6 +42,9 @@
                 <div th:if="${param.registered}" class="alert alert-success w-75 mx-auto py-2 mb-3">
                     Registration successful! Please login.
                 </div>
+                <div th:if="${param.oauth2Error}" class="alert alert-danger w-75 mx-auto py-2 mb-3">
+                    OAuth2 Authentication failed.
+                </div>
 
                 <div class="input-field w-75 mx-auto">
                     <i class="fa fa-user"></i>
@@ -59,10 +62,12 @@
 
                 <p class="text-secondary mt-2">Don't have an account? <a th:href="@{/register}">Sign up here</a></p>
                 <div class="social-icon d-flex justify-content-center">
-                    <a href="#"><i class="fab fa-facebook-f text-primary border-primary"></i></a>
+                    <a th:href="@{/oauth2/authorization/facebook}"><i
+                            class="fab fa-facebook-f text-primary border-primary"></i></a>
                     <a href="#"><i class="fab fa-twitter text-info border-info"></i></a>
                     <a href="#"><i class="fab fa-linkedin-in text-primary border-primary"></i></a>
-                    <a href="#"><i class="fab fa-google text-danger border-danger"></i></a>
+                    <a th:href="@{/oauth2/authorization/google}"><i
+                            class="fab fa-google text-danger border-danger"></i></a>
                     <a href="#"><i class="fab fa-instagram text-danger border-danger"></i></a>
                 </div>
             </form>

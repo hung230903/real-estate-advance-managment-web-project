@@ -34,13 +34,12 @@ public class JwtTokenUtils {
         claims.put("fullName", user.getFullName());
 
         try {
-            String token = Jwts.builder()
+            return Jwts.builder()
                     .setClaims(claims)
                     .setSubject(user.getUsername())
                     .setExpiration(new Date(System.currentTimeMillis() + expiration * 1000L))
                     .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                     .compact();
-            return token;
         } catch (Exception e) {
             throw new Exception("Cannot create jwt token, error: " + e.getMessage());
         }

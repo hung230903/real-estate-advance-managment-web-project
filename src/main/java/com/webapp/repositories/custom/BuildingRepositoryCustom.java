@@ -8,7 +8,5 @@ import java.util.List;
 public interface BuildingRepositoryCustom {
     List<BuildingEntity> searchBuildings(BuildingSearchRequestDTO buildingSearchRequestDTO, int page, int maxResult);
 
-    List<BuildingEntity> findAll(BuildingSearchRequestDTO buildingSearchRequestDTO);
-
     int countAll(BuildingSearchRequestDTO buildingSearchRequestDTO);
 }

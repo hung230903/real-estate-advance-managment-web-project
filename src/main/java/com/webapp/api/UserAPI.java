@@ -9,7 +9,7 @@ import com.webapp.models.dtos.UserDTO;
 import com.webapp.security.MyUser;
 import com.webapp.services.UserService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,17 +24,15 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/admin/api/users")
+@RequiredArgsConstructor
 public class UserAPI {
 
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
-    @Autowired
-    private JwtTokenUtils jwtTokenUtils;
+    private final JwtTokenUtils jwtTokenUtils;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginDTO loginDTO) {

@@ -8,39 +8,35 @@ import com.webapp.models.request.BuildingSearchRequestDTO;
 import com.webapp.services.BuildingService;
 import com.webapp.services.UserService;
 import com.webapp.utils.SecurityUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 
 import static com.webapp.constant.SystemConstant.MAX_NAVIGATION_PAGE;
 import static com.webapp.constant.SystemConstant.MAX_RESULT;
 
 @Controller
 @RequestMapping("/admin/buildings")
+@RequiredArgsConstructor
 public class BuildingController {
 
-    @Autowired
-    private BuildingService buildingService;
+    private final BuildingService buildingService;
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
     @GetMapping("/list")
     public String buildingList(@ModelAttribute BuildingSearchRequestDTO buildingSearchRequestDTO,
-                               @RequestParam Map<String, String> params,
-                               @RequestParam(name = "typeCode", required = false) List<String> typeCode,
                                @RequestParam(value = "page", defaultValue = "1") int page,
                                Model model) {
 
         List<String> authorities = SecurityUtils.getAuthorities();
         if (authorities.contains(UserRole.ROLE_EMPLOYEE.name())) {
-            Long staffId = SecurityUtils.getPrincipal().getId();
+            Long staffId = Objects.requireNonNull(SecurityUtils.getPrincipal()).getId();
             buildingSearchRequestDTO.setStaffId(staffId);
-            params.put("staffId", String.valueOf(staffId));
         }
 
         model.addAttribute("modelSearch", buildingSearchRequestDTO);
@@ -53,7 +49,7 @@ public class BuildingController {
 
         // Controller -> Service: trả PaginationResult
         model.addAttribute("model",
-                buildingService.searchBuildings(params, typeCode, page, MAX_RESULT, MAX_NAVIGATION_PAGE));
+                buildingService.searchBuildings(buildingSearchRequestDTO, page, MAX_RESULT, MAX_NAVIGATION_PAGE));
 
         return "admin/building/buildingList";
     }

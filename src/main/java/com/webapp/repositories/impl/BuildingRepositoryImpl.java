@@ -4,8 +4,8 @@ import com.webapp.entities.BuildingEntity;
 import com.webapp.models.request.BuildingSearchRequestDTO;
 import com.webapp.repositories.custom.BuildingRepositoryCustom;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
@@ -14,10 +14,10 @@ import java.util.List;
 
 @Repository
 @Slf4j
+@RequiredArgsConstructor
 public class BuildingRepositoryImpl implements BuildingRepositoryCustom {
 
-    @PersistenceContext
-    private EntityManager entityManager;
+    private final EntityManager entityManager;
 
     private void buildJoin(BuildingSearchRequestDTO buildingSearchRequestDTO, StringBuilder sql) {
         Long staffId = buildingSearchRequestDTO.getStaffId();
@@ -38,7 +38,7 @@ public class BuildingRepositoryImpl implements BuildingRepositoryCustom {
                         && !fieldName.contains("rentPrice")
                 ) {
                     Object value = field.get(buildingSearchRequestDTO);
-                    if (value != null && value != "") {
+                    if (value != null && !(value instanceof String && ((String) value).isEmpty())) {
                         if (value.toString().matches("^\\d+(\\.\\d+)?$")) {
                             sql.append(" AND b.").append(fieldName.toLowerCase()).append(" = ").append(value);
                         } else {
@@ -134,8 +134,4 @@ public class BuildingRepositoryImpl implements BuildingRepositoryCustom {
         }
     }
 
-    @Override
-    public List<BuildingEntity> findAll(BuildingSearchRequestDTO buildingSearchRequestDTO) {
-        return searchBuildings(buildingSearchRequestDTO, -1, -1);
-    }
 }

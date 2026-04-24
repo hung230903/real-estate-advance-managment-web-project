@@ -3,17 +3,17 @@ package com.webapp.repositories.impl;
 import com.webapp.entities.UserEntity;
 import com.webapp.repositories.custom.UserRepositoryCustom;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
+@RequiredArgsConstructor
 public class UserRepositoryImpl implements UserRepositoryCustom {
 
-    @PersistenceContext
-    private EntityManager entityManager;
+    private final EntityManager entityManager;
 
     @Override
     public List<UserEntity> findUsers(String key, int page, int maxResult) {

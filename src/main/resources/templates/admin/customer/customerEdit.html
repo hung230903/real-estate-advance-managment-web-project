@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{admin/common/header :: header}"></head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <th:block th:replace="~{admin/common/sidebar :: sidebar(menu='customer')}"></th:block>
+
+        <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+                <th:block th:replace="~{admin/common/menu :: menu}"></th:block>
+
+                <div class="container-fluid">
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800"
+                            th:text="${customer.id == null ? 'Add Customer' : 'Edit Customer'}"></h1>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card shadow mb-4">
+                                <div class="card-body">
+                                    <form id="formEdit" th:object="${customer}">
+                                        <input type="hidden" th:field="*{id}">
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <label for="fullName">Full Name</label>
+                                                <input type="text" class="form-control" th:field="*{fullName}" required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="phone">Phone</label>
+                                                <input type="text" class="form-control" th:field="*{phone}" required>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <label for="email">Email</label>
+                                                <input type="email" class="form-control" th:field="*{email}" required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="companyName">Company Name</label>
+                                                <input type="text" class="form-control" th:field="*{companyName}">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <label for="status">Status</label>
+                                                <select class="form-control" th:field="*{status}">
+                                                    <option value="">Select Status</option>
+                                                    <option th:each="status : ${statuses}" th:value="${status.key}"
+                                                        th:text="${status.value}"></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-md-12">
+                                                <label for="demand">Demand</label>
+                                                <textarea class="form-control" th:field="*{demand}" rows="3"></textarea>
+                                            </div>
+                                        </div>
+
+                                        <div class="text-center">
+                                            <button type="button" class="btn btn-primary" id="btnAddOrUpdateCustomer">
+                                                <span
+                                                    th:text="${customer.id == null ? 'Add Customer' : 'Update Customer'}"></span>
+                                            </button>
+                                            <a th:href="@{/admin/customers/list}" class="btn"
+                                                style="background-color: #d15b47; color: white;">Cancel</a>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <!-- Transaction Section -->
+                            <div th:if="${customer.id != null}" class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Quản lý giao dịch</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div th:each="type : ${transactionTypes}" class="mb-5 last-child-mb-0">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <h6 class="m-0 font-weight-bold text-dark" th:text="${type.value}"></h6>
+                                            <button class="btn btn-success btn-circle btn-sm btnAddTransaction"
+                                                th:data-type-key="${type.key}" th:data-customer-id="${customer.id}">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </div>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover w-100">
+                                                <thead class="bg-light text-dark text-center">
+                                                    <tr>
+                                                        <th style="width: 15%">Created Date</th>
+                                                        <th style="width: 12%">Created By</th>
+                                                        <th style="width: 15%">Modified Date</th>
+                                                        <th style="width: 12%">Modified By</th>
+                                                        <th>Note</th>
+                                                        <th style="width: 10%">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr th:each="trans : ${transactions[type.key]}">
+                                                        <td class="text-center"
+                                                            th:text="${trans.createdDate != null ? #dates.format(trans.createdDate, 'dd-MM-yyyy HH:mm:ss') : ''}">
+                                                        </td>
+                                                        <td class="text-center" th:text="${trans.createdBy}"></td>
+                                                        <td class="text-center"
+                                                            th:text="${(trans.modifiedDate != null && trans.modifiedDate.time != trans.createdDate.time) ? #dates.format(trans.modifiedDate, 'dd-MM-yyyy HH:mm:ss') : ''}">
+                                                        </td>
+                                                        <td class="text-center"
+                                                            th:text="${(trans.modifiedDate != null && trans.modifiedDate.time != trans.createdDate.time) ? trans.modifiedBy : ''}">
+                                                        </td>
+                                                        <td class="text-center" th:text="${trans.note}"></td>
+                                                        <td class="text-center">
+                                                            <button class="btn btn-info btn-sm btnUpdateTransaction"
+                                                                th:data-type-key="${type.key}"
+                                                                th:data-customer-id="${customer.id}"
+                                                                th:data-trans-id="${trans.id}" title="Edit">
+                                                                <i class="fas fa-edit"></i>
+                                                            </button>
+                                                            <button class="btn btn-danger btn-sm btnDeleteTransaction"
+                                                                th:data-trans-id="${trans.id}" title="Delete">
+                                                                <i class="fas fa-trash-alt"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                    <tr th:if="${#lists.isEmpty(transactions[type.key])}">
+                                                        <td colspan="6" class="text-center text-muted">No transaction
+                                                            history found</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <th:block th:replace="~{admin/common/footer :: footer}"></th:block>
+        </div>
+    </div>
+
+    <!-- Transaction Modal -->
+    <div class="modal fade" id="transactionModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Transaction Detail</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="transactionNote">Note</label>
+                        <textarea class="form-control" id="transactionNote" rows="3"></textarea>
+                    </div>
+                    <input type="hidden" id="transCustomerId">
+                    <input type="hidden" id="transCode">
+                    <input type="hidden" id="transId">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" style="background-color: #d15b47; color: white;"
+                        data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="btnSaveTransaction">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <th:block th:replace="~{admin/common/common-scripts :: jquery}"></th:block>
+
+    <script>
+        $('#btnAddOrUpdateCustomer').click(function (e) {
+            e.preventDefault();
+            const data = {};
+            const formData = $('#formEdit').serializeArray();
+            $.each(formData, function (index, v) {
+                data["" + v.name + ""] = v.value;
+            });
+
+            $.ajax({
+                type: "POST",
+                url: "/admin/api/customers",
+                data: JSON.stringify(data),
+                dataType: "json",
+                contentType: "application/json",
+                success: function (response) {
+                    Swal.fire("Success", response.message, "success").then(() => {
+                        window.location.href = "/admin/customers/list";
+                    });
+                },
+                error: function (error) {
+                    Swal.fire("Error", "Could not save customer", "error");
+                }
+            });
+        });
+
+        $(document).on('click', '.btnAddTransaction', function () {
+            const code = $(this).data('type-key');
+            const customerId = $(this).data('customer-id');
+            $('#transCode').val(code);
+            $('#transCustomerId').val(customerId);
+            $('#transId').val('');
+            $('#transactionNote').val('');
+            $('#transactionModal').modal('show');
+        });
+
+        $(document).on('click', '.btnUpdateTransaction', function () {
+            const code = $(this).data('type-key');
+            const customerId = $(this).data('customer-id');
+            const transId = $(this).data('trans-id');
+
+            $('#transCode').val(code);
+            $('#transCustomerId').val(customerId);
+            $('#transId').val(transId);
+
+            $.ajax({
+                type: "GET",
+                url: "/admin/api/transactions/" + transId,
+                success: function (response) {
+                    $('#transactionNote').val(response.data);
+                    $('#transactionModal').modal('show');
+                }
+            });
+        });
+
+        $('#btnSaveTransaction').click(function () {
+            const data = {
+                id: $('#transId').val(),
+                customerId: $('#transCustomerId').val(),
+                code: $('#transCode').val(),
+                note: $('#transactionNote').val()
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "/admin/api/transactions",
+                data: JSON.stringify(data),
+                dataType: "json",
+                contentType: "application/json",
+                success: function (response) {
+                    Swal.fire("Success", response.message, "success").then(() => {
+                        window.location.reload();
+                    });
+                }
+            });
+        });
+
+        $(document).on('click', '.btnDeleteTransaction', function () {
+            const transId = $(this).data('trans-id');
+            Swal.fire({
+                title: 'Xác nhận xóa?',
+                text: "Bạn không thể khôi phục sau khi xóa!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Đồng ý',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "DELETE",
+                        url: "/admin/api/transactions/" + transId,
+                        success: function (response) {
+                            Swal.fire("Thành công", response.message, "success").then(() => {
+                                window.location.reload();
+                            });
+                        },
+                        error: function (error) {
+                            Swal.fire("Lỗi", "Không thể xóa giao dịch", "error");
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

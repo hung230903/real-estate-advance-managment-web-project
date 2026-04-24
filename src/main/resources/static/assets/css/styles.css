@@ -1,34 +1,61 @@
-:root {font-size: 17px;}
+:root {
+  font-size: 17px;
+}
 
 /* CSS Reset */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
 }
 
-.border {border: 2px solid red;}
+.border {
+  border: 2px solid red;
+}
 
-.mobile {display: none;}
+.mobile {
+  display: none;
+}
 
-.desktop {display: flex;}
+.desktop {
+  display: flex;
+}
 
-.desktop-hide {display: none;}
+.desktop-hide {
+  display: none;
+}
 
-p {font-size: 1rem;}
+p {
+  font-size: 1rem;
+}
 
-h1 {font-size: 3.0rem;}
+h1 {
+  font-size: 3rem;
+}
 
-h2 {font-size: 2.2rem; }
+h2 {
+  font-size: 2.2rem;
+}
 
-h3 {font-size: 1.7rem}
+h3 {
+  font-size: 1.7rem;
+}
 
-h4 {font-size: 1.5rem; font-weight: 600;}
+h4 {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
 
-h5 {font-size: 1.3rem; font-weight: 600;}
+h5 {
+  font-size: 1.3rem;
+  font-weight: 600;
+}
 
-h6 {font-size: 1rem; font-weight: 600;}
+h6 {
+  font-size: 1rem;
+  font-weight: 600;
+}
 
 body {
   display: flex;
@@ -65,7 +92,7 @@ section {
 header {
   width: 100%;
   position: fixed;
-  background-color: #F2F2F2;
+  background-color: #f2f2f2;
   z-index: 99;
 }
 
@@ -134,7 +161,7 @@ nav ul li a:hover {
   border: 2px solid var(--primary-color);
 }
 
-  /* Hero Section */
+/* Hero Section */
 
 .hero-section {
   width: 100%;
@@ -230,7 +257,7 @@ nav ul li a:hover {
 }
 
 .banner-img-container .banner-img {
-  transform: scale(1.0);
+  transform: scale(1);
   transition: all 0.5s;
 }
 
@@ -238,7 +265,7 @@ nav ul li a:hover {
   transform: scale(1.2);
 }
 
-/* Why us section */  
+/* Why us section */
 
 .why-content {
   border-radius: 20px;
@@ -265,7 +292,7 @@ nav ul li a:hover {
 
 /* Services section */
 
-.quote i{
+.quote i {
   color: var(--primary-color);
   transition: all 0.5s;
 }
@@ -313,7 +340,7 @@ nav ul li a:hover {
 }
 
 .service-img-container .service-img {
-  transform: scale(1.0);
+  transform: scale(1);
   transition: all 0.5s;
 }
 
@@ -329,7 +356,7 @@ nav ul li a:hover {
 }
 
 .project-image-container .project-image {
-  transform: scale(1.0);
+  transform: scale(1);
   transition: all 0.5s;
 }
 
@@ -364,7 +391,6 @@ nav ul li a:hover {
 .project-des p {
   text-align: center;
   margin-top: 30px;
-  
 }
 
 .des p {
@@ -398,38 +424,38 @@ nav ul li a:hover {
   border-radius: 20px;
 }
 
- .testimonial-card-body {
+.testimonial-card-body {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
- .testimonial-card-body .profile-img {
+.testimonial-card-body .profile-img {
   width: 40%;
   border-radius: 50%;
   border: 5px solid var(--secondary-color);
 }
 
- .testimonial-card-body h4 {
+.testimonial-card-body h4 {
   margin-top: 20px;
 }
 
- .testimonial-card-body h6 {
+.testimonial-card-body h6 {
   font-style: italic;
   color: #737373;
 }
 
- .testimonial-card-body p {
+.testimonial-card-body p {
   margin-top: 5px;
   text-align: center;
 }
 
- .testimonial-card-body i {
+.testimonial-card-body i {
   font-size: 2rem;
   color: #737373;
 }
 
- .testimonial-card-body .rating-img {
+.testimonial-card-body .rating-img {
   width: 30%;
   margin: 10px;
 }
@@ -507,10 +533,10 @@ nav ul li a:hover {
   border: 3px solid var(--primary-color);
   color: var(--primary-color);
   border-radius: 15px;
-  background-color: rgba(255,255,255,0.5);
+  background-color: rgba(255, 255, 255, 0.5);
 }
 
-.product-image button:hover{
+.product-image button:hover {
   background-color: var(--secondary-color);
   border: 3px solid var(--secondary-color);
 }
@@ -611,8 +637,9 @@ nav ul li a:hover {
   transition: all 0.5s;
 }
 
-.staff-card:hover h5, .staff-card:hover p {
-  font-weight: 600 ;
+.staff-card:hover h5,
+.staff-card:hover p {
+  font-weight: 600;
   transition: all 0.5s;
 }
 
@@ -646,11 +673,11 @@ nav ul li a:hover {
   overflow: hidden;
 }
 
-.blog-link .blog-img  {
+.blog-link .blog-img {
   transition: all 0.5s;
 }
 
-.blog-link:hover .blog-img  {
+.blog-link:hover .blog-img {
   transform: scale(1.2);
   transition: all 0.5s;
 }
@@ -751,7 +778,7 @@ footer {
   color: white;
 }
 
-.quick-links a{
+.quick-links a {
   color: white;
   text-decoration: none;
 }
@@ -763,7 +790,6 @@ footer {
 /* Screen sizes lessa than 576 px */
 
 @media only screen and (max-width: 575px) {
-
   /* Hero content */
 
   h1 {
@@ -802,5 +828,33 @@ footer {
   .social-icons {
     justify-content: center;
   }
+}
 
+/* Contact Us Section */
+.contact-section {
+  padding: 60px 0;
+}
+
+.contact-form {
+  border-radius: 20px;
+  border: none;
+  background: linear-gradient(145deg, #ffffff, #f0f0f0);
+}
+
+.contact-form .form-control {
+  border-radius: 10px;
+  padding: 12px;
+  border: 1px solid #ddd;
+  transition: all 0.3s;
+}
+
+.contact-form .form-control:focus {
+  box-shadow: 0 0 10px rgba(5, 74, 145, 0.2);
+  border-color: var(--primary-color);
+}
+
+.contact-form label {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text-color);
 }

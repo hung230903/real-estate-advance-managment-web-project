@@ -79,11 +79,11 @@
         var password = $("#password").val();
         var confirmPassword = $("#confirmPassword").val();
 
-        if (password !== confirmPassword) {
+        if (password === confirmPassword) {
+            $("#passwordError").hide();
+        } else {
             $("#passwordError").show();
             event.preventDefault();
-        } else {
-            $("#passwordError").hide();
         }
     });
 </script>

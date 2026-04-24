@@ -1,19 +1,29 @@
 package com.webapp.converter;
 
 import com.webapp.entities.UserEntity;
+import com.webapp.models.dtos.StaffResponseDTO;
 import com.webapp.models.dtos.UserDTO;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Base64;
+import java.util.Set;
 
 @Component
+@RequiredArgsConstructor
 public class UserConverter {
 
 
-    @Autowired
-    PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
+
+    public StaffResponseDTO toStaffResponseDTO(UserEntity userEntity, Set<Long> assignedStaffIds) {
+        StaffResponseDTO staffResponseDTO = new StaffResponseDTO();
+        staffResponseDTO.setId(userEntity.getId());
+        staffResponseDTO.setUserName(userEntity.getUserName());
+        staffResponseDTO.setChecked(assignedStaffIds.contains(userEntity.getId()) ? "checked" : "");
+        return staffResponseDTO;
+    }
 
     public UserDTO toUserDTO(UserEntity userEntity) {
         if (userEntity == null) return null;

@@ -6,84 +6,17 @@ A full-stack web application built with **Spring Boot 3** for managing real esta
 
 ## 📋 Table of Contents
 
-- [Branches](#-branches)
 - [Tech Stack](#-tech-stack)
 - [Project Structure](#-project-structure)
 - [Features](#-features)
 - [Authentication & Authorization](#-authentication--authorization)
 - [API Endpoints](#-api-endpoints)
-- [Database Configuration](#-database-configuration)
+- [Configuration](#-configuration)
 - [Getting Started](#-getting-started)
 - [Usage](#-usage)
 - [User Roles](#-user-roles)
 
 ---
-
-## 🌿 Branches
-
-This project is organized into progressive branches, each building on top of the previous one. You can checkout any branch to see the project at a specific development stage.
-
-| Branch                                                      | Description                                                                                                                                                     |
-| ----------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `main`                                                      | Initial project setup                                                                                                                                           |
-| `SpringDataJPA`                                             | Core application with Spring Data JPA, building & user CRUD, admin dashboard UI, staff assignment, pagination                                                   |
-| `SpringDataJPA+Cascade+OrphanRemoval+SpringSecurity`        | Added Spring Security (Session-based authentication), role-based authorization (Manager/Employee), user registration, homepage UI integration                   |
-| `SpringDataJPA+Cascade+OrphanRemoval+SpringSecurity+JWT` ⭐ | **(Latest)** Added JWT authentication for REST APIs, hybrid auth architecture (Session + JWT), API login & register endpoints, JWT token generation with claims |
-
-### Branch Details
-
-#### `main`
-
-> Initial commit. Empty project skeleton.
-
-#### `SpringDataJPA`
-
-> **Core CRUD & Admin Dashboard**
->
-> - Spring Data JPA integration with MySQL
-> - Building management: search, create, update, delete with dynamic filters
-> - User management: list, create, update, soft-delete
-> - Admin dashboard UI (Bootstrap 4 + SB Admin 2 template)
-> - Staff assignment to buildings
-> - Pagination with custom `PaginationResult`
-> - Custom exception handling
-
-#### `SpringDataJPA+Cascade+OrphanRemoval+SpringSecurity`
-
-> **Security & Registration**
->
-> - Spring Security 6 with session-based authentication
-> - Role-based access control: `ROLE_MANAGER`, `ROLE_EMPLOYEE`, `ROLE_USER`
-> - Custom login page with error/success messages
-> - User registration (Web) with confirm password validation
-> - `CustomSuccessHandler` for role-based redirect after login
-> - Homepage UI integration
-> - Thymeleaf Security Extras for displaying authenticated user info
-
-#### `SpringDataJPA+Cascade+OrphanRemoval+SpringSecurity+JWT` ⭐
-
-> **JWT & REST API** (Current branch)
->
-> - JWT token generation & validation (`JwtTokenUtils`)
-> - `JwtTokenFilter` for API request authentication
-> - REST API endpoints: `POST /admin/api/users/login`, `POST /admin/api/users/register`
-> - Hybrid authentication: Session for Web, JWT for API
-> - JWT claims include: `userName`, `role`, `fullName`
-> - `AuthenticationManager` exposed as Bean
-> - Security config updated with proper `permitAll` ordering
-> - `application.properties.example` for safe credential sharing
-
-### How to Switch Branches
-
-```bash
-# View all branches
-git branch -a
-
-# Switch to a specific branch
-git checkout SpringDataJPA
-git checkout "SpringDataJPA+Cascade+OrphanRemoval+SpringSecurity"
-git checkout "SpringDataJPA+Cascade+OrphanRemoval+SpringSecurity+JWT"
-```
 
 ## 🛠 Tech Stack
 
@@ -107,51 +40,107 @@ src/main/java/com/webapp/
 ├── Main.java                      # Application entry point
 ├── api/                           # REST API Controllers
 │   ├── BuildingAPI.java           # Building CRUD endpoints
+│   ├── CustomerAPI.java           # Customer CRUD API
+│   ├── ContactAPI.java            # Contact form API
 │   └── UserAPI.java               # User CRUD, Login & Register API
 ├── components/
 │   └── JwtTokenUtils.java         # JWT token generation & validation
 ├── config/
+│   ├── ApplicationConfig.java     # General application configuration
+│   ├── ModelMapperConfig.java     # ModelMapper bean configuration
 │   └── WebSecurityConfig.java     # Spring Security configuration
 ├── constant/
 │   └── SystemConstant.java        # Application constants
-├── controller/admin/              # MVC Controllers (Thymeleaf)
-│   ├── AdminController.java       # Login & Registration pages
-│   ├── building/
-│   │   └── BuildingController.java
-│   └── user/
-│       ├── UserController.java
-│       └── ProfileController.java
+├── controller/                    # MVC Controllers (Thymeleaf)
+│   ├── admin/                     # Admin dashboard controllers
+│   │   ├── AdminController.java   # Login & Registration controllers
+│   │   ├── building/              # Building management controllers
+│   │   │   └── BuildingController.java
+│   │   ├── customer/              # Customer management controllers
+│   │   │   └── CustomerController.java
+│   │   └── user/                  # User management controllers
+│   │       ├── UserController.java
+│   │       └── ProfileController.java
+│   └── web/                       # Public pages controllers
+│       └── HomeController.java
 ├── converter/                     # DTO <-> Entity converters
 │   ├── UserConverter.java
+│   ├── CustomerConverter.java
+│   ├── TransactionConverter.java
 │   └── BuildingRequestConverter.java
 ├── entities/                      # JPA Entities
+│   ├── BaseEntity.java            # Common auditing fields
 │   ├── UserEntity.java
 │   ├── BuildingEntity.java
+│   ├── CustomerEntity.java
+│   ├── TransactionEntity.java
 │   └── RentAreaEntity.java
 ├── enums/
+│   ├── CustomerStatus.java        # Customer status enum
+│   ├── District.java              # District enum
+│   ├── RentType.java              # Rent type enum
+│   ├── TransactionType.java       # Transaction type enum
 │   └── UserRole.java              # ROLE_MANAGER, ROLE_EMPLOYEE, ROLE_USER
+├── exceptions/                    # Global Exception Handling
+│   ├── GlobalExceptionHandler.java
+│   └── InvalidEntityException.java
 ├── filters/
 │   └── JwtTokenFilter.java        # JWT authentication filter
-├── models/dtos/                   # Data Transfer Objects
-│   ├── LoginDTO.java
-│   ├── UserDTO.java
-│   ├── BuildingDTO.java
-│   └── ResponseDTO.java
+├── models/                        # Request/Response/DTOs
+│   ├── dtos/                      # Data Transfer Objects
+│   │   ├── AbstractDTO.java
+│   │   ├── AssignmentBuildingDTO.java
+│   │   ├── AssignmentCustomerDTO.java
+│   │   ├── BuildingDTO.java
+│   │   ├── CustomerDTO.java
+│   │   ├── LoginDTO.java
+│   │   ├── PasswordDTO.java
+│   │   ├── ResponseDTO.java
+│   │   ├── StaffResponseDTO.java
+│   │   ├── TransactionDTO.java
+│   │   └── UserDTO.java
+│   ├── request/                   # Request Payloads
+│   │   ├── BuildingSearchRequestDTO.java
+│   │   └── CustomerSearchRequest.java
+│   └── response/                  # Response Payloads
+│       └── BuildingSearchResponseDTO.java
 ├── pagination/
 │   └── PaginationResult.java      # Generic pagination utility
 ├── repositories/                  # Spring Data JPA Repositories
+│   ├── AccountRepository.java
+│   ├── BuildingRepository.java
+│   ├── CustomerRepository.java
+│   ├── TransactionRepository.java
+│   ├── UserRepository.java
+│   ├── custom/                    # Custom Repository Interfaces
+│   │   ├── BuildingRepositoryCustom.java
+│   │   ├── CustomerRepositoryCustom.java
+│   │   └── UserRepositoryCustom.java
+│   └── impl/                      # Custom Repository Implementations
+│       ├── BuildingRepositoryImpl.java
+│       ├── CustomerRepositoryImpl.java
+│       └── UserRepositoryImpl.java
 ├── security/
 │   ├── MyUser.java                # Custom UserDetails implementation
-│   └── CustomSuccessHandler.java  # Role-based redirect after login
+│   ├── AuditorAwareImpl.java      # Captures user for auditing
+│   ├── CustomSuccessHandler.java  # Role-based redirect after login
+│   └── oauth2/                    # OAuth2 integration
+│       ├── DatabaseOAuth2UserService.java
+│       └── DatabaseOidcUserService.java
 ├── services/                      # Business logic layer
 │   ├── UserService.java
 │   ├── BuildingService.java
+│   ├── CustomerService.java
+│   ├── TransactionService.java
 │   └── impl/
 │       ├── UserServiceImpl.java
 │       ├── UserDetailsServiceImpl.java
-│       └── BuildingServiceImpl.java
+│       ├── BuildingServiceImpl.java
+│       ├── CustomerServiceImpl.java
+│       └── TransactionServiceImpl.java
 └── utils/
-    └── MessageUtils.java
+    ├── MessageUtils.java
+    └── SecurityUtils.java
 
 src/main/resources/
 ├── application.properties.example # Configuration template (copy to application.properties)
@@ -165,8 +154,10 @@ src/main/resources/
     ├── admin/                     # Admin dashboard pages
     │   ├── common/                # Shared fragments (menu, sidebar, header)
     │   ├── building/              # Building management pages
+    │   ├── customer/              # Customer management pages
     │   └── user/                  # User management pages
     └── web/                       # Public-facing pages
+        ├── contact.html
         └── index.html
 ```
 
@@ -176,24 +167,30 @@ src/main/resources/
 
 ### 🏗 Building Management
 
-- Search buildings with multiple filters (district, type, area, price...)
-- Create, update, and delete buildings
-- Assign/unassign staff to buildings (Manager only)
-- Pagination support for building lists
+- Search buildings with multiple filters (district, type, area, price...).
+- Create, update, and delete buildings.
+- Assign/unassign staff to buildings (Manager only).
+- Pagination support for building lists.
 
-### 👥 User Management
+### 👥 Customer Management
 
-- List, create, update, and soft-delete users (Manager only)
-- User profile viewing and editing
-- Avatar/image upload support
-- Password management
+- List, search, create, update, and manage customers.
+- **Transaction History**: Track detailed interaction logs for each customer:
+  - **CSKH (Customer Care)**: Log communication and feedback.
+  - **DDX (Site Visits)**: Track building viewing history.
+
+### 👥 User Management (Manager only)
+
+- List, create, update, and soft-delete users.
+- User profile viewing and editing with Avatar upload support.
+- Password management and reset functionality.
 
 ### 🔐 Authentication & Registration
 
-- **Web Login**: Session-based login with role-based redirect
-- **API Login**: JWT token-based authentication
-- **User Registration**: Public registration with automatic `ROLE_USER` assignment
-- Confirm password validation (client-side + server-side)
+- **Web Login**: Session-based login with role-based redirect.
+- **OAuth2 Login**: Integrated support for Google and Facebook login.
+- **API Login**: JWT token-based authentication.
+- **User Registration**: Public registration with automatic `ROLE_USER` assignment.
 
 ---
 
@@ -211,11 +208,13 @@ This project uses a **hybrid authentication** model:
 ### Security Rules (Request Matchers Order)
 
 ```
-1. permitAll  → /login, /register, /admin/api/users/login, /admin/api/users/register, /assets/**, /web/**
+
+1. permitAll → /login, /register, /admin/api/users/login, /admin/api/users/register, /assets/**, /web/**
 2. EMPLOYEE + MANAGER → /admin/api/users/userImage (avatar for menu bar)
-3. MANAGER only → /admin/api/users/**, /admin/api/buildings/assign, /admin/api/buildings/{id}/staff
-4. EMPLOYEE + MANAGER → /admin/**
+3. MANAGER only → /admin/api/users/\*\*, /admin/api/buildings/assign, /admin/api/buildings/{id}/staff
+4. EMPLOYEE + MANAGER → /admin/\*\*
 5. permitAll → everything else
+
 ```
 
 ### JWT Token Structure
@@ -268,6 +267,16 @@ When a user logs in via the API, the JWT token contains the following claims:
 | `GET`    | `/admin/api/buildings/{id}/staff` | MANAGER            | Get assigned staff       |
 | `PUT`    | `/admin/api/buildings/assign`     | MANAGER            | Assign staff to building |
 
+#### Customer & Transaction Management
+
+| Method   | Endpoint                       | Auth               | Description                 |
+| -------- | ------------------------------ | ------------------ | --------------------------- |
+| `GET`    | `/admin/api/customers`         | EMPLOYEE / MANAGER | Search customers            |
+| `POST`   | `/admin/api/customers`         | EMPLOYEE / MANAGER | Create/Update customer      |
+| `DELETE` | `/admin/api/customers`         | EMPLOYEE / MANAGER | Delete customers by ID list |
+| `POST`   | `/admin/api/transactions`      | EMPLOYEE / MANAGER | Save/Update interaction log |
+| `DELETE` | `/admin/api/transactions/{id}` | EMPLOYEE / MANAGER | Delete transaction record   |
+
 ### Example: Login Request
 
 ```bash
@@ -316,25 +325,38 @@ Content-Type: application/json
 
 ---
 
-## 🗄 Database Configuration
+## 🗄 Configuration
 
-The application uses **MySQL**. Configure your database connection in `application.properties`:
+The application uses **MySQL** and **Google + Facebook** credentials for OAuth2. Configure everything in `application.properties`:
 
 ```properties
+#Database
 spring.datasource.url=jdbc:mysql://localhost:3306/estateadvance?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
 spring.datasource.username=your_username
 spring.datasource.password=your_password
+# OAuth2 Google
+spring.security.oauth2.client.registration.google.client-id=YOUR_GOOGLE_CLIENT_ID
+spring.security.oauth2.client.registration.google.client-secret=YOUR_GOOGLE_CLIENT_SECRET
+spring.security.oauth2.client.registration.google.scope=profile,email
+# OAuth2 Facebook
+spring.security.oauth2.client.registration.facebook.client-id=YOUR_FACEBOOK_CLIENT_ID
+spring.security.oauth2.client.registration.facebook.client-secret=YOUR_FACEBOOK_CLIENT_SECRET
+spring.security.oauth2.client.registration.facebook.scope=email,public_profile
+
 ```
+
 
 ### Key Settings
 
-| Property                        | Value          | Description                    |
-| ------------------------------- | -------------- | ------------------------------ |
-| `server.port`                   | `9999`         | Application port               |
-| `api.prefix`                    | `/admin/api`   | Base path for REST APIs        |
-| `jwt.expiration`                | `2592000`      | Token TTL in seconds (30 days) |
-| `jwt.secretKey`                 | Base64-encoded | Signing key for JWT            |
-| `spring.jpa.hibernate.ddl-auto` | `none`         | No auto DDL generation         |
+| Property                              | Value          | Description                     |
+| ------------------------------------- | -------------- | ------------------------------- |
+| `server.port`                         | `9999`         | Application port                |
+| `api.prefix`                          | `/admin/api`   | Base path for REST APIs         |
+| `jwt.expiration`                      | `2592000`      | Token TTL in seconds (30 days)  |
+| `jwt.secretKey`                       | Base64-encoded | Signing key for JWT             |
+| `spring.jpa.hibernate.ddl-auto`       | `none`         | No auto DDL generation          |
+| `spring.security.oauth2.*.google.*`   | Configs        | Google OAuth2 Client Settings   |
+| `spring.security.oauth2.*.facebook.*` | Configs        | Facebook OAuth2 Client Settings |
 
 ---
 
@@ -371,8 +393,10 @@ spring.datasource.password=your_password
    - `spring.datasource.username` — your MySQL username
    - `spring.datasource.password` — your MySQL password
    - `jwt.secretKey` — your own Base64-encoded secret key (at least 32 bytes)
+   - `spring.security.oauth2.client.registration.google.*` — your Google OAuth2 credentials
+   - `spring.security.oauth2.client.registration.facebook.*` — your Facebook OAuth2 credentials
 
-   > ⚠️ **Never commit `application.properties` to version control.** It contains database passwords and JWT secret keys.
+   > ⚠️ **Never commit `application.properties` to version control.** It contains database passwords, JWT secret keys, and OAuth2 credentials.
 
 4. **Run the application:**
 
@@ -407,11 +431,11 @@ spring.datasource.password=your_password
 
 ## 👤 User Roles
 
-| Role                 | Code            | Permissions                                                         |
-| -------------------- | --------------- | ------------------------------------------------------------------- |
-| **Manager**          | `ROLE_MANAGER`  | Full access: user management, building management, staff assignment |
-| **Staff / Employee** | `ROLE_EMPLOYEE` | Building management (view, create, edit), view own profile          |
-| **User**             | `ROLE_USER`     | Default role for new registrations, public page access only         |
+| Role                 | Code            | Permissions                                                   |
+| -------------------- | --------------- | ------------------------------------------------------------- |
+| **Manager**          | `ROLE_MANAGER`  | Full access: User, Building (Assign), Customer & Transactions |
+| **Staff / Employee** | `ROLE_EMPLOYEE` | Building, Customer & Transaction management, Profile access   |
+| **User**             | `ROLE_USER`     | Public page access, default role for self-registration        |
 
 ### Role Hierarchy
 
