@@ -11,8 +11,8 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
-public class UserRepositoryImpl implements UserRepositoryCustom {
 
+public class UserRepositoryImpl implements UserRepositoryCustom {
     private final EntityManager entityManager;
 
     @Override

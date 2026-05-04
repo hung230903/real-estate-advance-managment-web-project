@@ -1,4 +1,4 @@
-package com.webapp.api;
+package com.webapp.api.admin;
 
 import com.webapp.components.JwtTokenUtils;
 import com.webapp.enums.UserRole;
