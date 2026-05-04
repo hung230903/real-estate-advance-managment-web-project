@@ -16,10 +16,6 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserEntity {
 
-    public static final String ROLE_MANAGER = "MANAGER";
-    public static final String ROLE_EMPLOYEE = "EMPLOYEE";
-    public static final String ROLE_USER = "USER";
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -46,6 +42,8 @@ public class UserEntity {
     @Lob
     @Column(name = "image", length = Integer.MAX_VALUE, nullable = true)
     private byte[] image;
+    @ManyToMany(mappedBy = "userEntities", fetch = FetchType.LAZY)
+    List<BuildingEntity> buildingEntities = new ArrayList<>();
 
     public UserEntity(Long id, String userName, boolean active, String userRole, String fullName, String phone) {
         this.id = id;
@@ -55,7 +53,4 @@ public class UserEntity {
         this.fullName = fullName;
         this.phone = phone;
     }
-
-    @ManyToMany(mappedBy = "userEntities", fetch = FetchType.LAZY)
-    List<BuildingEntity> buildingEntities = new ArrayList<>();
 }

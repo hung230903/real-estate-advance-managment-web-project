@@ -18,10 +18,8 @@ import org.springframework.stereotype.Service;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -41,50 +39,69 @@ public class DatabaseOidcUserService extends OidcUserService {
                         null
                 )));
         String normalizedUsername = normalizeUsername(rawUsername);
-
-        UserEntity user = userRepository.findByUserName(normalizedUsername);
-        if (user == null) {
-            user = createOidcUser(normalizedUsername, claims);
+        UserEntity userEntity = userRepository.findByUserName(normalizedUsername);
+        if (userEntity == null) {
+            userEntity = createOidcUser(normalizedUsername, claims);
         }
 
-        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + user.getUserRole()));
+        // Ensure role has ROLE_ prefix for Spring Security
+        String role = userEntity.getUserRole();
+        if (role != null && !role.startsWith("ROLE_")) {
+            role = "ROLE_" + role;
+        } else if (role == null) {
+            role = SystemConstant.USER_ROLE;
+        }
 
-        return new DefaultOidcUser(authorities, oidcUser.getIdToken(), oidcUser.getUserInfo(), "email");
+        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(role));
+
+        // Use the name attribute key from registration or fallback to email
+        String nameAttributeKey = userRequest.getClientRegistration()
+                .getProviderDetails()
+                .getUserInfoEndpoint()
+                .getUserNameAttributeName();
+
+        if (nameAttributeKey == null || nameAttributeKey.isBlank() ||
+                (oidcUser.getIdToken().getClaims().get(nameAttributeKey) == null &&
+                 (oidcUser.getUserInfo() == null || oidcUser.getUserInfo().getClaims().get(nameAttributeKey) == null))) {
+            nameAttributeKey = Stream.of("email", "sub", "preferred_username")
+                    .filter(k -> oidcUser.getIdToken().getClaims().containsKey(k) ||
+                                (oidcUser.getUserInfo() != null && oidcUser.getUserInfo().getClaims().containsKey(k)))
+                    .findFirst()
+                    .orElse("sub");
+        }
+
+        return new DefaultOidcUser(authorities, oidcUser.getIdToken(), oidcUser.getUserInfo(), nameAttributeKey);
     }
 
     private Optional<String> extractUsername(Map<String, Object> claims) {
-        Object email = claims.get("email");
-        if (email instanceof String s && !s.isBlank()) return Optional.of(s);
-
-        Object preferredUsername = claims.get("preferred_username");
-        if (preferredUsername instanceof String s && !s.isBlank()) return Optional.of(s);
-
-        Object sub = claims.get("sub");
-        if (sub instanceof String s && !s.isBlank()) return Optional.of(s);
-
-        return Optional.empty();
+        return Stream.of("email", "preferred_username", "sub")
+                .map(claims::get)
+                .filter(Objects::nonNull)
+                .map(Object::toString)
+                .filter(s -> !s.isBlank())
+                .findFirst();
     }
 
     private UserEntity createOidcUser(String normalizedUsername, Map<String, Object> claims) {
-        UserEntity user = new UserEntity();
-        user.setUserName(normalizedUsername);
-        user.setActive(true);
-        user.setUserRole(SystemConstant.USER_ROLE);
-        user.setEncrytedPassword(passwordEncoder.encode(UUID.randomUUID().toString()));
+        UserEntity userEntity = new UserEntity();
+        userEntity.setUserName(normalizedUsername);
+        userEntity.setActive(true);
+        userEntity.setUserRole(SystemConstant.USER_ROLE);
+        userEntity.setEncrytedPassword(passwordEncoder.encode(UUID.randomUUID().toString()));
 
         Object fullName = claims.get("name");
         if (fullName instanceof String s && !s.isBlank()) {
-            user.setFullName(s);
+            userEntity.setFullName(s);
         } else {
-            user.setFullName(user.getUserName());
+            userEntity.setFullName(userEntity.getUserName());
         }
 
-        user.setPhone("0000000000");
-        return userRepository.save(user);
+        userEntity.setPhone("0000000000");
+        return userRepository.save(userEntity);
     }
 
     private String normalizeUsername(String rawUsername) {
-        if (rawUsername.length() <= 20) {
+        if (rawUsername.length() <= 30) { // 30 is the maximum length of the username
             return rawUsername;
         }
         return buildHashedUsername(rawUsername);

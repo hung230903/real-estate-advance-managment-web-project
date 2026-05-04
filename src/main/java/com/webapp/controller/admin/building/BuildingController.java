@@ -2,7 +2,7 @@ package com.webapp.controller.admin.building;
 
 import com.webapp.enums.District;
 import com.webapp.enums.RentType;
-import com.webapp.enums.UserRole;
+import com.webapp.constant.SystemConstant;
 import com.webapp.models.dtos.BuildingDTO;
 import com.webapp.models.request.BuildingSearchRequestDTO;
 import com.webapp.services.BuildingService;
@@ -34,7 +34,7 @@ public class BuildingController {
                                Model model) {
 
         List<String> authorities = SecurityUtils.getAuthorities();
-        if (authorities.contains(UserRole.ROLE_EMPLOYEE.name())) {
+        if (authorities.contains(SystemConstant.STAFF_ROLE)) {
             Long staffId = Objects.requireNonNull(SecurityUtils.getPrincipal()).getId();
             buildingSearchRequestDTO.setStaffId(staffId);
         }
@@ -43,7 +43,7 @@ public class BuildingController {
         model.addAttribute("districts", District.getDistrictCode());
         model.addAttribute("typeCodes", RentType.getRentType());
 
-        if (authorities.contains(UserRole.ROLE_MANAGER.name())) {
+        if (authorities.contains(SystemConstant.MANAGER_ROLE)) {
             model.addAttribute("staffs", userService.getAllStaff());
         }
 

@@ -8,4 +8,5 @@ public interface TransactionService {
     void save(TransactionDTO transactionDTO);
     TransactionDTO findById(Long id);
     void delete(Long id);
+    java.util.Map<String, List<TransactionDTO>> getTransactionsByCustomerId(Long customerId);
 }

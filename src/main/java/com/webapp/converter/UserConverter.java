@@ -1,6 +1,7 @@
 package com.webapp.converter;
 
 import com.webapp.entities.UserEntity;
+import com.webapp.constant.SystemConstant;
 import com.webapp.models.dtos.StaffResponseDTO;
 import com.webapp.models.dtos.UserDTO;
 import lombok.RequiredArgsConstructor;
@@ -58,7 +59,7 @@ public class UserConverter {
 
         String role = (userDTO.getRoleCode() != null && !userDTO.getRoleCode().isEmpty())
                 ? userDTO.getRoleCode()
-                : "ROLE_" + UserEntity.ROLE_USER;
+                : SystemConstant.USER_ROLE;
 
         userEntity.setUserRole(role);
 

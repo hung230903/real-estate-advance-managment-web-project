@@ -1,7 +1,7 @@
 package com.webapp.api.admin;
 
 import com.webapp.components.JwtTokenUtils;
-import com.webapp.enums.UserRole;
+import com.webapp.constant.SystemConstant;
 import com.webapp.models.dtos.LoginDTO;
 import com.webapp.models.dtos.PasswordDTO;
 import com.webapp.models.dtos.ResponseDTO;
@@ -67,7 +67,7 @@ public class UserAPI {
             }
 
             // SECURITY: Ép buộc role là USER cho đăng ký công khai
-            userDTO.setRoleCode(UserRole.ROLE_USER.name());
+            userDTO.setRoleCode(SystemConstant.USER_ROLE);
             userDTO.setStatus(1); // Active mặc định
 
             userService.save(userDTO);

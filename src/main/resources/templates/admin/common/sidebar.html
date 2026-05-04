@@ -21,7 +21,7 @@
                     <span>User Management</span></a>
             </li>
             <li class="nav-item" th:classappend="${menu == 'customer' ? 'active' : ''}"
-                sec:authorize="hasAnyRole('MANAGER', 'EMPLOYEE')">
+                sec:authorize="hasAnyRole('MANAGER', 'STAFF')">
                 <a class="nav-link" th:href="@{/admin/customers/list}">
                     <i class="fas fa-fw fa-user-tie"></i>
                     <span>Customer Management</span></a>

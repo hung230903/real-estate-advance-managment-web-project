@@ -1,7 +1,6 @@
 package com.webapp.security;
 
 import com.webapp.constant.SystemConstant;
-import com.webapp.enums.UserRole;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -38,7 +37,10 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     }
 
     private String determineTargetUrl(Authentication authentication) {
-        List<String> roles = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
+        List<String> roles = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .toList();
+
 
         if (isAdmin(roles)) {
             return SystemConstant.ADMIN_HOME;
@@ -48,15 +50,15 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
             return "/";
         }
 
-        return "/access-denied";
+        return "/login?accessDenied";
     }
 
     private boolean isAdmin(List<String> roles) {
-        return roles.stream().anyMatch(role -> role.equalsIgnoreCase(UserRole.ROLE_MANAGER.name())
-                || role.equalsIgnoreCase(UserRole.ROLE_EMPLOYEE.name()));
+        return roles.stream().anyMatch(role -> role.equalsIgnoreCase(SystemConstant.MANAGER_ROLE)
+                || role.equalsIgnoreCase(SystemConstant.STAFF_ROLE));
     }
 
     private boolean isUser(List<String> roles) {
-        return roles.contains(UserRole.ROLE_USER.name());
+        return roles.contains(SystemConstant.USER_ROLE);
     }
 }

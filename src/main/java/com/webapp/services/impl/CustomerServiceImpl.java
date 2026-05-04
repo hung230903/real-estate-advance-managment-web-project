@@ -1,5 +1,6 @@
 package com.webapp.services.impl;
 
+import com.webapp.constant.SystemConstant;
 import com.webapp.converter.CustomerConverter;
 import com.webapp.converter.UserConverter;
 import com.webapp.entities.CustomerEntity;
@@ -80,7 +81,7 @@ public class CustomerServiceImpl implements CustomerService {
         CustomerEntity customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
 
-        List<UserEntity> staffList = userRepository.findByActiveAndUserRole(true, "ROLE_EMPLOYEE");
+        List<UserEntity> staffList = userRepository.findByActiveAndUserRole(true, SystemConstant.STAFF_ROLE);
         Set<Long> assignedStaffIds = customer.getUserEntities().stream()
                 .map(UserEntity::getId)
                 .collect(Collectors.toSet());

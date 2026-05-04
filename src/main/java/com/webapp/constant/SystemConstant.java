@@ -10,6 +10,7 @@ public class SystemConstant {
     public static final String PASSWORD_DEFAULT = "123456";
     public static final int MAX_RESULT = 3;
     public static final int MAX_NAVIGATION_PAGE = 3;
-    public static final String USER_ROLE = "USER";
-
+    public static final String USER_ROLE = "ROLE_USER";
+    public static final String STAFF_ROLE = "ROLE_STAFF";
+    public static final String MANAGER_ROLE = "ROLE_MANAGER";
 }

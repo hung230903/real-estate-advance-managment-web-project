@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Map<Long, String> getAllStaff() {
         List<UserEntity> allStaff = userRepository.findByActiveAndUserRole(true,
-                "ROLE_" + UserEntity.ROLE_EMPLOYEE);
+                SystemConstant.STAFF_ROLE);
         return allStaff.stream().collect(Collectors.toMap(UserEntity::getId, UserEntity::getUserName));
     }
 

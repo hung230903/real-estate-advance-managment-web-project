@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum TransactionType {
-    CSKH("Chăm sóc khách hàng"),
-    DDX("Dẫn đi xem");
+    CSKH("Customer Care"),
+    DDX("Site Visit");
 
     private final String name;
 

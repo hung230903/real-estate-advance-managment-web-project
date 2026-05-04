@@ -1,7 +1,7 @@
 package com.webapp.controller.admin.customer;
 
+import com.webapp.constant.SystemConstant;
 import com.webapp.enums.CustomerStatus;
-import com.webapp.enums.UserRole;
 import com.webapp.models.dtos.CustomerDTO;
 import com.webapp.models.request.CustomerSearchRequest;
 import com.webapp.services.CustomerService;
@@ -24,7 +24,6 @@ public class CustomerController {
 
     private final CustomerService customerService;
     private final UserService userService;
-    private final com.webapp.services.TransactionService transactionService;
 
     @GetMapping("/list")
     public String customerList(@ModelAttribute CustomerSearchRequest searchRequest,
@@ -32,7 +31,7 @@ public class CustomerController {
                                Model model) {
 
         List<String> authorities = SecurityUtils.getAuthorities();
-        if (authorities.contains(UserRole.ROLE_EMPLOYEE.name())) {
+        if (authorities.contains(SystemConstant.STAFF_ROLE)) {
             Long staffId = Objects.requireNonNull(SecurityUtils.getPrincipal()).getId();
             searchRequest.setStaffId(staffId);
         }
@@ -40,11 +39,12 @@ public class CustomerController {
         model.addAttribute("modelSearch", searchRequest);
         model.addAttribute("statuses", CustomerStatus.getCustomerStatus());
 
-        if (authorities.contains(UserRole.ROLE_MANAGER.name())) {
+        if (authorities.contains(SystemConstant.MANAGER_ROLE)) {
             model.addAttribute("staffs", userService.getAllStaff());
         }
 
-        model.addAttribute("model", customerService.getCustomers(searchRequest, page, MAX_RESULT, com.webapp.constant.SystemConstant.MAX_NAVIGATION_PAGE));
+        model.addAttribute("model", customerService.getCustomers(searchRequest, page, MAX_RESULT, SystemConstant.MAX_NAVIGATION_PAGE));
+        model.addAttribute("transactionTypes", com.webapp.enums.TransactionType.getTransactionTypes());
 
         return "admin/customer/customerList";
     }
@@ -53,8 +53,6 @@ public class CustomerController {
     public String createCustomer(Model model) {
         model.addAttribute("customer", new CustomerDTO());
         model.addAttribute("statuses", CustomerStatus.getCustomerStatus());
-        model.addAttribute("transactionTypes", com.webapp.enums.TransactionType.getTransactionTypes());
-        model.addAttribute("transactions", new java.util.HashMap<>());
         return "admin/customer/customerEdit";
     }
 
@@ -63,14 +61,6 @@ public class CustomerController {
         CustomerDTO customerDTO = customerService.findById(id);
         model.addAttribute("customer", customerDTO);
         model.addAttribute("statuses", CustomerStatus.getCustomerStatus());
-        model.addAttribute("transactionTypes", com.webapp.enums.TransactionType.getTransactionTypes());
-        
-        java.util.Map<String, List<com.webapp.models.dtos.TransactionDTO>> transactions = new java.util.HashMap<>();
-        for (com.webapp.enums.TransactionType type : com.webapp.enums.TransactionType.values()) {
-            transactions.put(type.name(), transactionService.findByCustomerIdAndCode(id, type.name()));
-        }
-        model.addAttribute("transactions", transactions);
-        
         return "admin/customer/customerEdit";
     }
 }

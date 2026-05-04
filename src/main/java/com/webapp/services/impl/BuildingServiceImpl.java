@@ -5,6 +5,7 @@ import com.webapp.converter.RentAreaConverter;
 import com.webapp.entities.BuildingEntity;
 import com.webapp.entities.RentAreaEntity;
 import com.webapp.entities.UserEntity;
+import com.webapp.constant.SystemConstant;
 import com.webapp.exceptions.InvalidEntityException;
 import com.webapp.models.dtos.AssignmentBuildingDTO;
 import com.webapp.models.dtos.BuildingDTO;
@@ -112,7 +113,7 @@ public class BuildingServiceImpl implements BuildingService {
         BuildingEntity building = buildingRepository.findById(buildingId)
                 .orElseThrow(() -> new InvalidEntityException("Building not found"));
         // Tìm toàn bộ user là STAFF và active
-        List<UserEntity> staffList = userRepository.findByActiveAndUserRole(true, "ROLE_" + UserEntity.ROLE_EMPLOYEE);
+        List<UserEntity> staffList = userRepository.findByActiveAndUserRole(true, SystemConstant.STAFF_ROLE);
         // Tìm toàn bộ staff đã được gán các building trong bảng assignmentbuilding
         Set<Long> assignedStaffIds = building.getUserEntities()
                 .stream()

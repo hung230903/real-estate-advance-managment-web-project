@@ -52,4 +52,16 @@ public class TransactionAPI {
             return ResponseEntity.internalServerError().body(responseDTO);
         }
     }
+
+    @GetMapping("/customer/{customerId}")
+    public ResponseEntity<ResponseDTO> getByCustomerId(@PathVariable Long customerId) {
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+            responseDTO.setData(transactionService.getTransactionsByCustomerId(customerId));
+            return ResponseEntity.ok(responseDTO);
+        } catch (Exception e) {
+            responseDTO.setMessage(e.getMessage());
+            return ResponseEntity.internalServerError().body(responseDTO);
+        }
+    }
 }

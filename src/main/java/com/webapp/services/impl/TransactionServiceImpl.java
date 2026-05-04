@@ -3,6 +3,7 @@ package com.webapp.services.impl;
 import com.webapp.converter.TransactionConverter;
 import com.webapp.entities.CustomerEntity;
 import com.webapp.entities.TransactionEntity;
+import com.webapp.enums.TransactionType;
 import com.webapp.models.dtos.TransactionDTO;
 import com.webapp.repositories.CustomerRepository;
 import com.webapp.repositories.TransactionRepository;
@@ -12,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +27,7 @@ public class TransactionServiceImpl implements TransactionService {
     public List<TransactionDTO> findByCustomerIdAndCode(Long customerId, String code) {
         return transactionRepository.findByCustomerIdAndCode(customerId, code).stream()
                 .map(transactionConverter::toDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -54,9 +54,25 @@ public class TransactionServiceImpl implements TransactionService {
                 .orElseThrow(() -> new RuntimeException("Transaction not found"));
         return transactionConverter.toDTO(entity);
     }
+
     @Override
     @Transactional
     public void delete(Long id) {
         transactionRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public java.util.Map<String, List<TransactionDTO>> getTransactionsByCustomerId(Long customerId) {
+        List<TransactionEntity> entities = transactionRepository.findByCustomerId(customerId);
+        java.util.Map<String, List<TransactionDTO>> result = new java.util.HashMap<>();
+        for (TransactionType type : TransactionType.values()) {
+            List<TransactionDTO> dtos = entities.stream()
+                    .filter(e -> e.getCode().equals(type.name()))
+                    .map(transactionConverter::toDTO)
+                    .toList();
+            result.put(type.name(), dtos);
+        }
+        return result;
     }
 }

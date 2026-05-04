@@ -5,8 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CustomerDTO {
-    private Long id;
+public class CustomerDTO extends AbstractDTO {
     private String fullName;
     private String phone;
     private String email;

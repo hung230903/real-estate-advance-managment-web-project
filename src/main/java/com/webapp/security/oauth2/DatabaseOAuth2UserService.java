@@ -44,12 +44,20 @@ public class DatabaseOAuth2UserService implements OAuth2UserService<OAuth2UserRe
                 )));
         String normalizedUsername = normalizeUsername(rawUsername);
 
-        UserEntity user = userRepository.findByUserName(normalizedUsername);
-        if (user == null) {
-            user = createOAuth2User(normalizedUsername, attributes);
+        UserEntity userEntity = userRepository.findByUserName(normalizedUsername);
+        if (userEntity == null) {
+            userEntity = createOAuth2User(normalizedUsername, attributes);
         }
 
-        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + user.getUserRole()));
+        // Ensure role has ROLE_ prefix for Spring Security
+        String role = userEntity.getUserRole();
+        if (role != null && !role.startsWith("ROLE_")) {
+            role = "ROLE_" + role;
+        } else if (role == null) {
+            role = SystemConstant.USER_ROLE;
+        }
+
+        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(role));
 
         String nameAttributeKey = userRequest.getClientRegistration()
                 .getProviderDetails()
@@ -76,30 +84,27 @@ public class DatabaseOAuth2UserService implements OAuth2UserService<OAuth2UserRe
         Object sub = attributes.get("sub"); // OIDC subject
         if (sub instanceof String s && !s.isBlank()) return Optional.of(s);
 
-        Object id = attributes.get("id"); // Facebook/Standard OAuth2
-        if (id instanceof String s && !s.isBlank()) return Optional.of(s);
-
         return Optional.empty();
     }
 
     private UserEntity createOAuth2User(String normalizedUsername, Map<String, Object> attributes) {
-        UserEntity user = new UserEntity();
-        user.setUserName(normalizedUsername);
-        user.setActive(true);
-        user.setUserRole(SystemConstant.USER_ROLE);
-        user.setEncrytedPassword(passwordEncoder.encode(UUID.randomUUID().toString()));
+        UserEntity userEntity = new UserEntity();
+        userEntity.setUserName(normalizedUsername);
+        userEntity.setActive(true);
+        userEntity.setUserRole(SystemConstant.USER_ROLE);
+        userEntity.setEncrytedPassword(passwordEncoder.encode(UUID.randomUUID().toString()));
 
         Object fullName = attributes.get("name");
         if (fullName instanceof String s && !s.isBlank()) {
-            user.setFullName(s);
+            userEntity.setFullName(s);
         } else {
-            user.setFullName(user.getUserName());
+            userEntity.setFullName(userEntity.getUserName());
         }
 
         // Required by current schema, OAuth2 providers do not always return phone.
-        user.setPhone("0000000000");
+        userEntity.setPhone("0000000000");
 
-        return userRepository.save(user);
+        return userRepository.save(userEntity);
     }
 
     private String normalizeUsername(String rawUsername) {
