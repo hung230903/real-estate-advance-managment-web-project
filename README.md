@@ -268,15 +268,15 @@ When a user logs in via the API, the JWT token contains the following claims:
 
 #### Customer & Transaction Management
 
-| Method   | Endpoint                       | Auth            | Description                 |
-| -------- | ------------------------------ | --------------- | --------------------------- |
-| `GET`    | `/admin/api/customers`            | STAFF / MANAGER | Search customers            |
-| `POST`   | `/admin/api/customers`            | STAFF / MANAGER | Create/Update customer      |
-| `DELETE` | `/admin/api/customers/{ids}`       | MANAGER         | Delete customers by ID list |
-| `GET`    | `/admin/api/customers/{id}/staff` | MANAGER         | Get assigned staff          |
-| `PUT`    | `/admin/api/customers/assign`     | MANAGER         | Assign staff to customer    |
-| `POST`   | `/admin/api/transactions`      | STAFF / MANAGER | Save/Update interaction log |
-| `DELETE` | `/admin/api/transactions/{id}` | MANAGER         | Delete transaction record   |
+| Method   | Endpoint                          | Auth            | Description                     |
+| -------- |-----------------------------------| --------------- |---------------------------------|
+| `GET`    | `/admin/api/customers`            | STAFF / MANAGER | Search customers                |
+| `POST`   | `/admin/api/customers`            | STAFF / MANAGER | Create/Update customer          |
+| `DELETE` | `/admin/api/customers/{ids}`      | MANAGER         | Delete customers by ID list     |
+| `GET`    | `/admin/api/customers/{id}/staff` | MANAGER         | Get assigned staff              |
+| `PUT`    | `/admin/api/customers/assign`     | MANAGER         | Assign staff to customer        |
+| `POST`   | `/admin/api/transactions`         | STAFF / MANAGER | Save/Update interaction log     |
+| `DELETE` | `/admin/api/transactions/{id}`    | MANAGER         | Soft Delete transaction by id   |
 
 ### Example: Login Request
 
@@ -432,11 +432,11 @@ spring.security.oauth2.client.registration.facebook.scope=email,public_profile
 
 ## 👤 User Roles
 
-| Role                 | Code            | Permissions                                                   |
-| -------------------- | --------------- | ------------------------------------------------------------- |
-| **Manager**          | `ROLE_MANAGER`  | Full access: User, Building (Assign), Customer & Transactions |
-| **Staff / Employee** | `ROLE_STAFF`    | Building, Customer & Transaction management, Profile access   |
-| **User**             | `ROLE_USER`     | Public page access, default role for self-registration        |
+| Role        | Code            | Permissions                                                   |
+|-------------| --------------- | ------------------------------------------------------------- |
+| **Manager** | `ROLE_MANAGER`  | Full access: User, Building (Assign), Customer & Transactions |
+| **Staff**   | `ROLE_STAFF`    | Building, Customer & Transaction management, Profile access   |
+| **User**    | `ROLE_USER`     | Public page access, default role for self-registration        |
 
 ### Role Hierarchy
 
