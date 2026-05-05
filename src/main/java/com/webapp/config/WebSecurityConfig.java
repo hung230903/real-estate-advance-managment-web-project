@@ -64,7 +64,7 @@ public class WebSecurityConfig {
                                 "/admin/users/userImage"
                         ).hasAnyAuthority(SystemConstant.STAFF_ROLE, SystemConstant.MANAGER_ROLE)
 
-                        // MANAGER ONLY (Building + Customer + User management & Assignments)
+                        // MANAGER ONLY (Building + Customer + User management & assignments)
                         .requestMatchers(
                                 String.format("%s/users/**", apiPrefix),
                                 "/admin/users/**",

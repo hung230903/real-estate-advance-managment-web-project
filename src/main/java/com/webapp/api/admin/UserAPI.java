@@ -66,7 +66,6 @@ public class UserAPI {
                 return ResponseEntity.badRequest().body(responseDTO);
             }
 
-            // SECURITY: Ép buộc role là USER cho đăng ký công khai
             userDTO.setRoleCode(SystemConstant.USER_ROLE);
             userDTO.setStatus(1); // Active mặc định
 
@@ -112,7 +111,6 @@ public class UserAPI {
             }
             userService.update(userDTO);
 
-            // Refresh SecurityContext if current user updated their own profile
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             if (auth != null && auth.getPrincipal() instanceof MyUser principal) {
                 if (principal.getUsername().equals(userDTO.getUserName())) {
