@@ -170,7 +170,6 @@ src/main/resources/
 - Search buildings with multiple filters (district, type, area, price...).
 - Create, update, and delete buildings.
 - Assign/unassign staff to buildings (Manager only).
-- Pagination support for building lists.
 
 ### 👥 Customer Management
 

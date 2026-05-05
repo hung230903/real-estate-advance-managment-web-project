@@ -34,7 +34,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         // EMPLOYEE,MANAGER,..
         String role = userEntity.getUserRole();
 
-        List<GrantedAuthority> grantList = new ArrayList<GrantedAuthority>();
+        List<GrantedAuthority> grantList = new ArrayList<>();
 
         // Ensure role has ROLE_ prefix for Spring Security
         if (role != null && !role.startsWith("ROLE_")) {

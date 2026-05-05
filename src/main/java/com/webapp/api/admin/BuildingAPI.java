@@ -38,7 +38,7 @@ public class BuildingAPI {
                                               BindingResult bindingResult) {
         ResponseDTO responseDTO = new ResponseDTO();
         try {
-            // Validation data
+            // Data validation
             if (bindingResult.hasErrors()) {
                 List<String> errorMessages = bindingResult.getFieldErrors().stream().map(FieldError::getDefaultMessage).toList();
                 responseDTO.setErrorDetails(errorMessages);

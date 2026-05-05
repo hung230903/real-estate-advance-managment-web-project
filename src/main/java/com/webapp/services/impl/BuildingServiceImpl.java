@@ -132,11 +132,8 @@ public class BuildingServiceImpl implements BuildingService {
         BuildingEntity building = buildingRepository.findById(assignmentBuildingDTO.getBuildingId())
                 .orElseThrow(() -> new InvalidEntityException("Building not found"));
 
-        building.getUserEntities().clear();
-        for (Long staffId : assignmentBuildingDTO.getStaffIds()) {
-            UserEntity staff = userRepository.getReferenceById(staffId);
-            building.getUserEntities().add(staff);
-        }
+        List<UserEntity> staffs = userRepository.findAllById(assignmentBuildingDTO.getStaffIds());
+        building.setUserEntities(staffs);
 
         buildingRepository.save(building);
         ResponseDTO responseDTO = new ResponseDTO();

@@ -12,6 +12,7 @@ import com.webapp.models.dtos.StaffResponseDTO;
 import com.webapp.models.request.CustomerSearchRequest;
 import com.webapp.pagination.PaginationResult;
 import com.webapp.repositories.CustomerRepository;
+import com.webapp.repositories.UserRepository;
 import com.webapp.services.CustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,7 +29,7 @@ public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepository customerRepository;
     private final CustomerConverter customerConverter;
     private final UserConverter userConverter;
-    private final com.webapp.repositories.UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Override
     public PaginationResult<CustomerDTO> getCustomers(CustomerSearchRequest searchRequest, int page, int maxResult, int maxNavigationPage) {
@@ -37,7 +38,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         List<CustomerDTO> dtos = entities.stream()
                 .map(customerConverter::toCustomerDTO)
-                .collect(Collectors.toList());
+                .toList();
 
         return new PaginationResult<>(dtos, totalItems, page, maxResult, maxNavigationPage);
     }
@@ -46,7 +47,8 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     @Transactional(readOnly = true)
     public CustomerDTO findById(Long id) {
-        CustomerEntity entity = customerRepository.findById(id).orElseThrow(() -> new RuntimeException("Customer not found"));
+        CustomerEntity entity = customerRepository.findById(id).orElseThrow(()
+                -> new RuntimeException("Customer not found"));
         return customerConverter.toCustomerDTO(entity);
     }
 
@@ -88,7 +90,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         List<StaffResponseDTO> staffResponses = staffList.stream()
                 .map(user -> userConverter.toStaffResponseDTO(user, assignedStaffIds))
-                .collect(Collectors.toList());
+                .toList();
 
         ResponseDTO responseDTO = new ResponseDTO();
         responseDTO.setData(staffResponses);
@@ -102,11 +104,8 @@ public class CustomerServiceImpl implements CustomerService {
         CustomerEntity customer = customerRepository.findById(assignmentCustomerDTO.getCustomerId())
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
 
-        customer.getUserEntities().clear();
-        for (Long staffId : assignmentCustomerDTO.getStaffIds()) {
-            com.webapp.entities.UserEntity staff = userRepository.getReferenceById(staffId);
-            customer.getUserEntities().add(staff);
-        }
+        List<UserEntity> staffs = userRepository.findAllById(assignmentCustomerDTO.getStaffIds());
+        customer.setUserEntities(staffs);
         customerRepository.save(customer);
     }
 }

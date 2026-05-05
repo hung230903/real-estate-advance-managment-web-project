@@ -17,6 +17,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -46,11 +47,15 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .addFilterBefore(jwtTokenFilter, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
-                                .requestMatchers("/login", "/login/**", "/register", String.format("%s/users/login", apiPrefix), String.format("%s/users/register", apiPrefix), "/access-denied", "/", "/assets/**", "/web/**").permitAll()
-                        .requestMatchers(String.format("%s/users/userImage", apiPrefix)).hasAnyAuthority(SystemConstant.STAFF_ROLE, SystemConstant.MANAGER_ROLE)
+                                .requestMatchers("/login", "/login/**", "/register",
+                                        String.format("%s/users/login", apiPrefix),
+                                        String.format("%s/users/register", apiPrefix),
+                                        "/access-denied", "/", "/assets/**", "/web/**").permitAll()
+                        .requestMatchers(String.format("%s/users/userImage", apiPrefix), "/admin/users/userImage").hasAnyAuthority(SystemConstant.STAFF_ROLE, SystemConstant.MANAGER_ROLE)
                         .requestMatchers(String.format("%s/users/**", apiPrefix),
+                                "/admin/users/**",
                                 String.format("%s/buildings/assign", apiPrefix),
                                 String.format("%s/buildings/{id}/staff", apiPrefix)).hasAuthority(SystemConstant.MANAGER_ROLE)
                         .requestMatchers("/admin/customers/**", "/admin/api/customers/**", "/admin/api/transactions/**", "/admin/**").hasAnyAuthority(SystemConstant.STAFF_ROLE, SystemConstant.MANAGER_ROLE)

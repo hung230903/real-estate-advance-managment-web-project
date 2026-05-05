@@ -3,6 +3,7 @@
 
 <head th:replace="~{admin/common/header :: header}"></head>
 
+
 <body id="page-top">
 <div id="wrapper">
     <th:block th:replace="~{admin/common/sidebar :: sidebar(menu='customer')}"></th:block>
@@ -36,7 +37,7 @@
                                     <div class="row mb-3">
                                         <div class="col-md-6">
                                             <label for="email">Email</label>
-                                            <input type="email" class="form-control" th:field="*{email}" required>
+                                            <input type="email" class="form-control" th:field="*{email}">
                                         </div>
                                         <div class="col-md-6">
                                             <label for="companyName">Company Name</label>
