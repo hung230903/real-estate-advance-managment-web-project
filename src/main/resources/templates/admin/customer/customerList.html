@@ -286,6 +286,7 @@
 <th:block th:replace="~{admin/common/common-scripts :: jquery}"></th:block>
 
 <script th:inline="javascript">
+    const isManager = /*[[${#authorization.expression('hasRole(''MANAGER'')')}]]*/ false;
     const SELECTED_KEY = 'selectedCustomerIds';
 
     function getSelectedIds() {
@@ -487,8 +488,10 @@
                             rows += '<td class="text-center">' + (trans.modifiedDate && trans.modifiedDate !== trans.createdDate ? (trans.modifiedBy || '') : '') + '</td>';
                             rows += '<td class="text-center">' + (trans.note || '') + '</td>';
                             rows += '<td class="text-center">';
-                            rows += '<button class="btn btn-info btn-sm btnUpdateTransaction mr-1" data-type-key="' + typeKey + '" data-trans-id="' + trans.id + '" title="Edit"><i class="fas fa-edit"></i></button>';
-                            rows += '<button class="btn btn-danger btn-sm btnDeleteTransaction" data-trans-id="' + trans.id + '" title="Delete"><i class="fas fa-trash-alt"></i></button>';
+                            rows += '<button class="btn btn-info btn-sm btnUpdateTransaction mr-1" data-type-key="' + typeKey + '\" data-trans-id="' + trans.id + '" title="Edit"><i class="fas fa-edit"></i></button>';
+                            if (isManager) {
+                                rows += '<button class="btn btn-danger btn-sm btnDeleteTransaction" data-trans-id="' + trans.id + '" title="Delete"><i class="fas fa-trash-alt"></i></button>';
+                            }
                             rows += '</td>';
                             rows += '</tr>';
                         });

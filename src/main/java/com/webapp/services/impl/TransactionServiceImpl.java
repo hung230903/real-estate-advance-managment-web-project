@@ -25,7 +25,7 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     @Transactional(readOnly = true)
     public List<TransactionDTO> findByCustomerIdAndCode(Long customerId, String code) {
-        return transactionRepository.findByCustomerIdAndCode(customerId, code).stream()
+        return transactionRepository.findByCustomerIdAndCodeAndIsActive(customerId, code, 1).stream()
                 .map(transactionConverter::toDTO)
                 .toList();
     }
@@ -43,6 +43,7 @@ public class TransactionServiceImpl implements TransactionService {
             CustomerEntity customer = customerRepository.findById(transactionDTO.getCustomerId())
                     .orElseThrow(() -> new RuntimeException("Customer not found"));
             entity.setCustomer(customer);
+            entity.setIsActive(1);
         }
         transactionRepository.save(entity);
     }
@@ -58,13 +59,16 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     @Transactional
     public void delete(Long id) {
-        transactionRepository.deleteById(id);
+        TransactionEntity entity = transactionRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Transaction not found"));
+        entity.setIsActive(0);
+        transactionRepository.save(entity);
     }
 
     @Override
     @Transactional(readOnly = true)
     public java.util.Map<String, List<TransactionDTO>> getTransactionsByCustomerId(Long customerId) {
-        List<TransactionEntity> entities = transactionRepository.findByCustomerId(customerId);
+        List<TransactionEntity> entities = transactionRepository.findByCustomerIdAndIsActive(customerId, 1);
         java.util.Map<String, List<TransactionDTO>> result = new java.util.HashMap<>();
         for (TransactionType type : TransactionType.values()) {
             List<TransactionDTO> dtos = entities.stream()

@@ -16,6 +16,9 @@ public class TransactionEntity extends BaseEntity {
     @Column(name = "note")
     private String note;
 
+    @Column(name = "is_active")
+    private Integer isActive = 1;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customerid")
     private CustomerEntity customer;
