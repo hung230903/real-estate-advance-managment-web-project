@@ -208,11 +208,11 @@ This project uses a **hybrid authentication** model:
 
 ```
 
-1. permitAll → /login, /register, /admin/api/users/login, /admin/api/users/register, /assets/**, /web/**
-2. STAFF + MANAGER → /admin/api/users/userImage (avatar for menu bar)
-3. MANAGER only → /admin/api/users/**, /admin/users/**, Assignments (/buildings/assign, /customers/assign), ALL Deletions (DELETE /admin/api/**)
-4. STAFF + MANAGER → /admin/**, /admin/api/** (remaining CRUD operations)
-5. permitAll → everything else
+1. permitAll → /login, /register, Public web pages, assets
+2. STAFF + MANAGER → /admin/users/userImage (Avatar access)
+3. MANAGER only → /admin/users/**, User APIs, Assignments, and ALL Deletions
+4. STAFF + MANAGER → /admin/**, /admin/api/** (Core CRUD operations)
+5. authenticated() → Any other requests (Security fallback)
 
 ```
 
@@ -275,8 +275,9 @@ When a user logs in via the API, the JWT token contains the following claims:
 | `DELETE` | `/admin/api/customers/{ids}`      | MANAGER         | Delete customers by ID list     |
 | `GET`    | `/admin/api/customers/{id}/staff` | MANAGER         | Get assigned staff              |
 | `PUT`    | `/admin/api/customers/assign`     | MANAGER         | Assign staff to customer        |
-| `POST`   | `/admin/api/transactions`         | STAFF / MANAGER | Save/Update interaction log     |
-| `DELETE` | `/admin/api/transactions/{id}`    | MANAGER         | Soft Delete transaction by id   |
+| `POST`   | `/admin/api/transactions`               | STAFF / MANAGER | Save/Update interaction log     |
+| `DELETE` | `/admin/api/transactions/{id}`          | MANAGER         | Soft Delete transaction by id   |
+| `GET`    | `/admin/api/transactions/customer/{id}` | STAFF / MANAGER | Get transaction history         |
 
 ### Example: Login Request
 
