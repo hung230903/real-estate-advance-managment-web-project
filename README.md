@@ -67,7 +67,8 @@ src/main/java/com/webapp/
 │   ├── UserConverter.java
 │   ├── CustomerConverter.java
 │   ├── TransactionConverter.java
-│   └── BuildingRequestConverter.java
+│   ├── BuildingConverter.java
+│   └── RentAreaConverter.java
 ├── entities/                      # JPA Entities
 │   ├── BaseEntity.java            # Common auditing fields
 │   ├── UserEntity.java
@@ -79,8 +80,7 @@ src/main/java/com/webapp/
 │   ├── CustomerStatus.java        # Customer status enum
 │   ├── District.java              # District enum
 │   ├── RentType.java              # Rent type enum
-│   ├── TransactionType.java       # Transaction type enum
-│   └── UserRole.java              # ROLE_MANAGER, ROLE_EMPLOYEE, ROLE_USER
+│   └── TransactionType.java       # Transaction type enum
 ├── exceptions/                    # Global Exception Handling
 │   ├── GlobalExceptionHandler.java
 │   └── InvalidEntityException.java
@@ -146,7 +146,7 @@ src/main/resources/
 ├── application.properties.example # Configuration template (copy to application.properties)
 ├── application.properties         # Application configuration (git-ignored)
 ├── static/                        # CSS, JS, images
-│   ├── admin_dashboard/           # Admin panel assets
+│   ├── admin_dashboard/           # Admin panel assets (custom.css, custom.js)
 │   └── login/                     # Login/Register page assets
 └── templates/                     # Thymeleaf HTML templates
     ├── login.html                 # Login page
@@ -173,7 +173,7 @@ src/main/resources/
 
 ### 👥 Customer Management
 
-- List, search, create, update, and manage customers.
+- List, search, create, update, and soft-delete customers.
 - **Transaction History**: Track detailed interaction logs for each customer:
   - **CSKH (Customer Care)**: Log communication and feedback.
   - **DDX (Site Visits)**: Track building viewing history.
@@ -209,9 +209,9 @@ This project uses a **hybrid authentication** model:
 ```
 
 1. permitAll → /login, /register, /admin/api/users/login, /admin/api/users/register, /assets/**, /web/**
-2. EMPLOYEE + MANAGER → /admin/api/users/userImage (avatar for menu bar)
-3. MANAGER only → /admin/api/users/\*\*, /admin/api/buildings/assign, /admin/api/buildings/{id}/staff
-4. EMPLOYEE + MANAGER → /admin/\*\*
+2. STAFF + MANAGER → /admin/api/users/userImage (avatar for menu bar)
+3. MANAGER only → /admin/api/users/**, /admin/api/buildings/assign, /admin/api/buildings/{id}/staff, DELETE /admin/api/transactions/**
+4. STAFF + MANAGER → /admin/**, /admin/api/** (remaining endpoints)
 5. permitAll → everything else
 
 ```
@@ -257,24 +257,26 @@ When a user logs in via the API, the JWT token contains the following claims:
 
 #### Building Management
 
-| Method   | Endpoint                          | Auth               | Description              |
-| -------- | --------------------------------- | ------------------ | ------------------------ |
-| `GET`    | `/admin/api/buildings`            | EMPLOYEE / MANAGER | Search buildings         |
-| `POST`   | `/admin/api/buildings`            | EMPLOYEE / MANAGER | Create building          |
-| `PUT`    | `/admin/api/buildings`            | EMPLOYEE / MANAGER | Update building          |
-| `DELETE` | `/admin/api/buildings/{ids}`      | EMPLOYEE / MANAGER | Delete buildings         |
-| `GET`    | `/admin/api/buildings/{id}/staff` | MANAGER            | Get assigned staff       |
-| `PUT`    | `/admin/api/buildings/assign`     | MANAGER            | Assign staff to building |
+| Method   | Endpoint                          | Auth            | Description              |
+| -------- | --------------------------------- | --------------- | ------------------------ |
+| `GET`    | `/admin/api/buildings`            | STAFF / MANAGER | Search buildings         |
+| `POST`   | `/admin/api/buildings`            | STAFF / MANAGER | Create building          |
+| `PUT`    | `/admin/api/buildings`            | STAFF / MANAGER | Update building          |
+| `DELETE` | `/admin/api/buildings/{ids}`      | STAFF / MANAGER | Delete buildings         |
+| `GET`    | `/admin/api/buildings/{id}/staff` | MANAGER         | Get assigned staff       |
+| `PUT`    | `/admin/api/buildings/assign`     | MANAGER         | Assign staff to building |
 
 #### Customer & Transaction Management
 
-| Method   | Endpoint                       | Auth               | Description                 |
-| -------- | ------------------------------ | ------------------ | --------------------------- |
-| `GET`    | `/admin/api/customers`         | EMPLOYEE / MANAGER | Search customers            |
-| `POST`   | `/admin/api/customers`         | EMPLOYEE / MANAGER | Create/Update customer      |
-| `DELETE` | `/admin/api/customers`         | EMPLOYEE / MANAGER | Delete customers by ID list |
-| `POST`   | `/admin/api/transactions`      | EMPLOYEE / MANAGER | Save/Update interaction log |
-| `DELETE` | `/admin/api/transactions/{id}` | EMPLOYEE / MANAGER | Delete transaction record   |
+| Method   | Endpoint                       | Auth            | Description                 |
+| -------- | ------------------------------ | --------------- | --------------------------- |
+| `GET`    | `/admin/api/customers`            | STAFF / MANAGER | Search customers            |
+| `POST`   | `/admin/api/customers`            | STAFF / MANAGER | Create/Update customer      |
+| `DELETE` | `/admin/api/customers/{ids}`       | STAFF / MANAGER | Delete customers by ID list |
+| `GET`    | `/admin/api/customers/{id}/staff` | MANAGER         | Get assigned staff          |
+| `PUT`    | `/admin/api/customers/assign`     | MANAGER         | Assign staff to customer    |
+| `POST`   | `/admin/api/transactions`      | STAFF / MANAGER | Save/Update interaction log |
+| `DELETE` | `/admin/api/transactions/{id}` | MANAGER         | Delete transaction record   |
 
 ### Example: Login Request
 
@@ -418,7 +420,7 @@ spring.security.oauth2.client.registration.facebook.scope=email,public_profile
 1. Navigate to `/login` to access the login page.
 2. Click **"Sign up here"** to register a new account (assigned `ROLE_USER` by default).
 3. After registration, you'll be redirected to the login page with a success message.
-4. Login with **MANAGER** or **EMPLOYEE** credentials to access the admin dashboard.
+4. Login with **MANAGER** or **STAFF** credentials to access the admin dashboard.
 
 ### REST API (Postman)
 
@@ -433,17 +435,17 @@ spring.security.oauth2.client.registration.facebook.scope=email,public_profile
 | Role                 | Code            | Permissions                                                   |
 | -------------------- | --------------- | ------------------------------------------------------------- |
 | **Manager**          | `ROLE_MANAGER`  | Full access: User, Building (Assign), Customer & Transactions |
-| **Staff / Employee** | `ROLE_EMPLOYEE` | Building, Customer & Transaction management, Profile access   |
+| **Staff / Employee** | `ROLE_STAFF`    | Building, Customer & Transaction management, Profile access   |
 | **User**             | `ROLE_USER`     | Public page access, default role for self-registration        |
 
 ### Role Hierarchy
 
 ```
-MANAGER > EMPLOYEE > USER
+MANAGER > STAFF > USER
 ```
 
-- **MANAGER** can do everything an EMPLOYEE can, plus manage users and assign staff.
-- **EMPLOYEE** can access the admin dashboard and manage buildings.
+- **MANAGER** can do everything a STAFF can, plus manage users and assign staff.
+- **STAFF** can access the admin dashboard and manage buildings/customers.
 - **USER** can only access public pages. This is the default role for self-registered accounts.
 
 ---

@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -49,25 +50,49 @@ public class WebSecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
-                                .requestMatchers("/login", "/login/**", "/register",
-                                        String.format("%s/users/login", apiPrefix),
-                                        String.format("%s/users/register", apiPrefix),
-                                        "/access-denied", "/", "/assets/**", "/web/**").permitAll()
-                        .requestMatchers(String.format("%s/users/userImage", apiPrefix), "/admin/users/userImage").hasAnyAuthority(SystemConstant.STAFF_ROLE, SystemConstant.MANAGER_ROLE)
-                        .requestMatchers(String.format("%s/users/**", apiPrefix),
+                        // PUBLIC
+                        .requestMatchers(
+                                "/login", "/login/**", "/register",
+                                String.format("%s/users/login", apiPrefix),
+                                String.format("%s/users/register", apiPrefix),
+                                "/access-denied", "/", "/assets/**", "/web/**"
+                        ).permitAll()
+
+                        // DELETE transaction
+                        .requestMatchers(HttpMethod.DELETE, "/admin/api/transactions/**")
+                        .hasAuthority(SystemConstant.MANAGER_ROLE)
+
+                        // API cần STAFF + MANAGER
+                        .requestMatchers(
+                                "/admin/customers/**",
+                                "/admin/api/customers/**",
+                                "/admin/api/transactions/**"
+                        ).hasAnyAuthority(SystemConstant.STAFF_ROLE, SystemConstant.MANAGER_ROLE)
+
+                        // userImage
+                        .requestMatchers(
+                                String.format("%s/users/userImage", apiPrefix),
+                                "/admin/users/userImage"
+                        ).hasAnyAuthority(SystemConstant.STAFF_ROLE, SystemConstant.MANAGER_ROLE)
+
+                        // MANAGER only
+                        .requestMatchers(
+                                String.format("%s/users/**", apiPrefix),
                                 "/admin/users/**",
                                 String.format("%s/buildings/assign", apiPrefix),
-                                String.format("%s/buildings/{id}/staff", apiPrefix)).hasAuthority(SystemConstant.MANAGER_ROLE)
-                        .requestMatchers("/admin/customers/**", "/admin/api/customers/**", "/admin/api/transactions/**", "/admin/**").hasAnyAuthority(SystemConstant.STAFF_ROLE, SystemConstant.MANAGER_ROLE)
-                .anyRequest().permitAll()
+                                String.format("%s/buildings/{id}/staff", apiPrefix)
+                        ).hasAuthority(SystemConstant.MANAGER_ROLE)
+
+                        // fallback
+                        .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
-                .loginPage("/login")
-                .userInfoEndpoint(userInfo -> userInfo
-                        .userService(databaseOAuth2UserService)
-                        .oidcUserService(databaseOidcUserService))
-                .successHandler(customSuccessHandler)
-                .failureUrl("/login?oauth2Error"))
+                        .loginPage("/login")
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(databaseOAuth2UserService)
+                                .oidcUserService(databaseOidcUserService))
+                        .successHandler(customSuccessHandler)
+                        .failureUrl("/login?oauth2Error"))
                 .formLogin(form -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/login")
