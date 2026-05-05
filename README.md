@@ -210,8 +210,8 @@ This project uses a **hybrid authentication** model:
 
 1. permitAll → /login, /register, /admin/api/users/login, /admin/api/users/register, /assets/**, /web/**
 2. STAFF + MANAGER → /admin/api/users/userImage (avatar for menu bar)
-3. MANAGER only → /admin/api/users/**, /admin/api/buildings/assign, /admin/api/buildings/{id}/staff, DELETE /admin/api/transactions/**
-4. STAFF + MANAGER → /admin/**, /admin/api/** (remaining endpoints)
+3. MANAGER only → /admin/api/users/**, /admin/users/**, Assignments (/buildings/assign, /customers/assign), ALL Deletions (DELETE /admin/api/**)
+4. STAFF + MANAGER → /admin/**, /admin/api/** (remaining CRUD operations)
 5. permitAll → everything else
 
 ```
@@ -262,7 +262,7 @@ When a user logs in via the API, the JWT token contains the following claims:
 | `GET`    | `/admin/api/buildings`            | STAFF / MANAGER | Search buildings         |
 | `POST`   | `/admin/api/buildings`            | STAFF / MANAGER | Create building          |
 | `PUT`    | `/admin/api/buildings`            | STAFF / MANAGER | Update building          |
-| `DELETE` | `/admin/api/buildings/{ids}`      | STAFF / MANAGER | Delete buildings         |
+| `DELETE` | `/admin/api/buildings/{ids}`      | MANAGER         | Delete buildings         |
 | `GET`    | `/admin/api/buildings/{id}/staff` | MANAGER         | Get assigned staff       |
 | `PUT`    | `/admin/api/buildings/assign`     | MANAGER         | Assign staff to building |
 
@@ -272,7 +272,7 @@ When a user logs in via the API, the JWT token contains the following claims:
 | -------- | ------------------------------ | --------------- | --------------------------- |
 | `GET`    | `/admin/api/customers`            | STAFF / MANAGER | Search customers            |
 | `POST`   | `/admin/api/customers`            | STAFF / MANAGER | Create/Update customer      |
-| `DELETE` | `/admin/api/customers/{ids}`       | STAFF / MANAGER | Delete customers by ID list |
+| `DELETE` | `/admin/api/customers/{ids}`       | MANAGER         | Delete customers by ID list |
 | `GET`    | `/admin/api/customers/{id}/staff` | MANAGER         | Get assigned staff          |
 | `PUT`    | `/admin/api/customers/assign`     | MANAGER         | Assign staff to customer    |
 | `POST`   | `/admin/api/transactions`      | STAFF / MANAGER | Save/Update interaction log |

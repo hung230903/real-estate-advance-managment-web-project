@@ -58,32 +58,31 @@ public class WebSecurityConfig {
                                 "/access-denied", "/", "/assets/**", "/web/**"
                         ).permitAll()
 
-                        // DELETE transaction
-                        .requestMatchers(HttpMethod.DELETE, "/admin/api/transactions/**")
-                        .hasAuthority(SystemConstant.MANAGER_ROLE)
-
-                        // API cần STAFF + MANAGER
-                        .requestMatchers(
-                                "/admin/customers/**",
-                                "/admin/api/customers/**",
-                                "/admin/api/transactions/**"
-                        ).hasAnyAuthority(SystemConstant.STAFF_ROLE, SystemConstant.MANAGER_ROLE)
-
-                        // userImage
+                        // USER IMAGE
                         .requestMatchers(
                                 String.format("%s/users/userImage", apiPrefix),
                                 "/admin/users/userImage"
                         ).hasAnyAuthority(SystemConstant.STAFF_ROLE, SystemConstant.MANAGER_ROLE)
 
-                        // MANAGER only
+                        // MANAGER ONLY (Building + Customer + User management & Assignments)
                         .requestMatchers(
                                 String.format("%s/users/**", apiPrefix),
                                 "/admin/users/**",
                                 String.format("%s/buildings/assign", apiPrefix),
-                                String.format("%s/buildings/{id}/staff", apiPrefix)
+                                String.format("%s/buildings/{id}/staff", apiPrefix),
+                                String.format("%s/customers/assign", apiPrefix),
+                                String.format("%s/customers/{id}/staff", apiPrefix)
                         ).hasAuthority(SystemConstant.MANAGER_ROLE)
 
-                        // fallback
+                        // DELETE
+                        .requestMatchers(HttpMethod.DELETE, "/admin/api/**")
+                        .hasAuthority(SystemConstant.MANAGER_ROLE)
+
+                        // ADMIN ACCESS
+                        .requestMatchers("/admin/**", "/admin/api/**")
+                        .hasAnyAuthority(SystemConstant.STAFF_ROLE, SystemConstant.MANAGER_ROLE)
+
+                        // FALLBACK
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
