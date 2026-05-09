@@ -19,6 +19,8 @@ public interface UserService {
     void delete(List<Long> ids);
 
     UserDTO findByUserName(String userName);
+    
+    UserEntity getUserByUserName(String userName);
 
     UserDTO findById(Long id);
 

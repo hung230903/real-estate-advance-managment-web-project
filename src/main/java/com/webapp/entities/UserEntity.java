@@ -42,8 +42,12 @@ public class UserEntity {
     @Lob
     @Column(name = "image", length = Integer.MAX_VALUE, nullable = true)
     private byte[] image;
+
     @ManyToMany(mappedBy = "userEntities", fetch = FetchType.LAZY)
     List<BuildingEntity> buildingEntities = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "userEntities", fetch = FetchType.LAZY)
+    List<CustomerEntity> customerEntities = new ArrayList<>();
 
     public UserEntity(Long id, String userName, boolean active, String userRole, String fullName, String phone) {
         this.id = id;

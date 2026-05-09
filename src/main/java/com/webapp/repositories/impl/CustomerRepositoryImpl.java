@@ -60,7 +60,7 @@ public class CustomerRepositoryImpl implements CustomerRepositoryCustom {
         buildWhere(whereSql, searchRequest);
         sql.append(whereSql);
         sql.append(" GROUP BY c.id ");
-        sql.append(" ORDER BY c.fullname ASC ");
+        sql.append(" ORDER BY c.createddate DESC ");
 
         if (page > 0 && maxResult > 0) {
             sql.append(" LIMIT ").append(maxResult).append(" OFFSET ").append((page - 1) * maxResult);

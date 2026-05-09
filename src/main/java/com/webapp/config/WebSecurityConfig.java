@@ -55,7 +55,7 @@ public class WebSecurityConfig {
                                 "/login", "/login/**", "/register",
                                 String.format("%s/users/login", apiPrefix),
                                 String.format("%s/users/register", apiPrefix),
-                                "/access-denied", "/", "/assets/**", "/web/**"
+                                "/access-denied", "/403", "/", "/assets/**", "/web/**", "/contact"
                         ).permitAll()
 
                         // USER IMAGE
@@ -85,6 +85,7 @@ public class WebSecurityConfig {
                         // FALLBACK
                         .anyRequest().authenticated()
                 )
+                .exceptionHandling(ex -> ex.accessDeniedPage("/403"))
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/login")
                         .userInfoEndpoint(userInfo -> userInfo

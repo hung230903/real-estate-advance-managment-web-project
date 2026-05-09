@@ -16,4 +16,9 @@ public class HomeController {
     public ModelAndView contactPage() {
         return new ModelAndView("web/contact");
     }
+
+    @GetMapping("/403")
+    public ModelAndView accessDenied() {
+        return new ModelAndView("error/403");
+    }
 }

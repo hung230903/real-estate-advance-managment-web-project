@@ -1,6 +1,7 @@
 package com.webapp.controller.admin.customer;
 
 import com.webapp.constant.SystemConstant;
+import com.webapp.entities.UserEntity;
 import com.webapp.enums.CustomerStatus;
 import com.webapp.models.dtos.CustomerDTO;
 import com.webapp.models.request.CustomerSearchRequest;
@@ -58,6 +59,12 @@ public class CustomerController {
 
     @GetMapping("/update/{id}")
     public String updateCustomer(@PathVariable Long id, Model model) {
+        if (SecurityUtils.getAuthorities().contains(SystemConstant.STAFF_ROLE)) {
+            UserEntity userEntity = userService.getUserByUserName(Objects.requireNonNull(SecurityUtils.getPrincipal()).getUsername());
+            if (userEntity.getCustomerEntities().stream().noneMatch(c -> c.getId().equals(id))) {
+                return "redirect:/403";
+            }
+        }
         CustomerDTO customerDTO = customerService.findById(id);
         model.addAttribute("customer", customerDTO);
         model.addAttribute("statuses", CustomerStatus.getCustomerStatus());

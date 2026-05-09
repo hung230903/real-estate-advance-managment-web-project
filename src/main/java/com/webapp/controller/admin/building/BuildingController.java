@@ -1,8 +1,9 @@
 package com.webapp.controller.admin.building;
 
+import com.webapp.constant.SystemConstant;
+import com.webapp.entities.UserEntity;
 import com.webapp.enums.District;
 import com.webapp.enums.RentType;
-import com.webapp.constant.SystemConstant;
 import com.webapp.models.dtos.BuildingDTO;
 import com.webapp.models.request.BuildingSearchRequestDTO;
 import com.webapp.services.BuildingService;
@@ -33,8 +34,7 @@ public class BuildingController {
                                @RequestParam(value = "page", defaultValue = "1") int page,
                                Model model) {
 
-        List<String> authorities = SecurityUtils.getAuthorities();
-        if (authorities.contains(SystemConstant.STAFF_ROLE)) {
+        List<String> authorities = SecurityUtils.getAuthorities(); if (authorities.contains(SystemConstant.STAFF_ROLE)) {
             Long staffId = Objects.requireNonNull(SecurityUtils.getPrincipal()).getId();
             buildingSearchRequestDTO.setStaffId(staffId);
         }
@@ -64,6 +64,12 @@ public class BuildingController {
 
     @GetMapping("/update/{id}")
     public String updateBuilding(@PathVariable Long id, Model model) {
+        if (SecurityUtils.getAuthorities().contains(SystemConstant.STAFF_ROLE)) {
+            UserEntity userEntity = userService.getUserByUserName(Objects.requireNonNull(SecurityUtils.getPrincipal()).getUsername());
+            if (userEntity.getBuildingEntities().stream().noneMatch(b -> b.getId().equals(id))) {
+                return "redirect:/403";
+            }
+        }
         BuildingDTO buildingDTO = buildingService.findById(id);
         model.addAttribute("districts", District.getDistrictCode());
         model.addAttribute("typeCodes", RentType.getRentType());

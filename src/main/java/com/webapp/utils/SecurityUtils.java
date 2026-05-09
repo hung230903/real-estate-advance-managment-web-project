@@ -6,7 +6,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class SecurityUtils {
 
@@ -23,7 +22,7 @@ public class SecurityUtils {
         if (authentication != null) {
             return authentication.getAuthorities().stream()
                     .map(GrantedAuthority::getAuthority)
-                    .collect(Collectors.toList());
+                    .toList();
         }
         return List.of();
     }
