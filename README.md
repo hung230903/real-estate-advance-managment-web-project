@@ -39,10 +39,13 @@ A full-stack web application built with **Spring Boot 3** for managing real esta
 src/main/java/com/webapp/
 ├── Main.java                      # Application entry point
 ├── api/                           # REST API Controllers
-│   ├── BuildingAPI.java           # Building CRUD endpoints
-│   ├── CustomerAPI.java           # Customer CRUD API
-│   ├── ContactAPI.java            # Contact form API
-│   └── UserAPI.java               # User CRUD, Login & Register API
+│   ├── admin/                     # Admin restricted APIs
+│   │   ├── BuildingAPI.java       # Building CRUD endpoints
+│   │   ├── CustomerAPI.java       # Customer CRUD API
+│   │   ├── TransactionAPI.java    # Transaction & Interaction API
+│   │   └── UserAPI.java           # User CRUD, Login & Register API
+│   └── web/                       # Public/Web APIs
+│       └── ContactAPI.java        # Contact form API
 ├── components/
 │   └── JwtTokenUtils.java         # JWT token generation & validation
 ├── config/
@@ -156,6 +159,8 @@ src/main/resources/
     │   ├── building/              # Building management pages
     │   ├── customer/              # Customer management pages
     │   └── user/                  # User management pages
+    ├── error/                     # Error pages
+    │   └── 403.html               # Access Denied page
     └── web/                       # Public-facing pages
         ├── contact.html
         └── index.html
@@ -239,10 +244,9 @@ When a user logs in via the API, the JWT token contains the following claims:
 
 ### Public Endpoints (No authentication required)
 
-| Method | Endpoint                    | Description                 |
-| ------ | --------------------------- | --------------------------- |
 | `POST` | `/admin/api/users/login`    | Login and receive JWT token |
 | `POST` | `/admin/api/users/register` | Register a new user account |
+| `POST` | `/api/contact`              | Submit contact form         |
 
 ### Protected Endpoints (JWT Bearer Token required)
 
@@ -276,6 +280,7 @@ When a user logs in via the API, the JWT token contains the following claims:
 | `GET`    | `/admin/api/customers/{id}/staff` | MANAGER         | Get assigned staff              |
 | `PUT`    | `/admin/api/customers/assign`     | MANAGER         | Assign staff to customer        |
 | `POST`   | `/admin/api/transactions`               | STAFF / MANAGER | Save/Update interaction log     |
+| `GET`    | `/admin/api/transactions/{id}`          | STAFF / MANAGER | Get transaction detail          |
 | `DELETE` | `/admin/api/transactions/{id}`          | MANAGER         | Soft Delete transaction by id   |
 | `GET`    | `/admin/api/transactions/customer/{id}` | STAFF / MANAGER | Get transaction history         |
 
