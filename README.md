@@ -36,6 +36,9 @@ A full-stack web application built with **Spring Boot 3** for managing real esta
 ## 📁 Project Structure
 
 ```
+database/
+└── estateadvance_db.sql            # Full database schema + seed data
+
 src/main/java/com/webapp/
 ├── Main.java                      # Application entry point
 ├── api/                           # REST API Controllers
@@ -401,8 +404,14 @@ spring.security.oauth2.client.registration.facebook.scope=email,public_profile
    ```
 
 2. **Set up the database:**
-   - Create a MySQL database named `estateadvance`
-   - Import the SQL schema (if available)
+
+   Import the provided SQL file to create the database, tables, and seed data:
+
+   ```bash
+   mysql -u your_username -p < database/estateadvance_db.sql
+   ```
+
+   This will automatically create the `estateadvance` database with all required tables (`building`, `user`, `customer`, `transaction`, `rentarea`, `role`, `assignmentbuilding`, `assignmentcustomer`) and sample data.
 
 3. **Configure `application.properties`:**
 
