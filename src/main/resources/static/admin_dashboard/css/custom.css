@@ -1,0 +1,7 @@
+.highlight-filled {
+    border-color: #4e73df !important;
+    background-color: #f8faff !important;
+    box-shadow: 0 0 0 0.1rem rgba(78, 115, 223, 0.1) !important;
+    transition: all 0.3s ease;
+}
+

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{admin/common/header :: header}"></head>
+
+
+<body id="page-top">
+<div id="wrapper">
+    <th:block th:replace="~{admin/common/sidebar :: sidebar(menu='customer')}"></th:block>
+
+    <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+            <th:block th:replace="~{admin/common/menu :: menu}"></th:block>
+
+            <div class="container-fluid">
+                <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                    <h1 class="h3 mb-0 text-gray-800"
+                        th:text="${customer.id == null ? 'Add Customer' : 'Edit Customer'}"></h1>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card shadow mb-4">
+                            <div class="card-body">
+                                <form id="formEdit" th:object="${customer}">
+                                    <input type="hidden" th:field="*{id}">
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label for="fullName">Full Name</label>
+                                            <input type="text" class="form-control" th:field="*{fullName}" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="phone">Phone</label>
+                                            <input type="text" class="form-control" th:field="*{phone}" required>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label for="email">Email</label>
+                                            <input type="email" class="form-control" th:field="*{email}">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="companyName">Company Name</label>
+                                            <input type="text" class="form-control" th:field="*{companyName}">
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label for="status">Status</label>
+                                            <select class="form-control" th:field="*{status}">
+                                                <option value="">Select Status</option>
+                                                <option th:each="status : ${statuses}" th:value="${status.key}"
+                                                        th:text="${status.value}"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-12">
+                                            <label for="demand">Demand</label>
+                                            <textarea class="form-control" th:field="*{demand}" rows="3"></textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="text-center">
+                                        <button type="button" class="btn btn-primary" id="btnAddOrUpdateCustomer">
+                                                <span
+                                                        th:text="${customer.id == null ? 'Add Customer' : 'Update Customer'}"></span>
+                                        </button>
+                                        <a th:href="@{/admin/customers/list}" class="btn"
+                                           style="background-color: #d15b47; color: white;">Cancel</a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <th:block th:replace="~{admin/common/footer :: footer}"></th:block>
+    </div>
+</div>
+
+
+<th:block th:replace="~{admin/common/common-scripts :: jquery}"></th:block>
+
+<script>
+    $('#btnAddOrUpdateCustomer').click(function (e) {
+        e.preventDefault();
+        const data = {};
+        const formData = $('#formEdit').serializeArray();
+        $.each(formData, function (index, v) {
+            data["" + v.name + ""] = v.value;
+        });
+
+        $.ajax({
+            type: "POST",
+            url: "/admin/api/customers",
+            data: JSON.stringify(data),
+            dataType: "json",
+            contentType: "application/json",
+            success: function (response) {
+                Swal.fire("Success", response.message, "success").then(() => {
+                    window.location.href = "/admin/customers/list";
+                });
+            },
+            error: function (error) {
+                Swal.fire("Error", "Could not save customer", "error");
+            }
+        });
+    });
+
+
+</script>
+</body>
+
+</html>
