@@ -27,9 +27,9 @@ A full-stack web application built with **Spring Boot 3** for managing real esta
 | **ORM**             | Spring Data JPA, Hibernate              |
 | **Database**        | MySQL                                   |
 | **Template Engine** | Thymeleaf + Thymeleaf Security Extras   |
-| **Frontend**        | Bootstrap 4, jQuery, Font Awesome       |
+| **Frontend**        | Bootstrap 4, jQuery, Font Awesome, SweetAlert2 |
 | **Build Tool**      | Maven                                   |
-| **Others**          | Lombok, ModelMapper, Jakarta Validation |
+| **Others**          | Lombok, ModelMapper, Jakarta Validation, SLF4J, Jackson, OAuth2 Client |
 
 ---
 
@@ -172,7 +172,23 @@ src/main/resources/
 
 ### 🏗 Building Management
 
-- Search buildings with multiple filters (district, type, area, price...).
+- Search buildings with **16 advanced filters**:
+  - `name` (Building Name)
+  - `floorArea` (Floor Area)
+  - `numberOfBasement` (Number of Basements)
+  - `district` (District)
+  - `ward` (Ward)
+  - `street` (Street)
+  - `managerName` (Manager Name)
+  - `managerPhone` (Manager Phone)
+  - `direction` (Direction)
+  - `level` (Level)
+  - `typeCode` (Building Types - multiple select)
+  - `rentPriceFrom` (Min Rent Price)
+  - `rentPriceTo` (Max Rent Price)
+  - `rentAreaFrom` (Min Rent Area)
+  - `rentAreaTo` (Max Rent Area)
+  - `staffId` (Assigned Staff - Manager only)
 - Create, update, and delete buildings.
 - Assign/unassign staff to buildings (Manager only).
 
