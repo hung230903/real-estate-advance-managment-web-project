@@ -489,13 +489,12 @@ MANAGER > STAFF > USER
 
 ---
 
----
-
 ## 🧪 Unit Testing
 
 This project utilizes a comprehensive **JUnit 5** and **Mockito** testing suite to ensure the reliability of the service layer, controllers, and converters.
 
 ### Testing Stack
+
 - **JUnit 5 (Jupiter)**: Testing framework.
 - **Mockito**: Mocking framework for isolating dependencies.
 - **AssertJ**: Fluent assertions for more readable test assertions.
@@ -506,19 +505,25 @@ This project utilizes a comprehensive **JUnit 5** and **Mockito** testing suite 
 The testing suite currently contains **85 Unit Tests** covering the following layers of the application:
 
 #### 1. Service Layer (`/services/impl`)
+
 Business logic is tested in isolation from the database by mocking dependencies (Repositories).
+
 - **BuildingServiceImplTest**: Covers building search (pagination & filtering logic), assignment of staff, CRUD operations, and image retrieval.
 - **CustomerServiceImplTest**: Covers customer search, lifecycle management (save/update/soft-delete), and staff assignments.
 - **TransactionServiceImplTest**: Validates the logic for creating, fetching, and removing interaction logs (CSKH, DDX).
 - **UserServiceImpl & UserDetailsServiceImpl Test**: Validates user CRUD operations, pagination, authentication data loading, and password hashing logic.
 
 #### 2. API Controller Layer (`/api/admin` & `/api/web`)
+
 REST endpoints are tested using **MockMvc** (`@WebMvcTest`) to validate HTTP request/response handling, routing, and JSON serialization without loading the entire server context.
+
 - Tests include: `BuildingAPITest`, `CustomerAPITest`, `TransactionAPITest`, `UserAPITest`, and `ContactAPITest`.
 - **Note**: The `@MockBean` is used to inject fake `UserDetailsService` and `JwtTokenUtils` to bypass the `JwtTokenFilter` security barrier during `@WebMvcTest` execution.
 
 #### 3. Converter Layer (`/converter`)
+
 Tests ensure the accurate mapping of fields between Entities and DTOs, including complex logic such as enum translations (e.g., District values) and string processing.
+
 - Includes tests for `BuildingConverter` and `UserConverter` (e.g., verifying `checked` logic for staff assignment check-boxes).
 
 ---
