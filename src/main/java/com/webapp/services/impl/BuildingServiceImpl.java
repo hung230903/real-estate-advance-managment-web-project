@@ -33,117 +33,118 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BuildingServiceImpl implements BuildingService {
 
-    private final BuildingRepository buildingRepository;
-    private final UserRepository userRepository;
-    private final BuildingConverter buildingConverter;
-    private final RentAreaConverter rentAreaConverter;
+  private final BuildingRepository buildingRepository;
+  private final UserRepository userRepository;
+  private final BuildingConverter buildingConverter;
+  private final RentAreaConverter rentAreaConverter;
 
-    private static List<StaffResponseDTO> getStaffResponseDTOS(List<UserEntity> staffList, Set<Long> assignedStaffIds) {
-        List<StaffResponseDTO> staffResponses = new ArrayList<>();
+  private static List<StaffResponseDTO> getStaffResponseDTOS(List<UserEntity> staffList, Set<Long> assignedStaffIds) {
+    List<StaffResponseDTO> staffResponses = new ArrayList<>();
 
-        for (UserEntity user : staffList) {
-            StaffResponseDTO staffResponseDTO = new StaffResponseDTO();
-            staffResponseDTO.setId(user.getId());
-            staffResponseDTO.setUserName(user.getUserName());
-            staffResponseDTO.setChecked("");
+    for (UserEntity user : staffList) {
+      StaffResponseDTO staffResponseDTO = new StaffResponseDTO();
+      staffResponseDTO.setId(user.getId());
+      staffResponseDTO.setUserName(user.getUserName());
+      staffResponseDTO.setChecked("");
 
-            if (assignedStaffIds.contains(user.getId())) {
-                staffResponseDTO.setChecked("checked");
-            }
+      if (assignedStaffIds.contains(user.getId())) {
+        staffResponseDTO.setChecked("checked");
+      }
 
-            staffResponses.add(staffResponseDTO);
-        }
-
-        return staffResponses;
+      staffResponses.add(staffResponseDTO);
     }
 
-    @Override
-    public PaginationResult<BuildingSearchResponseDTO> searchBuildings(BuildingSearchRequestDTO searchRequest, int page, int maxResult, int maxNavigationPage) {
-        int totalRecords = buildingRepository.countAll(searchRequest);
+    return staffResponses;
+  }
 
-        // Tính toán lại số trang để tránh trường hợp page truyền vào vượt quá số trang hiện có
-        int totalPages = (int) Math.ceil((double) totalRecords / maxResult);
-        int actualPage = (page > 1 && page > totalPages) ? 1 : Math.max(page, 1);
+  @Override
+  public PaginationResult<BuildingSearchResponseDTO> searchBuildings(BuildingSearchRequestDTO searchRequest, int page,
+      int maxResult, int maxNavigationPage) {
+    int totalRecords = buildingRepository.countAll(searchRequest);
 
-        List<BuildingEntity> buildingEntities = buildingRepository.searchBuildings(searchRequest, actualPage, maxResult);
+    // Tính toán lại số trang để tránh trường hợp page truyền vào vượt quá số trang
+    // hiện có
+    int totalPages = (int) Math.ceil((double) totalRecords / maxResult);
+    int actualPage = (page > 1 && page > totalPages) ? 1 : Math.max(page, 1);
 
-        List<BuildingSearchResponseDTO> responses = new ArrayList<>();
-        for (BuildingEntity buildingEntity : buildingEntities) {
-            responses.add(buildingConverter.toBuildingSearchResponseDTO(buildingEntity));
-        }
+    List<BuildingEntity> buildingEntities = buildingRepository.searchBuildings(searchRequest, actualPage, maxResult);
 
-        return new PaginationResult<>(responses, totalRecords, page, maxResult, maxNavigationPage);
+    List<BuildingSearchResponseDTO> responses = new ArrayList<>();
+    for (BuildingEntity buildingEntity : buildingEntities) {
+      responses.add(buildingConverter.toBuildingSearchResponseDTO(buildingEntity));
     }
 
+    return new PaginationResult<>(responses, totalRecords, page, maxResult, maxNavigationPage);
+  }
 
-    @Override
-    public BuildingDTO findById(Long id) {
-        BuildingEntity buildingEntity = buildingRepository.findById(id).get();
-        return buildingConverter.toBuildingDTO(buildingEntity);
-    }
+  @Override
+  public BuildingDTO findById(Long id) {
+    BuildingEntity buildingEntity = buildingRepository.findById(id).get();
+    return buildingConverter.toBuildingDTO(buildingEntity);
+  }
 
-    @Override
-    public void deleteAllById(List<Long> ids) {
-        buildingRepository.deleteAllById(ids);
-    }
+  @Override
+  public void deleteAllById(List<Long> ids) {
+    buildingRepository.deleteAllById(ids);
+  }
 
-    @Override
-    public BuildingEntity create(BuildingDTO buildingDTO) {
-        log.info("Request to create building: {}", buildingDTO);
-        BuildingEntity buildingEntity = buildingConverter.toBuildingEntity(buildingDTO);
-        return buildingRepository.save(buildingEntity);
-    }
+  @Override
+  public BuildingEntity create(BuildingDTO buildingDTO) {
+    log.info("Request to create building: {}", buildingDTO);
+    BuildingEntity buildingEntity = buildingConverter.toBuildingEntity(buildingDTO);
+    return buildingRepository.save(buildingEntity);
+  }
 
-    @Override
-    public BuildingEntity update(BuildingDTO buildingDTO) {
-        BuildingEntity buildingEntity = buildingRepository.findById(buildingDTO.getId())
-                .orElseThrow(() -> new RuntimeException("Building not found"));
+  @Override
+  public BuildingEntity update(BuildingDTO buildingDTO) {
+    BuildingEntity buildingEntity = buildingRepository.findById(buildingDTO.getId())
+        .orElseThrow(() -> new RuntimeException("Building not found"));
 
-        buildingConverter.updateEntity(buildingDTO, buildingEntity);
+    buildingConverter.updateEntity(buildingDTO, buildingEntity);
 
-        buildingEntity.getRentAreaEntities().clear();
-        List<RentAreaEntity> newRentAreas = rentAreaConverter.toRentAreaEntities(buildingDTO, buildingEntity);
-        buildingEntity.getRentAreaEntities().addAll(newRentAreas);
+    buildingEntity.getRentAreaEntities().clear();
+    List<RentAreaEntity> newRentAreas = rentAreaConverter.toRentAreaEntities(buildingDTO, buildingEntity);
+    buildingEntity.getRentAreaEntities().addAll(newRentAreas);
 
-        return buildingRepository.save(buildingEntity);
-    }
+    return buildingRepository.save(buildingEntity);
+  }
 
-    @Override
-    public ResponseDTO loadStaffsByBuildingId(Long buildingId) {
-        BuildingEntity building = buildingRepository.findById(buildingId)
-                .orElseThrow(() -> new InvalidEntityException("Building not found"));
-        // Tìm toàn bộ user là STAFF và active
-        List<UserEntity> staffList = userRepository.findByActiveAndUserRole(true, SystemConstant.STAFF_ROLE);
-        // Tìm toàn bộ staff đã được gán các building trong bảng assignmentbuilding
-        Set<Long> assignedStaffIds = building.getUserEntities()
-                .stream()
-                .map(UserEntity::getId)
-                .collect(Collectors.toSet());
-        //
-        List<StaffResponseDTO> staffResponses = getStaffResponseDTOS(staffList, assignedStaffIds);
-        ResponseDTO responseDTO = new ResponseDTO();
-        responseDTO.setData(staffResponses);
-        responseDTO.setMessage("Load Staffs successfully");
-        return responseDTO;
-    }
+  @Override
+  public ResponseDTO loadStaffsByBuildingId(Long buildingId) {
+    BuildingEntity building = buildingRepository.findById(buildingId)
+        .orElseThrow(() -> new InvalidEntityException("Building not found"));
+    // Tìm toàn bộ user là STAFF và active
+    List<UserEntity> staffList = userRepository.findByActiveAndUserRole(true, SystemConstant.STAFF_ROLE);
+    // Tìm toàn bộ staff đã được gán các building trong bảng assignmentbuilding
+    Set<Long> assignedStaffIds = building.getUserEntities()
+        .stream()
+        .map(UserEntity::getId)
+        .collect(Collectors.toSet());
+    //
+    List<StaffResponseDTO> staffResponses = getStaffResponseDTOS(staffList, assignedStaffIds);
+    ResponseDTO responseDTO = new ResponseDTO();
+    responseDTO.setData(staffResponses);
+    responseDTO.setMessage("Load Staffs successfully");
+    return responseDTO;
+  }
 
-    @Override
-    public ResponseDTO updateAssignmentBuilding(AssignmentBuildingDTO assignmentBuildingDTO) {
-        BuildingEntity building = buildingRepository.findById(assignmentBuildingDTO.getBuildingId())
-                .orElseThrow(() -> new InvalidEntityException("Building not found"));
+  @Override
+  public ResponseDTO updateAssignmentBuilding(AssignmentBuildingDTO assignmentBuildingDTO) {
+    BuildingEntity building = buildingRepository.findById(assignmentBuildingDTO.getBuildingId())
+        .orElseThrow(() -> new InvalidEntityException("Building not found"));
 
-        List<UserEntity> staffs = userRepository.findAllById(assignmentBuildingDTO.getStaffIds());
-        building.setUserEntities(staffs);
+    List<UserEntity> staffs = userRepository.findAllById(assignmentBuildingDTO.getStaffIds());
+    building.setUserEntities(staffs);
 
-        buildingRepository.save(building);
-        ResponseDTO responseDTO = new ResponseDTO();
-        responseDTO.setMessage("Assign success");
-        return responseDTO;
-    }
+    buildingRepository.save(building);
+    ResponseDTO responseDTO = new ResponseDTO();
+    responseDTO.setMessage("Assign success");
+    return responseDTO;
+  }
 
-    @Override
-    public byte[] getImage(Long id) {
-        BuildingEntity buildingEntity = buildingRepository.findById(id).orElse(null);
-        return (buildingEntity != null) ? buildingEntity.getImage() : null;
-    }
+  @Override
+  public byte[] getImage(Long id) {
+    BuildingEntity buildingEntity = buildingRepository.findById(id).orElse(null);
+    return (buildingEntity != null) ? buildingEntity.getImage() : null;
+  }
 }

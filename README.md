@@ -15,20 +15,22 @@ A full-stack web application built with **Spring Boot 3** for managing real esta
 - [Getting Started](#-getting-started)
 - [Usage](#-usage)
 - [User Roles](#-user-roles)
+- [Unit Testing](#-unit-testing)
 
 ---
 
 ## 🛠 Tech Stack
 
-| Category            | Technology                              |
-| ------------------- | --------------------------------------- |
-| **Backend**         | Spring Boot 3.4.12, Java 17             |
-| **Security**        | Spring Security 6, JWT (jjwt 0.11.5)    |
-| **ORM**             | Spring Data JPA, Hibernate              |
-| **Database**        | MySQL                                   |
-| **Template Engine** | Thymeleaf + Thymeleaf Security Extras   |
-| **Frontend**        | Bootstrap 4, jQuery, Font Awesome, SweetAlert2 |
-| **Build Tool**      | Maven                                   |
+| Category            | Technology                                                             |
+| ------------------- | ---------------------------------------------------------------------- |
+| **Backend**         | Spring Boot 3.4.12, Java 17                                            |
+| **Security**        | Spring Security 6, JWT (jjwt 0.11.5)                                   |
+| **ORM**             | Spring Data JPA, Hibernate                                             |
+| **Database**        | MySQL                                                                  |
+| **Template Engine** | Thymeleaf + Thymeleaf Security Extras                                  |
+| **Frontend**        | Bootstrap 4, jQuery, Font Awesome, SweetAlert2                         |
+| **Build Tool**      | Maven                                                                  |
+| **Testing**         | JUnit 5, Mockito, AssertJ, Spring Boot Test, H2 Database               |
 | **Others**          | Lombok, ModelMapper, Jakarta Validation, SLF4J, Jackson, OAuth2 Client |
 
 ---
@@ -167,6 +169,13 @@ src/main/resources/
     └── web/                       # Public-facing pages
         ├── contact.html
         └── index.html
+
+src/test/java/com/webapp/          # Unit Testing Suite
+├── api/                           # API Layer Tests (MockMvc)
+│   ├── admin/                     # Admin API Tests
+│   └── web/                       # Public API Tests
+├── converter/                     # DTO Mapping Tests
+└── services/impl/                 # Service Layer Tests (Mockito)
 ```
 
 ---
@@ -263,9 +272,9 @@ When a user logs in via the API, the JWT token contains the following claims:
 
 ### Public Endpoints (No authentication required)
 
-| `POST` | `/admin/api/users/login`    | Login and receive JWT token |
+| `POST` | `/admin/api/users/login` | Login and receive JWT token |
 | `POST` | `/admin/api/users/register` | Register a new user account |
-| `POST` | `/api/contact`              | Submit contact form         |
+| `POST` | `/api/contact` | Submit contact form |
 
 ### Protected Endpoints (JWT Bearer Token required)
 
@@ -291,17 +300,17 @@ When a user logs in via the API, the JWT token contains the following claims:
 
 #### Customer & Transaction Management
 
-| Method   | Endpoint                          | Auth            | Description                     |
-| -------- |-----------------------------------| --------------- |---------------------------------|
-| `GET`    | `/admin/api/customers`            | STAFF / MANAGER | Search customers                |
-| `POST`   | `/admin/api/customers`            | STAFF / MANAGER | Create/Update customer          |
-| `DELETE` | `/admin/api/customers/{ids}`      | MANAGER         | Delete customers by ID list     |
-| `GET`    | `/admin/api/customers/{id}/staff` | MANAGER         | Get assigned staff              |
-| `PUT`    | `/admin/api/customers/assign`     | MANAGER         | Assign staff to customer        |
-| `POST`   | `/admin/api/transactions`               | STAFF / MANAGER | Save/Update interaction log     |
-| `GET`    | `/admin/api/transactions/{id}`          | STAFF / MANAGER | Get transaction detail          |
-| `DELETE` | `/admin/api/transactions/{id}`          | MANAGER         | Soft Delete transaction by id   |
-| `GET`    | `/admin/api/transactions/customer/{id}` | STAFF / MANAGER | Get transaction history         |
+| Method   | Endpoint                                | Auth            | Description                   |
+| -------- | --------------------------------------- | --------------- | ----------------------------- |
+| `GET`    | `/admin/api/customers`                  | STAFF / MANAGER | Search customers              |
+| `POST`   | `/admin/api/customers`                  | STAFF / MANAGER | Create/Update customer        |
+| `DELETE` | `/admin/api/customers/{ids}`            | MANAGER         | Delete customers by ID list   |
+| `GET`    | `/admin/api/customers/{id}/staff`       | MANAGER         | Get assigned staff            |
+| `PUT`    | `/admin/api/customers/assign`           | MANAGER         | Assign staff to customer      |
+| `POST`   | `/admin/api/transactions`               | STAFF / MANAGER | Save/Update interaction log   |
+| `GET`    | `/admin/api/transactions/{id}`          | STAFF / MANAGER | Get transaction detail        |
+| `DELETE` | `/admin/api/transactions/{id}`          | MANAGER         | Soft Delete transaction by id |
+| `GET`    | `/admin/api/transactions/customer/{id}` | STAFF / MANAGER | Get transaction history       |
 
 ### Example: Login Request
 
@@ -370,7 +379,6 @@ spring.security.oauth2.client.registration.facebook.client-secret=YOUR_FACEBOOK_
 spring.security.oauth2.client.registration.facebook.scope=email,public_profile
 
 ```
-
 
 ### Key Settings
 
@@ -463,11 +471,11 @@ spring.security.oauth2.client.registration.facebook.scope=email,public_profile
 
 ## 👤 User Roles
 
-| Role        | Code            | Permissions                                                   |
-|-------------| --------------- | ------------------------------------------------------------- |
-| **Manager** | `ROLE_MANAGER`  | Full access: User, Building (Assign), Customer & Transactions |
-| **Staff**   | `ROLE_STAFF`    | Building, Customer & Transaction management, Profile access   |
-| **User**    | `ROLE_USER`     | Public page access, default role for self-registration        |
+| Role        | Code           | Permissions                                                   |
+| ----------- | -------------- | ------------------------------------------------------------- |
+| **Manager** | `ROLE_MANAGER` | Full access: User, Building (Assign), Customer & Transactions |
+| **Staff**   | `ROLE_STAFF`   | Building, Customer & Transaction management, Profile access   |
+| **User**    | `ROLE_USER`    | Public page access, default role for self-registration        |
 
 ### Role Hierarchy
 
@@ -478,6 +486,40 @@ MANAGER > STAFF > USER
 - **MANAGER** can do everything a STAFF can, plus manage users and assign staff.
 - **STAFF** can access the admin dashboard and manage buildings/customers.
 - **USER** can only access public pages. This is the default role for self-registered accounts.
+
+---
+
+---
+
+## 🧪 Unit Testing
+
+This project utilizes a comprehensive **JUnit 5** and **Mockito** testing suite to ensure the reliability of the service layer, controllers, and converters.
+
+### Testing Stack
+- **JUnit 5 (Jupiter)**: Testing framework.
+- **Mockito**: Mocking framework for isolating dependencies.
+- **AssertJ**: Fluent assertions for more readable test assertions.
+- **Spring Boot Test**: Utilities and annotations for testing Spring Boot applications (e.g., `@WebMvcTest`).
+
+### Test Coverage & Scope
+
+The testing suite currently contains **85 Unit Tests** covering the following layers of the application:
+
+#### 1. Service Layer (`/services/impl`)
+Business logic is tested in isolation from the database by mocking dependencies (Repositories).
+- **BuildingServiceImplTest**: Covers building search (pagination & filtering logic), assignment of staff, CRUD operations, and image retrieval.
+- **CustomerServiceImplTest**: Covers customer search, lifecycle management (save/update/soft-delete), and staff assignments.
+- **TransactionServiceImplTest**: Validates the logic for creating, fetching, and removing interaction logs (CSKH, DDX).
+- **UserServiceImpl & UserDetailsServiceImpl Test**: Validates user CRUD operations, pagination, authentication data loading, and password hashing logic.
+
+#### 2. API Controller Layer (`/api/admin` & `/api/web`)
+REST endpoints are tested using **MockMvc** (`@WebMvcTest`) to validate HTTP request/response handling, routing, and JSON serialization without loading the entire server context.
+- Tests include: `BuildingAPITest`, `CustomerAPITest`, `TransactionAPITest`, `UserAPITest`, and `ContactAPITest`.
+- **Note**: The `@MockBean` is used to inject fake `UserDetailsService` and `JwtTokenUtils` to bypass the `JwtTokenFilter` security barrier during `@WebMvcTest` execution.
+
+#### 3. Converter Layer (`/converter`)
+Tests ensure the accurate mapping of fields between Entities and DTOs, including complex logic such as enum translations (e.g., District values) and string processing.
+- Includes tests for `BuildingConverter` and `UserConverter` (e.g., verifying `checked` logic for staff assignment check-boxes).
 
 ---
 
