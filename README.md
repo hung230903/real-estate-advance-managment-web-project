@@ -240,13 +240,11 @@ This project uses a **hybrid authentication** model:
 ### Security Rules (Request Matchers Order)
 
 ```
-
 1. permitAll → /login, /register, Public web pages, assets
 2. STAFF + MANAGER → /admin/users/userImage (Avatar access)
 3. MANAGER only → /admin/users/**, User APIs, Assignments, and ALL Deletions
 4. STAFF + MANAGER → /admin/**, /admin/api/** (Core CRUD operations)
 5. authenticated() → Any other requests (Security fallback)
-
 ```
 
 ### JWT Token Structure
