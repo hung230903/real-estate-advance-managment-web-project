@@ -8,6 +8,7 @@ A full-stack web application built with **Spring Boot 3** for managing real esta
 
 - [Tech Stack](#-tech-stack)
 - [Project Structure](#-project-structure)
+- [Database-ERD-Design](#ERD-Design)
 - [Features](#-features)
 - [Authentication & Authorization](#-authentication--authorization)
 - [API Endpoints](#-api-endpoints)
@@ -177,6 +178,12 @@ src/test/java/com/webapp/          # Unit Testing Suite
 ├── converter/                     # DTO Mapping Tests
 └── services/impl/                 # Service Layer Tests (Mockito)
 ```
+
+---
+
+## ERD Design
+
+<img src="./images/db/back_db_schema.png">
 
 ---
 
