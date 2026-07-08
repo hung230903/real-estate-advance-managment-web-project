@@ -23,51 +23,54 @@ import static com.webapp.constant.SystemConstant.MAX_RESULT;
 @RequiredArgsConstructor
 public class CustomerController {
 
-    private final CustomerService customerService;
-    private final UserService userService;
+  private final CustomerService customerService;
+  private final UserService userService;
 
-    @GetMapping("/list")
-    public String customerList(@ModelAttribute CustomerSearchRequest searchRequest,
-                               @RequestParam(value = "page", defaultValue = "1") int page,
-                               Model model) {
+  @GetMapping("/list")
+  public String customerList(
+      @ModelAttribute CustomerSearchRequest searchRequest,
+      @RequestParam(value = "page", defaultValue = "1") int page,
+      Model model) {
 
-        List<String> authorities = SecurityUtils.getAuthorities();
-        if (authorities.contains(SystemConstant.STAFF_ROLE)) {
-            Long staffId = Objects.requireNonNull(SecurityUtils.getPrincipal()).getId();
-            searchRequest.setStaffId(staffId);
-        }
-
-        model.addAttribute("modelSearch", searchRequest);
-        model.addAttribute("statuses", CustomerStatus.getCustomerStatus());
-
-        if (authorities.contains(SystemConstant.MANAGER_ROLE)) {
-            model.addAttribute("staffs", userService.getAllStaff());
-        }
-
-        model.addAttribute("model", customerService.getCustomers(searchRequest, page, MAX_RESULT, SystemConstant.MAX_NAVIGATION_PAGE));
-        model.addAttribute("transactionTypes", com.webapp.enums.TransactionType.getTransactionTypes());
-
-        return "admin/customer/customerList";
+    List<String> authorities = SecurityUtils.getAuthorities();
+    if (authorities.contains(SystemConstant.STAFF_ROLE)) {
+      Long staffId = Objects.requireNonNull(SecurityUtils.getPrincipal()).getId();
+      searchRequest.setStaffId(staffId);
     }
 
-    @GetMapping("/edit")
-    public String createCustomer(Model model) {
-        model.addAttribute("customer", new CustomerDTO());
-        model.addAttribute("statuses", CustomerStatus.getCustomerStatus());
-        return "admin/customer/customerEdit";
+    model.addAttribute("modelSearch", searchRequest);
+    model.addAttribute("statuses", CustomerStatus.getCustomerStatus());
+
+    if (authorities.contains(SystemConstant.MANAGER_ROLE)) {
+      model.addAttribute("staffs", userService.getAllStaff());
     }
 
-    @GetMapping("/update/{id}")
-    public String updateCustomer(@PathVariable Long id, Model model) {
-        if (SecurityUtils.getAuthorities().contains(SystemConstant.STAFF_ROLE)) {
-            UserEntity userEntity = userService.getUserByUserName(Objects.requireNonNull(SecurityUtils.getPrincipal()).getUsername());
-            if (userEntity.getCustomerEntities().stream().noneMatch(c -> c.getId().equals(id))) {
-                return "redirect:/403";
-            }
-        }
-        CustomerDTO customerDTO = customerService.findById(id);
-        model.addAttribute("customer", customerDTO);
-        model.addAttribute("statuses", CustomerStatus.getCustomerStatus());
-        return "admin/customer/customerEdit";
+    model.addAttribute("model",
+        customerService.getCustomers(searchRequest, page, MAX_RESULT, SystemConstant.MAX_NAVIGATION_PAGE));
+    model.addAttribute("transactionTypes", com.webapp.enums.TransactionType.getTransactionTypes());
+
+    return "admin/customer/customerList";
+  }
+
+  @GetMapping("/edit")
+  public String createCustomer(Model model) {
+    model.addAttribute("customer", new CustomerDTO());
+    model.addAttribute("statuses", CustomerStatus.getCustomerStatus());
+    return "admin/customer/customerEdit";
+  }
+
+  @GetMapping("/update/{id}")
+  public String updateCustomer(@PathVariable Long id, Model model) {
+    if (SecurityUtils.getAuthorities().contains(SystemConstant.STAFF_ROLE)) {
+      UserEntity userEntity = userService
+          .getUserByUserName(Objects.requireNonNull(SecurityUtils.getPrincipal()).getUsername());
+      if (userEntity.getCustomerEntities().stream().noneMatch(c -> c.getId().equals(id))) {
+        return "redirect:/403";
+      }
     }
+    CustomerDTO customerDTO = customerService.findById(id);
+    model.addAttribute("customer", customerDTO);
+    model.addAttribute("statuses", CustomerStatus.getCustomerStatus());
+    return "admin/customer/customerEdit";
+  }
 }

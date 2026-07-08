@@ -13,19 +13,20 @@ import java.util.List;
 
 @Service
 public interface BuildingService {
-    PaginationResult<BuildingSearchResponseDTO> searchBuildings(BuildingSearchRequestDTO searchRequest, int page, int maxResult, int maxNavigationPage);
+  PaginationResult<BuildingSearchResponseDTO> searchBuildings(BuildingSearchRequestDTO searchRequest, int page,
+      int maxResult, int maxNavigationPage);
 
-    void deleteAllById(List<Long> ids);
+  void deleteAllById(List<Long> ids);
 
-    BuildingEntity create(BuildingDTO buildingDTO);
+  BuildingEntity create(BuildingDTO buildingDTO);
 
-    BuildingEntity update(BuildingDTO buildingDTO);
+  BuildingEntity update(BuildingDTO buildingDTO);
 
-    BuildingDTO findById(Long id);
+  BuildingDTO findById(Long id);
 
-    ResponseDTO loadStaffsByBuildingId(Long id);
+  ResponseDTO loadStaffsByBuildingId(Long id);
 
-    ResponseDTO updateAssignmentBuilding(AssignmentBuildingDTO assignmentBuildingDTO);
+  ResponseDTO updateAssignmentBuilding(AssignmentBuildingDTO assignmentBuildingDTO);
 
-    byte[] getImage(Long id);
+  byte[] getImage(Long id);
 }

@@ -9,21 +9,21 @@ import java.util.List;
 
 public class SecurityUtils {
 
-    public static MyUser getPrincipal() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof MyUser) {
-            return (MyUser) authentication.getPrincipal();
-        }
-        return null;
+  public static MyUser getPrincipal() {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    if (authentication != null && authentication.getPrincipal() instanceof MyUser) {
+      return (MyUser) authentication.getPrincipal();
     }
+    return null;
+  }
 
-    public static List<String> getAuthorities() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null) {
-            return authentication.getAuthorities().stream()
-                    .map(GrantedAuthority::getAuthority)
-                    .toList();
-        }
-        return List.of();
+  public static List<String> getAuthorities() {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    if (authentication != null) {
+      return authentication.getAuthorities().stream()
+          .map(GrantedAuthority::getAuthority)
+          .toList();
     }
+    return List.of();
+  }
 }

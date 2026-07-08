@@ -1,6 +1,5 @@
 package com.webapp.models.dtos;
 
-
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -10,7 +9,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PasswordDTO {
-    private String oldPassword;
-    private String newPassword;
-    private String confirmPassword;
+  private String oldPassword;
+  private String newPassword;
+  private String confirmPassword;
 }

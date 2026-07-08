@@ -9,7 +9,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 public class StaffResponseDTO {
-    Long id;
-    String userName;
-    String checked;
+  Long id;
+  String userName;
+  String checked;
 }

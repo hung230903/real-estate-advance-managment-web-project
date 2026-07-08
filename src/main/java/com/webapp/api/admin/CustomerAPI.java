@@ -17,44 +17,44 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CustomerAPI {
 
-    private final CustomerService customerService;
+  private final CustomerService customerService;
 
-    @PostMapping
-    public ResponseEntity<ResponseDTO> saveOrUpdate(@RequestBody CustomerDTO customerDTO) {
-        ResponseDTO responseDTO = new ResponseDTO();
-        try {
-            customerService.saveOrUpdate(customerDTO);
-            responseDTO.setMessage("Successfully saved/updated customer");
-            return ResponseEntity.ok(responseDTO);
-        } catch (Exception e) {
-            responseDTO.setMessage(e.getMessage());
-            return ResponseEntity.internalServerError().body(responseDTO);
-        }
+  @PostMapping
+  public ResponseEntity<ResponseDTO> saveOrUpdate(@RequestBody CustomerDTO customerDTO) {
+    ResponseDTO responseDTO = new ResponseDTO();
+    try {
+      customerService.saveOrUpdate(customerDTO);
+      responseDTO.setMessage("Successfully saved/updated customer");
+      return ResponseEntity.ok(responseDTO);
+    } catch (Exception e) {
+      responseDTO.setMessage(e.getMessage());
+      return ResponseEntity.internalServerError().body(responseDTO);
     }
+  }
 
-    @DeleteMapping("/{ids}")
-    public ResponseEntity<ResponseDTO> deleteCustomers(@PathVariable List<Long> ids) {
-        ResponseDTO responseDTO = new ResponseDTO();
-        try {
-            customerService.deleteCustomers(ids);
-            responseDTO.setMessage("Successfully deleted customers");
-            return ResponseEntity.ok(responseDTO);
-        } catch (Exception e) {
-            responseDTO.setMessage(e.getMessage());
-            return ResponseEntity.internalServerError().body(responseDTO);
-        }
+  @DeleteMapping("/{ids}")
+  public ResponseEntity<ResponseDTO> deleteCustomers(@PathVariable List<Long> ids) {
+    ResponseDTO responseDTO = new ResponseDTO();
+    try {
+      customerService.deleteCustomers(ids);
+      responseDTO.setMessage("Successfully deleted customers");
+      return ResponseEntity.ok(responseDTO);
+    } catch (Exception e) {
+      responseDTO.setMessage(e.getMessage());
+      return ResponseEntity.internalServerError().body(responseDTO);
     }
+  }
 
-    @GetMapping("/{id}/staff")
-    public ResponseEntity<ResponseDTO> getStaff(@PathVariable("id") Long customerId) {
-        return ResponseEntity.ok(customerService.loadStaffsByCustomerId(customerId));
-    }
+  @GetMapping("/{id}/staff")
+  public ResponseEntity<ResponseDTO> getStaff(@PathVariable("id") Long customerId) {
+    return ResponseEntity.ok(customerService.loadStaffsByCustomerId(customerId));
+  }
 
-    @PutMapping("/assign")
-    public ResponseEntity<ResponseDTO> assignStaff(@RequestBody AssignmentCustomerDTO assignmentCustomerDTO) {
-        customerService.updateAssignmentCustomer(assignmentCustomerDTO);
-        ResponseDTO responseDTO = new ResponseDTO();
-        responseDTO.setMessage("Assigned staff successfully");
-        return ResponseEntity.ok(responseDTO);
-    }
+  @PutMapping("/assign")
+  public ResponseEntity<ResponseDTO> assignStaff(@RequestBody AssignmentCustomerDTO assignmentCustomerDTO) {
+    customerService.updateAssignmentCustomer(assignmentCustomerDTO);
+    ResponseDTO responseDTO = new ResponseDTO();
+    responseDTO.setMessage("Assigned staff successfully");
+    return ResponseEntity.ok(responseDTO);
+  }
 }

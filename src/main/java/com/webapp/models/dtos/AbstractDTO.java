@@ -8,9 +8,9 @@ import java.util.Date;
 @Getter
 @Setter
 public abstract class AbstractDTO {
-    private Long id;
-    private Date createdDate;
-    private String createdBy;
-    private Date modifiedDate;
-    private String modifiedBy;
+  private Long id;
+  private Date createdDate;
+  private String createdBy;
+  private Date modifiedDate;
+  private String modifiedBy;
 }

@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @Component
 public class ResponseDTO {
-    Object data;
-    String message;
-    List<String> errorDetails;
+  Object data;
+  String message;
+  List<String> errorDetails;
 }

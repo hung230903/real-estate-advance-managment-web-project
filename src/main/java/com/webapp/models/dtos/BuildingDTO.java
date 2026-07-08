@@ -16,52 +16,52 @@ import java.util.List;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BuildingDTO {
-    Long id;
+  Long id;
 
-    @NotBlank(message = "Please enter building name")
-    String name;
+  @NotBlank(message = "Please enter building name")
+  String name;
 
-    @NotBlank(message = "Please select district")
-    String district;
+  @NotBlank(message = "Please select district")
+  String district;
 
-    String ward;
-    String street;
-    String structure;
-    String address;
-    Long numberOfBasement;
-    Long floorArea;
-    String direction;
-    String level;
+  String ward;
+  String street;
+  String structure;
+  String address;
+  Long numberOfBasement;
+  Long floorArea;
+  String direction;
+  String level;
 
-    @NotBlank(message = "Please enter rent area")
-    String rentArea;
+  @NotBlank(message = "Please enter rent area")
+  String rentArea;
 
-    @NotNull(message = "Please enter rent price")
-    Double rentPrice;
+  @NotNull(message = "Please enter rent price")
+  Double rentPrice;
 
-    String rentPriceDescription;
-    String serviceFee;
-    String carFee;
-    String waterFee;
-    String motoFee;
-    String overtimeFee;
-    String electricityFee;
-    String deposit;
-    String payment;
-    String rentTime;
-    String decorationTime;
-    String managerName;
+  String rentPriceDescription;
+  String serviceFee;
+  String carFee;
+  String waterFee;
+  String motoFee;
+  String overtimeFee;
+  String electricityFee;
+  String deposit;
+  String payment;
+  String rentTime;
+  String decorationTime;
+  String managerName;
 
-    @Pattern(regexp = "^\\d{10}$", message = "Phone number must be 10 digits")
-    String managerPhone;
+  @Pattern(regexp = "^\\d{10}$", message = "Phone number must be 10 digits")
+  String managerPhone;
 
-    Double brokerageFee;
-    String note;
+  Double brokerageFee;
+  String note;
 
-    @NotEmpty(message = "Please select at least 1 building type")
-    List<String> typeCode;
+  @NotEmpty(message = "Please select at least 1 building type")
+  List<String> typeCode;
 
-    MultipartFile fileData;
-    String base64Image;
-    String imageName;
+  MultipartFile fileData;
+  String base64Image;
+  String imageName;
 }

@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface UserRepository extends JpaRepository<UserEntity, Long>, UserRepositoryCustom {
-    List<UserEntity> findByActiveAndUserRole(boolean active, String userRole);
+  List<UserEntity> findByActiveAndUserRole(boolean active, String userRole);
 
-    UserEntity findByUserName(String userName);
+  UserEntity findByUserName(String userName);
 }

@@ -7,21 +7,21 @@ import java.util.Map;
 
 @Getter
 public enum CustomerStatus {
-    DANG_XU_LY("Đang xử lý"),
-    HOAN_THANH("Hoàn thành"),
-    CHUA_XU_LY("Chưa xử lý");
+  DANG_XU_LY("Đang xử lý"),
+  HOAN_THANH("Hoàn thành"),
+  CHUA_XU_LY("Chưa xử lý");
 
-    private final String name;
+  private final String name;
 
-    CustomerStatus(String name) {
-        this.name = name;
+  CustomerStatus(String name) {
+    this.name = name;
+  }
+
+  public static Map<String, String> getCustomerStatus() {
+    Map<String, String> statuses = new HashMap<>();
+    for (CustomerStatus status : CustomerStatus.values()) {
+      statuses.put(status.name(), status.name);
     }
-
-    public static Map<String, String> getCustomerStatus() {
-        Map<String, String> statuses = new HashMap<>();
-        for (CustomerStatus status : CustomerStatus.values()) {
-            statuses.put(status.name(), status.name);
-        }
-        return statuses;
-    }
+    return statuses;
+  }
 }

@@ -18,23 +18,23 @@ import java.util.Date;
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseEntity implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @Column(name = "createddate")
-    @CreatedDate
-    private Date createdDate;
+  @Column(name = "createddate")
+  @CreatedDate
+  private Date createdDate;
 
-    @Column(name = "createdby")
-    @CreatedBy
-    private String createdBy;
+  @Column(name = "createdby")
+  @CreatedBy
+  private String createdBy;
 
-    @Column(name = "modifieddate")
-    @LastModifiedDate
-    private Date modifiedDate;
+  @Column(name = "modifieddate")
+  @LastModifiedDate
+  private Date modifiedDate;
 
-    @Column(name = "modifiedby")
-    @LastModifiedBy
-    private String modifiedBy;
+  @Column(name = "modifiedby")
+  @LastModifiedBy
+  private String modifiedBy;
 }

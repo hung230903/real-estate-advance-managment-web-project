@@ -8,6 +8,6 @@ import java.util.List;
 @Getter
 @Setter
 public class AssignmentCustomerDTO {
-    private Long customerId;
-    private List<Long> staffIds;
+  private Long customerId;
+  private List<Long> staffIds;
 }

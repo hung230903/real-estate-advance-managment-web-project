@@ -1,429 +1,468 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="~{admin/common/header :: header}"></head>
 
-
 <body id="page-top">
-<div id="wrapper">
+  <div id="wrapper">
     <th:block th:replace="~{admin/common/sidebar :: sidebar(menu='building')}"></th:block>
 
     <div id="content-wrapper" class="d-flex flex-column">
-        <div id="content">
-            <th:block th:replace="~{admin/common/menu :: menu}"></th:block>
+      <div id="content">
+        <th:block th:replace="~{admin/common/menu :: menu}"></th:block>
 
-            <!-- Begin Page Content -->
-            <div class="page-content container-fluid">
-                <div class="page-header mb-4">
-                    <h1 class="h3 mb-0 text-gray-800"
-                        th:text="${buildings.id != null ? 'Update Building' : 'Add New Building'}">User</h1>
+        <!-- Begin Page Content -->
+        <div class="page-content container-fluid">
+          <div class="page-header mb-4">
+            <h1 class="h3 mb-0 text-gray-800"
+              th:text="${buildings.id != null ? 'Update Building' : 'Add New Building'}">
+              User
+            </h1>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">
+                    Building Information
+                  </h6>
                 </div>
-
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="card shadow mb-4">
-                            <div class="card-header py-3">
-                                <h6 class="m-0 font-weight-bold text-primary">Building Information</h6>
-                            </div>
-                            <div class="card-body">
-                                <form class="form-horizontal" id="form-edit-buildingEntity"
-                                      th:object="${buildings}">
-                                    <div class="form-group row mb-4">
-                                        <label class="col-lg-2 col-form-label text-right" for="name"> Building Name
-                                        </label>
-                                        <div class="col-lg-9">
-                                            <input type="text" placeholder="Building Name" class="form-control"
-                                                   th:field="*{name}">
-                                            <span class="error-message" id="noNameBuilding"
-                                                  style="display: none; color: red;">Please enter building name</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row mb-4">
-                                        <label class="col-lg-2 col-form-label text-right" for="district"> District
-                                        </label>
-                                        <div class="col-lg-5">
-                                            <select th:field="*{district}" class="form-control">
-                                                <option value="">Select District</option>
-                                                <option th:each="d : ${districts}" th:value="${d.key}"
-                                                        th:text="${d.value}"></option>
-                                            </select>
-                                            <span class="error-message" id="noDistrict"
-                                                  style="display: none; color: red;">Please select district</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row mb-4">
-                                        <label class="col-lg-2 col-form-label text-right" for="ward"> Ward
-                                        </label>
-                                        <div class="col-lg-9">
-                                            <input type="text" placeholder="Ward" class="form-control"
-                                                   th:field="*{ward}">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row mb-4">
-                                        <label class="col-lg-2 col-form-label text-right" for="street"> Street
-                                        </label>
-                                        <div class="col-lg-9">
-                                            <input type="text" placeholder="Street" class="form-control"
-                                                   th:field="*{street}">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row mb-4">
-                                        <label class="col-lg-2 col-form-label text-right" for="structure"> Structure
-                                        </label>
-                                        <div class="col-lg-9">
-                                            <input type="text" placeholder="Structure" class="form-control"
-                                                   th:field="*{structure}">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row mb-4">
-                                        <label class="col-lg-2 col-form-label text-right" for="numberOfBasement">
-                                            Basements </label>
-                                        <div class="col-lg-9">
-                                            <input type="number" placeholder="Basements" class="form-control"
-                                                   th:field="*{numberOfBasement}">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row mb-4">
-                                        <label class="col-lg-2 col-form-label text-right" for="floorArea"> Floor
-                                            Area </label>
-                                        <div class="col-lg-5">
-                                            <input type="number" placeholder="Floor Area" class="form-control"
-                                                   th:field="*{floorArea}">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row mb-4">
-                                        <label class="col-lg-2 col-form-label text-right" for="direction"> Direction
-                                        </label>
-                                        <div class="col-lg-9">
-                                            <input type="text" placeholder="Direction" class="form-control"
-                                                   th:field="*{direction}">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row mb-4">
-                                        <label class="col-lg-2 col-form-label text-right" for="level"> level
-                                        </label>
-                                        <div class="col-lg-9">
-                                            <input type="text" placeholder="level" class="form-control"
-                                                   th:field="*{level}">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row mb-4">
-                                        <label class="col-lg-2 col-form-label text-right" for="rentArea"> Rent Area
-                                        </label>
-                                        <div class="col-lg-9">
-                                            <input type="text" placeholder="Rent Area" class="form-control"
-                                                   th:field="*{rentArea}">
-                                            <span class="error-message" id="noRentArea"
-                                                  style="display: none; color: red;">Please enter rent area</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row mb-4">
-                                        <label class="col-lg-2 col-form-label text-right" for="rentPrice"> Rent
-                                            Price
-                                        </label>
-                                        <div class="col-lg-9">
-                                            <input type="number" placeholder="Rent Price" class="form-control"
-                                                   th:field="*{rentPrice}">
-                                            <span class="error-message" id="noRentPrice"
-                                                  style="display: none; color: red;">Please enter rent price</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row mb-4">
-                                        <label class="col-lg-2 col-form-label text-right"
-                                               for="rentPriceDescription"> Price Description </label>
-                                        <div class="col-lg-9">
-                                            <input type="text" placeholder="Price Description" class="form-control"
-                                                   th:field="*{rentPriceDescription}">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row mb-4">
-                                        <label class="col-lg-2 col-form-label text-right" for="serviceFee"> Service
-                                            Fee </label>
-                                        <div class="col-lg-9">
-                                            <input type="number" placeholder="Service Fee" class="form-control"
-                                                   th:field="*{serviceFee}">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row mb-4">
-                                        <label class="col-lg-2 col-form-label text-right" for="carFee"> Car Fee
-                                        </label>
-                                        <div class="col-lg-9">
-                                            <input type="number" placeholder="Car Fee" class="form-control"
-                                                   th:field="*{carFee}">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row mb-4">
-                                        <label class="col-lg-2 col-form-label text-right" for="motorbikeFee">
-                                            Motorbike Fee </label>
-                                        <div class="col-lg-9">
-                                            <input type="number" placeholder="Motorbike Fee" class="form-control"
-                                                   th:field="*{motoFee}">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row mb-4">
-                                        <label class="col-lg-2 col-form-label text-right" for="overTimeFee">
-                                            Overtime Fee </label>
-                                        <div class="col-lg-9">
-                                            <input type="number" placeholder="Overtime Fee" class="form-control"
-                                                   th:field="*{overtimeFee}">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row mb-4">
-                                        <label class="col-lg-2 col-form-label text-right" for="electricityFee">
-                                            Electricity Fee </label>
-                                        <div class="col-lg-9">
-                                            <input type="number" placeholder="Electricity Fee" class="form-control"
-                                                   th:field="*{electricityFee}">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row mb-4">
-                                        <label class="col-lg-2 col-form-label text-right" for="waterFee"> Water Fee
-                                        </label>
-                                        <div class="col-lg-9">
-                                            <input type="number" placeholder="Water Fee" class="form-control"
-                                                   th:field="*{waterFee}">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row mb-4">
-                                        <label class="col-lg-2 col-form-label text-right" for="deposit"> Deposit
-                                        </label>
-                                        <div class="col-lg-9">
-                                            <input type="number" placeholder="Deposit" class="form-control"
-                                                   th:field="*{deposit}">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row mb-4">
-                                        <label class="col-lg-2 col-form-label text-right" for="payment"> Payment
-                                        </label>
-                                        <div class="col-lg-9">
-                                            <input type="number" placeholder="Payment" class="form-control"
-                                                   th:field="*{payment}">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row mb-4">
-                                        <label class="col-lg-2 col-form-label text-right" for="decorationTime">
-                                            Decoration Time </label>
-                                        <div class="col-lg-9">
-                                            <input type="text" placeholder="Decoration Time" class="form-control"
-                                                   th:field="*{decorationTime}">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row mb-4">
-                                        <label class="col-lg-2 col-form-label text-right" for="managerName"> Manager
-                                            Name </label>
-                                        <div class="col-lg-9">
-                                            <input type="text" placeholder="Manager Name" class="form-control"
-                                                   th:field="*{managerName}">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row mb-4">
-                                        <label class="col-lg-2 col-form-label text-right" for="managerPhone">
-                                            Manager Phone </label>
-                                        <div class="col-lg-9">
-                                            <input type="text" placeholder="Manager Phone" class="form-control"
-                                                   th:field="*{managerPhone}">
-                                            <span class="error-message" id="noManagerPhone"
-                                                  style="display: none; color: red;">Phone number must be 10
-                                                    digits</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row mb-4">
-                                        <label class="col-lg-2 col-form-label text-right"> Building Type </label>
-                                        <div class="col-lg-9">
-                                            <div class="d-flex flex-wrap">
-                                                <div class="form-check mr-4" th:each="typeCode : ${typeCodes}">
-                                                    <input type="checkbox" class="form-check-input" name="typeCode"
-                                                           th:value="${typeCode.key}"
-                                                           th:checked="${buildings.typeCode != null and buildings.typeCode.contains(typeCode.key)}">
-                                                    <label class="form-check-label"
-                                                           th:text="${typeCode.value}"></label>
-                                                </div>
-                                            </div>
-                                            <span class="error-message" id="noTypeCode"
-                                                  style="display: none; color: red;">Please select at least 1 building
-                                                    type</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row mb-4">
-                                        <label class="col-lg-2 col-form-label text-right" for="brokerageFee">
-                                            Brokerage Fee </label>
-                                        <div class="col-lg-9">
-                                            <input type="number" placeholder="Brokerage Fee" class="form-control"
-                                                   th:field="*{brokerageFee}">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row mb-4">
-                                        <label class="col-lg-2 col-form-label text-right" for="note"> Note
-                                        </label>
-                                        <div class="col-lg-9">
-                                            <input type="text" placeholder="Note" class="form-control"
-                                                   th:field="*{note}">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group row mb-4 justify-content-center">
-                                        <div class="col-sm-12 text-center">
-                                            <div class="avatar-upload"
-                                                 style="position: relative; max-width: 350px; margin: 0 auto;">
-                                                <div class="avatar-edit"
-                                                     style="position: absolute; right: 12px; z-index: 1; top: 10px;">
-                                                    <input type='file' id="imageUpload" th:field="*{fileData}"
-                                                           accept=".png, .jpg, .jpeg" style="display: none;"/>
-                                                    <label for="imageUpload"
-                                                           style="display: inline-block; width: 34px; height: 34px; margin-bottom: 0; border-radius: 100%; background: #FFFFFF; border: 1px solid transparent; box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.12); cursor: pointer; font-weight: normal; transition: all .2s ease-in-out; line-height: 34px; text-align: center;">
-                                                        <i class="fas fa-pencil-alt text-muted"></i>
-                                                    </label>
-                                                </div>
-                                                <div class="avatar-preview"
-                                                     style="width: 100%; height: 200px; position: relative; border-radius: 10px; border: 6px solid #f8f9fc; box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.1);">
-                                                    <div id="imagePreview"
-                                                         th:style="'background-image: url(' + @{|/admin/buildings/buildingImage?id=${buildings.id}|} + '); width: 100%; height: 100%; border-radius: 10px; background-size: cover; background-repeat: no-repeat; background-position: center;'">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <small class="text-muted mt-2 d-block">Building Image</small>
-                                        </div>
-                                    </div>
-
-                                    <div class="text-center mt-4 mb-4">
-                                        <a th:href="@{/admin/buildings/list}"
-                                           class="btn btn-danger px-4 mx-2 border-0 shadow-sm"
-                                           style="background-color: #e74a3b; color: #fff;">
-                                            <i class="fas fa-times mr-2"></i>Cancel
-                                        </a>
-                                        <button type="button" class="btn btn-success px-4 mx-2 border-0 shadow-sm"
-                                                id="btnAddBuilding" style="background-color: #1cc88a; color: #fff;">
-                                            <i class="fas fa-check mr-2"></i>
-                                            <span
-                                                    th:text="${buildings.id != null ? 'Update Information' : 'Add Building'}">Add
-                                                    Building</span>
-                                        </button>
-                                    </div>
-                                    <input type="hidden" th:field="*{id}" id="buildingId">
-                                </form>
-                            </div>
-                        </div>
+                <div class="card-body">
+                  <form class="form-horizontal" id="form-edit-buildingEntity" th:object="${buildings}">
+                    <div class="form-group row mb-4">
+                      <label class="col-lg-2 col-form-label text-right" for="name">
+                        Building Name
+                      </label>
+                      <div class="col-lg-9">
+                        <input type="text" placeholder="Building Name" class="form-control" th:field="*{name}" />
+                        <span class="error-message" id="noNameBuilding" style="display: none; color: red">Please enter
+                          building name</span>
+                      </div>
                     </div>
+
+                    <div class="form-group row mb-4">
+                      <label class="col-lg-2 col-form-label text-right" for="district">
+                        District
+                      </label>
+                      <div class="col-lg-5">
+                        <select th:field="*{district}" class="form-control">
+                          <option value="">Select District</option>
+                          <option th:each="d : ${districts}" th:value="${d.key}" th:text="${d.value}"></option>
+                        </select>
+                        <span class="error-message" id="noDistrict" style="display: none; color: red">Please select
+                          district</span>
+                      </div>
+                    </div>
+
+                    <div class="form-group row mb-4">
+                      <label class="col-lg-2 col-form-label text-right" for="ward">
+                        Ward
+                      </label>
+                      <div class="col-lg-9">
+                        <input type="text" placeholder="Ward" class="form-control" th:field="*{ward}" />
+                      </div>
+                    </div>
+
+                    <div class="form-group row mb-4">
+                      <label class="col-lg-2 col-form-label text-right" for="street">
+                        Street
+                      </label>
+                      <div class="col-lg-9">
+                        <input type="text" placeholder="Street" class="form-control" th:field="*{street}" />
+                      </div>
+                    </div>
+
+                    <div class="form-group row mb-4">
+                      <label class="col-lg-2 col-form-label text-right" for="structure">
+                        Structure
+                      </label>
+                      <div class="col-lg-9">
+                        <input type="text" placeholder="Structure" class="form-control" th:field="*{structure}" />
+                      </div>
+                    </div>
+
+                    <div class="form-group row mb-4">
+                      <label class="col-lg-2 col-form-label text-right" for="numberOfBasement">
+                        Basements
+                      </label>
+                      <div class="col-lg-9">
+                        <input type="number" placeholder="Basements" class="form-control"
+                          th:field="*{numberOfBasement}" />
+                      </div>
+                    </div>
+
+                    <div class="form-group row mb-4">
+                      <label class="col-lg-2 col-form-label text-right" for="floorArea">
+                        Floor Area
+                      </label>
+                      <div class="col-lg-5">
+                        <input type="number" placeholder="Floor Area" class="form-control" th:field="*{floorArea}" />
+                      </div>
+                    </div>
+
+                    <div class="form-group row mb-4">
+                      <label class="col-lg-2 col-form-label text-right" for="direction">
+                        Direction
+                      </label>
+                      <div class="col-lg-9">
+                        <input type="text" placeholder="Direction" class="form-control" th:field="*{direction}" />
+                      </div>
+                    </div>
+
+                    <div class="form-group row mb-4">
+                      <label class="col-lg-2 col-form-label text-right" for="level">
+                        level
+                      </label>
+                      <div class="col-lg-9">
+                        <input type="text" placeholder="level" class="form-control" th:field="*{level}" />
+                      </div>
+                    </div>
+
+                    <div class="form-group row mb-4">
+                      <label class="col-lg-2 col-form-label text-right" for="rentArea">
+                        Rent Area
+                      </label>
+                      <div class="col-lg-9">
+                        <input type="text" placeholder="Rent Area" class="form-control" th:field="*{rentArea}" />
+                        <span class="error-message" id="noRentArea" style="display: none; color: red">Please enter rent
+                          area</span>
+                      </div>
+                    </div>
+
+                    <div class="form-group row mb-4">
+                      <label class="col-lg-2 col-form-label text-right" for="rentPrice">
+                        Rent Price
+                      </label>
+                      <div class="col-lg-9">
+                        <input type="number" placeholder="Rent Price" class="form-control" th:field="*{rentPrice}" />
+                        <span class="error-message" id="noRentPrice" style="display: none; color: red">Please enter rent
+                          price</span>
+                      </div>
+                    </div>
+
+                    <div class="form-group row mb-4">
+                      <label class="col-lg-2 col-form-label text-right" for="rentPriceDescription">
+                        Price Description
+                      </label>
+                      <div class="col-lg-9">
+                        <input type="text" placeholder="Price Description" class="form-control"
+                          th:field="*{rentPriceDescription}" />
+                      </div>
+                    </div>
+
+                    <div class="form-group row mb-4">
+                      <label class="col-lg-2 col-form-label text-right" for="serviceFee">
+                        Service Fee
+                      </label>
+                      <div class="col-lg-9">
+                        <input type="number" placeholder="Service Fee" class="form-control" th:field="*{serviceFee}" />
+                      </div>
+                    </div>
+
+                    <div class="form-group row mb-4">
+                      <label class="col-lg-2 col-form-label text-right" for="carFee">
+                        Car Fee
+                      </label>
+                      <div class="col-lg-9">
+                        <input type="number" placeholder="Car Fee" class="form-control" th:field="*{carFee}" />
+                      </div>
+                    </div>
+
+                    <div class="form-group row mb-4">
+                      <label class="col-lg-2 col-form-label text-right" for="motorbikeFee">
+                        Motorbike Fee
+                      </label>
+                      <div class="col-lg-9">
+                        <input type="number" placeholder="Motorbike Fee" class="form-control" th:field="*{motoFee}" />
+                      </div>
+                    </div>
+
+                    <div class="form-group row mb-4">
+                      <label class="col-lg-2 col-form-label text-right" for="overTimeFee">
+                        Overtime Fee
+                      </label>
+                      <div class="col-lg-9">
+                        <input type="number" placeholder="Overtime Fee" class="form-control"
+                          th:field="*{overtimeFee}" />
+                      </div>
+                    </div>
+
+                    <div class="form-group row mb-4">
+                      <label class="col-lg-2 col-form-label text-right" for="electricityFee">
+                        Electricity Fee
+                      </label>
+                      <div class="col-lg-9">
+                        <input type="number" placeholder="Electricity Fee" class="form-control"
+                          th:field="*{electricityFee}" />
+                      </div>
+                    </div>
+
+                    <div class="form-group row mb-4">
+                      <label class="col-lg-2 col-form-label text-right" for="waterFee">
+                        Water Fee
+                      </label>
+                      <div class="col-lg-9">
+                        <input type="number" placeholder="Water Fee" class="form-control" th:field="*{waterFee}" />
+                      </div>
+                    </div>
+
+                    <div class="form-group row mb-4">
+                      <label class="col-lg-2 col-form-label text-right" for="deposit">
+                        Deposit
+                      </label>
+                      <div class="col-lg-9">
+                        <input type="number" placeholder="Deposit" class="form-control" th:field="*{deposit}" />
+                      </div>
+                    </div>
+
+                    <div class="form-group row mb-4">
+                      <label class="col-lg-2 col-form-label text-right" for="payment">
+                        Payment
+                      </label>
+                      <div class="col-lg-9">
+                        <input type="number" placeholder="Payment" class="form-control" th:field="*{payment}" />
+                      </div>
+                    </div>
+
+                    <div class="form-group row mb-4">
+                      <label class="col-lg-2 col-form-label text-right" for="decorationTime">
+                        Decoration Time
+                      </label>
+                      <div class="col-lg-9">
+                        <input type="text" placeholder="Decoration Time" class="form-control"
+                          th:field="*{decorationTime}" />
+                      </div>
+                    </div>
+
+                    <div class="form-group row mb-4">
+                      <label class="col-lg-2 col-form-label text-right" for="managerName">
+                        Manager Name
+                      </label>
+                      <div class="col-lg-9">
+                        <input type="text" placeholder="Manager Name" class="form-control" th:field="*{managerName}" />
+                      </div>
+                    </div>
+
+                    <div class="form-group row mb-4">
+                      <label class="col-lg-2 col-form-label text-right" for="managerPhone">
+                        Manager Phone
+                      </label>
+                      <div class="col-lg-9">
+                        <input type="text" placeholder="Manager Phone" class="form-control"
+                          th:field="*{managerPhone}" />
+                        <span class="error-message" id="noManagerPhone" style="display: none; color: red">Phone number
+                          must be 10 digits</span>
+                      </div>
+                    </div>
+
+                    <div class="form-group row mb-4">
+                      <label class="col-lg-2 col-form-label text-right">
+                        Building Type
+                      </label>
+                      <div class="col-lg-9">
+                        <div class="d-flex flex-wrap">
+                          <div class="form-check mr-4" th:each="typeCode : ${typeCodes}">
+                            <input type="checkbox" class="form-check-input" name="typeCode" th:value="${typeCode.key}"
+                              th:checked="${buildings.typeCode != null and buildings.typeCode.contains(typeCode.key)}" />
+                            <label class="form-check-label" th:text="${typeCode.value}"></label>
+                          </div>
+                        </div>
+                        <span class="error-message" id="noTypeCode" style="display: none; color: red">Please select at
+                          least 1 building type</span>
+                      </div>
+                    </div>
+
+                    <div class="form-group row mb-4">
+                      <label class="col-lg-2 col-form-label text-right" for="brokerageFee">
+                        Brokerage Fee
+                      </label>
+                      <div class="col-lg-9">
+                        <input type="number" placeholder="Brokerage Fee" class="form-control"
+                          th:field="*{brokerageFee}" />
+                      </div>
+                    </div>
+
+                    <div class="form-group row mb-4">
+                      <label class="col-lg-2 col-form-label text-right" for="note">
+                        Note
+                      </label>
+                      <div class="col-lg-9">
+                        <input type="text" placeholder="Note" class="form-control" th:field="*{note}" />
+                      </div>
+                    </div>
+
+                    <div class="form-group row mb-4 justify-content-center">
+                      <div class="col-sm-12 text-center">
+                        <div class="avatar-upload" style="
+                              position: relative;
+                              max-width: 350px;
+                              margin: 0 auto;
+                            ">
+                          <div class="avatar-edit" style="
+                                position: absolute;
+                                right: 12px;
+                                z-index: 1;
+                                top: 10px;
+                              ">
+                            <input type="file" id="imageUpload" th:field="*{fileData}" accept=".png, .jpg, .jpeg"
+                              style="display: none" />
+                            <label for="imageUpload" style="
+                                  display: inline-block;
+                                  width: 34px;
+                                  height: 34px;
+                                  margin-bottom: 0;
+                                  border-radius: 100%;
+                                  background: #ffffff;
+                                  border: 1px solid transparent;
+                                  box-shadow: 0px 2px 4px 0px
+                                    rgba(0, 0, 0, 0.12);
+                                  cursor: pointer;
+                                  font-weight: normal;
+                                  transition: all 0.2s ease-in-out;
+                                  line-height: 34px;
+                                  text-align: center;
+                                ">
+                              <i class="fas fa-pencil-alt text-muted"></i>
+                            </label>
+                          </div>
+                          <div class="avatar-preview" style="
+                                width: 100%;
+                                height: 200px;
+                                position: relative;
+                                border-radius: 10px;
+                                border: 6px solid #f8f9fc;
+                                box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.1);
+                              ">
+                            <div id="imagePreview"
+                              th:style="'background-image: url(' + @{|/admin/buildings/buildingImage?id=${buildings.id}|} + '); width: 100%; height: 100%; border-radius: 10px; background-size: cover; background-repeat: no-repeat; background-position: center;'">
+                            </div>
+                          </div>
+                        </div>
+                        <small class="text-muted mt-2 d-block">Building Image</small>
+                      </div>
+                    </div>
+
+                    <div class="text-center mt-4 mb-4">
+                      <a th:href="@{/admin/buildings/list}" class="btn btn-danger px-4 mx-2 border-0 shadow-sm"
+                        style="background-color: #e74a3b; color: #fff">
+                        <i class="fas fa-times mr-2"></i>Cancel
+                      </a>
+                      <button type="button" class="btn btn-success px-4 mx-2 border-0 shadow-sm" id="btnAddBuilding"
+                        style="background-color: #1cc88a; color: #fff">
+                        <i class="fas fa-check mr-2"></i>
+                        <span th:text="${buildings.id != null ? 'Update Information' : 'Add Building'}">Add
+                          Building</span>
+                      </button>
+                    </div>
+                    <input type="hidden" th:field="*{id}" id="buildingId" />
+                  </form>
                 </div>
+              </div>
             </div>
+          </div>
         </div>
-        <th:block th:replace="~{admin/common/footer :: footer}"></th:block>
+      </div>
+      <th:block th:replace="~{admin/common/footer :: footer}"></th:block>
     </div>
-</div>
+  </div>
 
-<th:block th:replace="~{admin/common/common-scripts :: jquery}"></th:block>
+  <th:block th:replace="~{admin/common/common-scripts :: jquery}"></th:block>
 
-<script>
+  <script>
     // Instant Image Preview
     function readURL(input) {
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
-            reader.onload = function (e) {
-                $('#imagePreview').css('background-image', 'url(' + e.target.result + ')');
-                $('#imagePreview').hide();
-                $('#imagePreview').fadeIn(650);
-            }
-            reader.readAsDataURL(input.files[0]);
-        }
+      if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          $("#imagePreview").css(
+            "background-image",
+            "url(" + e.target.result + ")",
+          );
+          $("#imagePreview").hide();
+          $("#imagePreview").fadeIn(650);
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
     }
 
     $("#imageUpload").change(function () {
-        readURL(this);
+      readURL(this);
     });
 
     function validateData(json) {
-        // Chuyển sang validate trên form trước khi tạo FormData
-        $(".error-message").hide();
-        let check = true;
-        if ($("#name").val() === "") {
-            $("#noNameBuilding").show();
-            check = false;
-        }
-        if ($("input[name='typeCode']:checked").length === 0) {
-            $("#noTypeCode").show();
-            check = false;
-        }
-        if (!/^\d{10}$/.test($("#managerPhone").val())) {
-            $("#noManagerPhone").show();
-            check = false;
-        }
-        if ($("#rentPrice").val() === "") {
-            $("#noRentPrice").show();
-            check = false;
-        }
-        if ($("#district").val() === "") {
-            $("#noDistrict").show();
-            check = false;
-        }
-        if ($("#rentArea").val() === "") {
-            $("#noRentArea").show();
-            check = false;
-        }
-        return check;
+      // Chuyển sang validate trên form trước khi tạo FormData
+      $(".error-message").hide();
+      let check = true;
+      if ($("#name").val() === "") {
+        $("#noNameBuilding").show();
+        check = false;
+      }
+      if ($("input[name='typeCode']:checked").length === 0) {
+        $("#noTypeCode").show();
+        check = false;
+      }
+      if (!/^\d{10}$/.test($("#managerPhone").val())) {
+        $("#noManagerPhone").show();
+        check = false;
+      }
+      if ($("#rentPrice").val() === "") {
+        $("#noRentPrice").show();
+        check = false;
+      }
+      if ($("#district").val() === "") {
+        $("#noDistrict").show();
+        check = false;
+      }
+      if ($("#rentArea").val() === "") {
+        $("#noRentArea").show();
+        check = false;
+      }
+      return check;
     }
 
     $("#btnAddBuilding").click(function (e) {
-        e.preventDefault();
+      e.preventDefault();
 
-        if (!validateData()) return;
+      if (!validateData()) return;
 
-        let form = $('#form-edit-buildingEntity')[0];
-        let formData = new FormData(form);
+      let form = $("#form-edit-buildingEntity")[0];
+      let formData = new FormData(form);
 
-        const id = $('#buildingId').val();
+      const id = $("#buildingId").val();
 
-        if (id && id !== "") {
-            saveBuilding(formData, "PUT");
-        } else {
-            saveBuilding(formData, "POST");
-        }
+      if (id && id !== "") {
+        saveBuilding(formData, "PUT");
+      } else {
+        saveBuilding(formData, "POST");
+      }
     });
 
     function saveBuilding(formData, method) {
-        $.ajax({
-            url: "/admin/api/buildings",
-            type: method,
-            data: formData,
-            processData: false, // Tell jQuery not to process the data
-            contentType: false, // Tell jQuery not to set contentType
-            success: function (response) {
-                let title = method === "PUT" ? "Building updated successfully" : "Building added successfully";
-                Swal.fire("Success", title, "success").then(() => {
-                    window.location.href = "/admin/buildings/list";
-                });
-            },
-            error: function (error) {
-                let errorMsg = error.responseJSON ? error.responseJSON.message : "An error occurred";
-                Swal.fire("Error", errorMsg, "error");
-            }
-        });
+      $.ajax({
+        url: "/admin/api/buildings",
+        type: method,
+        data: formData,
+        processData: false, // Tell jQuery not to process the data
+        contentType: false, // Tell jQuery not to set contentType
+        success: function (response) {
+          let title =
+            method === "PUT"
+              ? "Building updated successfully"
+              : "Building added successfully";
+          Swal.fire("Success", title, "success").then(() => {
+            window.location.href = "/admin/buildings/list";
+          });
+        },
+        error: function (error) {
+          let errorMsg = error.responseJSON
+            ? error.responseJSON.message
+            : "An error occurred";
+          Swal.fire("Error", errorMsg, "error");
+        },
+      });
     }
-</script>
+  </script>
 </body>
 
 </html>

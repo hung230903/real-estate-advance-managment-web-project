@@ -7,18 +7,18 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class HomeController {
 
-    @GetMapping("/")
-    public ModelAndView homePage() {
-        return new ModelAndView("web/index");
-    }
+  @GetMapping("/")
+  public ModelAndView homePage() {
+    return new ModelAndView("web/index");
+  }
 
-    @GetMapping("/contact")
-    public ModelAndView contactPage() {
-        return new ModelAndView("web/contact");
-    }
+  @GetMapping("/contact")
+  public ModelAndView contactPage() {
+    return new ModelAndView("web/contact");
+  }
 
-    @GetMapping("/403")
-    public ModelAndView accessDenied() {
-        return new ModelAndView("error/403");
-    }
+  @GetMapping("/403")
+  public ModelAndView accessDenied() {
+    return new ModelAndView("error/403");
+  }
 }

@@ -27,118 +27,122 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserAPI {
 
+  private final UserService userService;
 
-    private final UserService userService;
+  private final AuthenticationManager authenticationManager;
 
-    private final AuthenticationManager authenticationManager;
+  private final JwtTokenUtils jwtTokenUtils;
 
-    private final JwtTokenUtils jwtTokenUtils;
+  @PostMapping("/login")
+  public ResponseEntity<?> login(@Valid @RequestBody LoginDTO loginDTO) {
+    ResponseDTO responseDTO = new ResponseDTO();
+    try {
+      // Step 1: Authenticate username
+      Authentication authentication = authenticationManager.authenticate(
+          new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword()));
 
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginDTO loginDTO) {
-        ResponseDTO responseDTO = new ResponseDTO();
-        try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword())
-            );
+      MyUser myUser = (MyUser) authentication.getPrincipal();
 
-            MyUser myUser = (MyUser) authentication.getPrincipal();
+      // Step 2: Generate JWT Token
+      String token = jwtTokenUtils.generateToken(myUser);
 
-            String token = jwtTokenUtils.generateToken(myUser);
+      responseDTO.setMessage("Login successful");
+      responseDTO.setData(token); // Trả về Token trong field data
+      return ResponseEntity.ok().body(responseDTO);
+    } catch (Exception e) {
+      responseDTO.setMessage("Login failed: " + e.getMessage());
+      return ResponseEntity.status(401).body(responseDTO);
+    }
+  }
 
-            responseDTO.setMessage("Login successful");
-            responseDTO.setData(token); // Trả về Token trong field data
-            return ResponseEntity.ok().body(responseDTO);
-        } catch (Exception e) {
-            responseDTO.setMessage("Login failed: " + e.getMessage());
-            return ResponseEntity.status(401).body(responseDTO);
+  @PostMapping("/register")
+  public ResponseEntity<?> register(@Valid @RequestBody UserDTO userDTO, BindingResult bindingResult) {
+    ResponseDTO responseDTO = new ResponseDTO();
+    try {
+      if (bindingResult.hasErrors()) {
+        List<String> errorMessages = bindingResult.getFieldErrors().stream().map(FieldError::getDefaultMessage)
+            .collect(Collectors.toList());
+        responseDTO.setMessage("Validation failed");
+        responseDTO.setErrorDetails(errorMessages);
+        return ResponseEntity.badRequest().body(responseDTO);
+      }
+
+      userDTO.setRoleCode(SystemConstant.USER_ROLE);
+      userDTO.setStatus(1); // Active mặc định
+
+      userService.save(userDTO);
+      responseDTO.setMessage("Registration Successfully");
+      return ResponseEntity.ok().body(responseDTO);
+    } catch (Exception e) {
+      responseDTO.setMessage("Registration failed: " + e.getMessage());
+      return ResponseEntity.badRequest().body(responseDTO);
+    }
+  }
+
+  @PostMapping
+  public ResponseEntity<?> createUser(@Valid @ModelAttribute UserDTO user, BindingResult bindingResult) {
+    ResponseDTO responseDTO = new ResponseDTO();
+    try {
+      if (bindingResult.hasErrors()) {
+        List<String> errorMessages = bindingResult.getFieldErrors().stream().map(FieldError::getDefaultMessage)
+            .collect(Collectors.toList());
+
+        responseDTO.setMessage("Validation failed");
+        responseDTO.setErrorDetails(errorMessages);
+        return ResponseEntity.badRequest().body(responseDTO);
+      }
+      userService.save(user);
+      responseDTO.setMessage("Create Successfully");
+      return ResponseEntity.ok().body(responseDTO);
+    } catch (Exception e) {
+      responseDTO.setMessage(e.getMessage());
+      return ResponseEntity.badRequest().body(responseDTO);
+    }
+  }
+
+  @PutMapping
+  public ResponseEntity<?> updateUser(@Valid @ModelAttribute UserDTO userDTO, BindingResult bindingResult) {
+    ResponseDTO responseDTO = new ResponseDTO();
+    try {
+      if (bindingResult.hasErrors()) {
+        List<String> errorMessages = bindingResult.getFieldErrors().stream().map(FieldError::getDefaultMessage)
+            .collect(Collectors.toList());
+
+        responseDTO.setMessage("Validation failed");
+        responseDTO.setErrorDetails(errorMessages);
+        return ResponseEntity.badRequest().body(responseDTO);
+      }
+      userService.update(userDTO);
+
+      Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+      if (auth != null && auth.getPrincipal() instanceof MyUser principal) {
+        if (principal.getUsername().equals(userDTO.getUserName())) {
+          principal.setFullName(userDTO.getFullName());
+          Authentication newAuth = new UsernamePasswordAuthenticationToken(principal, auth.getCredentials(),
+              auth.getAuthorities());
+          SecurityContextHolder.getContext().setAuthentication(newAuth);
         }
+      }
+
+      responseDTO.setMessage("Update Successfully");
+      return ResponseEntity.ok().body(responseDTO);
+    } catch (Exception e) {
+      responseDTO.setMessage(e.getMessage());
+      return ResponseEntity.badRequest().body(responseDTO);
     }
+  }
 
-    @PostMapping("/register")
-    public ResponseEntity<?> register(@Valid @RequestBody UserDTO userDTO, BindingResult bindingResult) {
-        ResponseDTO responseDTO = new ResponseDTO();
-        try {
-            if (bindingResult.hasErrors()) {
-                List<String> errorMessages = bindingResult.getFieldErrors().stream().map(FieldError::getDefaultMessage).collect(Collectors.toList());
-                responseDTO.setMessage("Validation failed");
-                responseDTO.setErrorDetails(errorMessages);
-                return ResponseEntity.badRequest().body(responseDTO);
-            }
-
-            userDTO.setRoleCode(SystemConstant.USER_ROLE);
-            userDTO.setStatus(1); // Active mặc định
-
-            userService.save(userDTO);
-            responseDTO.setMessage("Registration Successfully");
-            return ResponseEntity.ok().body(responseDTO);
-        } catch (Exception e) {
-            responseDTO.setMessage("Registration failed: " + e.getMessage());
-            return ResponseEntity.badRequest().body(responseDTO);
-        }
+  @DeleteMapping
+  public ResponseEntity<?> deleteUsers(@RequestBody List<Long> idList) {
+    if (!idList.isEmpty()) {
+      userService.delete(idList);
     }
+    return ResponseEntity.ok().body("{ \"message\": \"Delete Successfully\" }");
+  }
 
-    @PostMapping
-    public ResponseEntity<?> createUser(@Valid @ModelAttribute UserDTO user, BindingResult bindingResult) {
-        ResponseDTO responseDTO = new ResponseDTO();
-        try {
-            if (bindingResult.hasErrors()) {
-                List<String> errorMessages = bindingResult.getFieldErrors().stream().map(FieldError::getDefaultMessage).collect(Collectors.toList());
-
-                responseDTO.setMessage("Validation failed");
-                responseDTO.setErrorDetails(errorMessages);
-                return ResponseEntity.badRequest().body(responseDTO);
-            }
-            userService.save(user);
-            responseDTO.setMessage("Create Successfully");
-            return ResponseEntity.ok().body(responseDTO);
-        } catch (Exception e) {
-            responseDTO.setMessage(e.getMessage());
-            return ResponseEntity.badRequest().body(responseDTO);
-        }
-    }
-
-    @PutMapping
-    public ResponseEntity<?> updateUser(@Valid @ModelAttribute UserDTO userDTO, BindingResult bindingResult) {
-        ResponseDTO responseDTO = new ResponseDTO();
-        try {
-            if (bindingResult.hasErrors()) {
-                List<String> errorMessages = bindingResult.getFieldErrors().stream().map(FieldError::getDefaultMessage).collect(Collectors.toList());
-
-                responseDTO.setMessage("Validation failed");
-                responseDTO.setErrorDetails(errorMessages);
-                return ResponseEntity.badRequest().body(responseDTO);
-            }
-            userService.update(userDTO);
-
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            if (auth != null && auth.getPrincipal() instanceof MyUser principal) {
-                if (principal.getUsername().equals(userDTO.getUserName())) {
-                    principal.setFullName(userDTO.getFullName());
-                    Authentication newAuth = new UsernamePasswordAuthenticationToken(principal, auth.getCredentials(), auth.getAuthorities());
-                    SecurityContextHolder.getContext().setAuthentication(newAuth);
-                }
-            }
-
-            responseDTO.setMessage("Update Successfully");
-            return ResponseEntity.ok().body(responseDTO);
-        } catch (Exception e) {
-            responseDTO.setMessage(e.getMessage());
-            return ResponseEntity.badRequest().body(responseDTO);
-        }
-    }
-
-    @DeleteMapping
-    public ResponseEntity<?> deleteUsers(@RequestBody List<Long> idList) {
-        if (!idList.isEmpty()) {
-            userService.delete(idList);
-        }
-        return ResponseEntity.ok().body("{ \"message\": \"Delete Successfully\" }");
-    }
-
-    @PutMapping("/password/{id}")
-    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody PasswordDTO passwordDTO) {
-        ResponseDTO responseDTO = new ResponseDTO();
-        return ResponseEntity.ok().body(responseDTO);
-    }
+  @PutMapping("/password/{id}")
+  public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody PasswordDTO passwordDTO) {
+    ResponseDTO responseDTO = new ResponseDTO();
+    return ResponseEntity.ok().body(responseDTO);
+  }
 }

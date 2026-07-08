@@ -14,13 +14,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequiredArgsConstructor
 public class ProfileController {
 
-    private final UserService userService;
+  private final UserService userService;
 
-    @GetMapping
-    public String viewProfile(Model model) {
-        Long currentUserId = SecurityUtils.getPrincipal().getId();
-        UserDTO userDTO = userService.findById(currentUserId);
-        model.addAttribute("user", userDTO);
-        return "admin/user/profile";
-    }
+  @GetMapping
+  public String viewProfile(Model model) {
+    Long currentUserId = SecurityUtils.getPrincipal().getId();
+    UserDTO userDTO = userService.findById(currentUserId);
+    model.addAttribute("user", userDTO);
+    return "admin/user/profile";
+  }
 }

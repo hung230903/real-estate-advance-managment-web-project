@@ -8,6 +8,7 @@ import java.util.List;
 
 @Repository
 public interface TransactionRepository extends JpaRepository<TransactionEntity, Long> {
-    List<TransactionEntity> findByCustomerIdAndCodeAndIsActive(Long customerId, String code, Integer isActive);
-    List<TransactionEntity> findByCustomerIdAndIsActive(Long customerId, Integer isActive);
+  List<TransactionEntity> findByCustomerIdAndCodeAndIsActive(Long customerId, String code, Integer isActive);
+
+  List<TransactionEntity> findByCustomerIdAndIsActive(Long customerId, Integer isActive);
 }

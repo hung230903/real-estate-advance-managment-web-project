@@ -15,107 +15,108 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class UserConverter {
 
+  private final PasswordEncoder passwordEncoder;
 
-    private final PasswordEncoder passwordEncoder;
+  public StaffResponseDTO toStaffResponseDTO(UserEntity userEntity, Set<Long> assignedStaffIds) {
+    StaffResponseDTO staffResponseDTO = new StaffResponseDTO();
+    staffResponseDTO.setId(userEntity.getId());
+    staffResponseDTO.setUserName(userEntity.getUserName());
+    staffResponseDTO.setChecked(assignedStaffIds.contains(userEntity.getId()) ? "checked" : "");
+    return staffResponseDTO;
+  }
 
-    public StaffResponseDTO toStaffResponseDTO(UserEntity userEntity, Set<Long> assignedStaffIds) {
-        StaffResponseDTO staffResponseDTO = new StaffResponseDTO();
-        staffResponseDTO.setId(userEntity.getId());
-        staffResponseDTO.setUserName(userEntity.getUserName());
-        staffResponseDTO.setChecked(assignedStaffIds.contains(userEntity.getId()) ? "checked" : "");
-        return staffResponseDTO;
+  public UserDTO toUserDTO(UserEntity userEntity) {
+    if (userEntity == null)
+      return null;
+
+    UserDTO userDTO = new UserDTO();
+    userDTO.setId(userEntity.getId());
+    userDTO.setUserName(userEntity.getUserName());
+    userDTO.setFullName(userEntity.getFullName());
+    userDTO.setRoleCode(userEntity.getUserRole());
+    userDTO.setPhone(userEntity.getPhone());
+    userDTO.setStatus(userEntity.isActive() ? 1 : 0);
+    userDTO.initRoles();
+
+    return userDTO;
+  }
+
+  public UserEntity toUserEntity(UserDTO userDTO) {
+    if (userDTO == null)
+      return null;
+
+    UserEntity userEntity = new UserEntity();
+    if (userDTO.getId() != null) {
+      userEntity.setId(userDTO.getId());
+    }
+    userEntity.setUserName(userDTO.getUserName());
+    userEntity.setFullName(userDTO.getFullName());
+    userEntity.setPhone(userDTO.getPhone());
+    if (userDTO.getPassword() != null && !userDTO.getPassword().isEmpty()) {
+      userEntity.setEncrytedPassword(
+          passwordEncoder.encode(userDTO.getPassword()));
     }
 
-    public UserDTO toUserDTO(UserEntity userEntity) {
-        if (userEntity == null) return null;
+    String role = (userDTO.getRoleCode() != null && !userDTO.getRoleCode().isEmpty())
+        ? userDTO.getRoleCode()
+        : SystemConstant.USER_ROLE;
 
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(userEntity.getId());
-        userDTO.setUserName(userEntity.getUserName());
-        userDTO.setFullName(userEntity.getFullName());
-        userDTO.setRoleCode(userEntity.getUserRole());
-        userDTO.setPhone(userEntity.getPhone());
-        userDTO.setStatus(userEntity.isActive() ? 1 : 0);
-        userDTO.initRoles();
+    userEntity.setUserRole(role);
 
-        return userDTO;
+    byte[] image = extractImage(userDTO);
+    if (image != null && image.length > 0) {
+      userEntity.setImage(image);
     }
 
-    public UserEntity toUserEntity(UserDTO userDTO) {
-        if (userDTO == null) return null;
+    return userEntity;
+  }
 
-        UserEntity userEntity = new UserEntity();
-        if (userDTO.getId() != null) {
-            userEntity.setId(userDTO.getId());
-        }
-        userEntity.setUserName(userDTO.getUserName());
-        userEntity.setFullName(userDTO.getFullName());
-        userEntity.setPhone(userDTO.getPhone());
-        if (userDTO.getPassword() != null && !userDTO.getPassword().isEmpty()) {
-            userEntity.setEncrytedPassword(
-                    passwordEncoder.encode(userDTO.getPassword())
-            );
-        }
+  public void updateEntity(UserDTO userDTO, UserEntity userEntity) {
+    if (userDTO == null || userEntity == null)
+      return;
 
-        String role = (userDTO.getRoleCode() != null && !userDTO.getRoleCode().isEmpty())
-                ? userDTO.getRoleCode()
-                : SystemConstant.USER_ROLE;
+    userEntity.setUserName(userDTO.getUserName());
 
-        userEntity.setUserRole(role);
-
-        byte[] image = extractImage(userDTO);
-        if (image != null && image.length > 0) {
-            userEntity.setImage(image);
-        }
-
-        return userEntity;
+    if (userDTO.getStatus() != null) {
+      userEntity.setActive(userDTO.getStatus() == 1);
+    } else {
+      userEntity.setActive(true);
     }
 
-    public void updateEntity(UserDTO userDTO, UserEntity userEntity) {
-        if (userDTO == null || userEntity == null) return;
+    userEntity.setFullName(userDTO.getFullName());
+    userEntity.setPhone(userDTO.getPhone());
 
-        userEntity.setUserName(userDTO.getUserName());
-
-        if (userDTO.getStatus() != null) {
-            userEntity.setActive(userDTO.getStatus() == 1);
-        } else {
-            userEntity.setActive(true);
-        }
-
-        userEntity.setFullName(userDTO.getFullName());
-        userEntity.setPhone(userDTO.getPhone());
-
-        if (userDTO.getRoleCode() != null && !userDTO.getRoleCode().isEmpty()) {
-            userEntity.setUserRole(userDTO.getRoleCode());
-        }
-
-        // chỉ update ảnh nếu có dữ liệu mới
-        byte[] image = extractImage(userDTO);
-        if (image != null && image.length > 0) {
-            userEntity.setImage(image);
-        }
+    if (userDTO.getRoleCode() != null && !userDTO.getRoleCode().isEmpty()) {
+      userEntity.setUserRole(userDTO.getRoleCode());
     }
 
-    private byte[] extractImage(UserDTO userDTO) {
-        try {
-            if (userDTO.getFileData() != null && !userDTO.getFileData().isEmpty()) {
-                return userDTO.getFileData().getBytes();
-            }
+    // chỉ update ảnh nếu có dữ liệu mới
+    byte[] image = extractImage(userDTO);
+    if (image != null && image.length > 0) {
+      userEntity.setImage(image);
+    }
+  }
 
-            if (userDTO.getBase64Image() != null && !userDTO.getBase64Image().isEmpty()) {
-                String base64 = userDTO.getBase64Image();
+  private byte[] extractImage(UserDTO userDTO) {
+    try {
+      if (userDTO.getFileData() != null && !userDTO.getFileData().isEmpty()) {
+        return userDTO.getFileData().getBytes();
+      }
 
-                if (base64.contains(",")) {
-                    base64 = base64.split(",")[1];
-                }
+      if (userDTO.getBase64Image() != null && !userDTO.getBase64Image().isEmpty()) {
+        String base64 = userDTO.getBase64Image();
 
-                return Base64.getDecoder().decode(base64);
-            }
-
-        } catch (Exception e) {
-            throw new RuntimeException("Invalid image data", e);
+        if (base64.contains(",")) {
+          base64 = base64.split(",")[1];
         }
 
-        return null;
+        return Base64.getDecoder().decode(base64);
+      }
+
+    } catch (Exception e) {
+      throw new RuntimeException("Invalid image data", e);
     }
+
+    return null;
+  }
 }

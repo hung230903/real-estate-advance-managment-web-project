@@ -13,14 +13,14 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class RentAreaEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  Long id;
 
-    @Column(name = "value")
-    Long value;
+  @Column(name = "value")
+  Long value;
 
-    @ManyToOne
-    @JoinColumn(name = "buildingid")
-    BuildingEntity building;
+  @ManyToOne
+  @JoinColumn(name = "buildingid")
+  BuildingEntity building;
 }

@@ -1,37 +1,36 @@
-<!DOCTYPE html>
+<!doctype html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <div th:fragment="sidebar(menu)">
-    <div id="mySidepanel" class="sidepanel">
-        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
-        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" th:href="@{/admin/home}">
-                <div class="sidebar-brand-icon rotate-n-15">
-                    <i class="fa fa-book" style="font-size: 36px; color: white"></i>
-                </div>
-                <div class="sidebar-brand-text mx-4">Gyan-Uday</div>
-            </a>
-            <li class="nav-item" th:classappend="${menu == 'building' ? 'active' : ''}">
-                <a class="nav-link" th:href="@{/admin/buildings/list}">
-                    <i class="fas fa-fw fa-building"></i>
-                    <span>Building Management</span></a>
-            </li>
-            <li class="nav-item" th:classappend="${menu == 'user' ? 'active' : ''}"
-                sec:authorize="hasAnyRole('MANAGER')">
-                <a class="nav-link" th:href="@{/admin/users/list}">
-                    <i class="fas fa-fw fa-users"></i>
-                    <span>User Management</span></a>
-            </li>
-            <li class="nav-item" th:classappend="${menu == 'customer' ? 'active' : ''}"
-                sec:authorize="hasAnyRole('MANAGER', 'STAFF')">
-                <a class="nav-link" th:href="@{/admin/customers/list}">
-                    <i class="fas fa-fw fa-user-tie"></i>
-                    <span>Customer Management</span></a>
-            </li>
-        </ul>
-    </div>
-    <div id="main">
-        <button class="openbtn" onclick="openNav()">☰</button>
-    </div>
+  <div id="mySidepanel" class="sidepanel">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+      <a class="sidebar-brand d-flex align-items-center justify-content-center" th:href="@{/admin/home}">
+        <div class="sidebar-brand-icon rotate-n-15">
+          <i class="fa fa-book" style="font-size: 36px; color: white"></i>
+        </div>
+        <div class="sidebar-brand-text mx-4">Gyan-Uday</div>
+      </a>
+      <li class="nav-item" th:classappend="${menu == 'building' ? 'active' : ''}">
+        <a class="nav-link" th:href="@{/admin/buildings/list}">
+          <i class="fas fa-fw fa-building"></i>
+          <span>Building Management</span></a>
+      </li>
+      <li class="nav-item" th:classappend="${menu == 'user' ? 'active' : ''}" sec:authorize="hasAnyRole('MANAGER')">
+        <a class="nav-link" th:href="@{/admin/users/list}">
+          <i class="fas fa-fw fa-users"></i>
+          <span>User Management</span></a>
+      </li>
+      <li class="nav-item" th:classappend="${menu == 'customer' ? 'active' : ''}"
+        sec:authorize="hasAnyRole('MANAGER', 'STAFF')">
+        <a class="nav-link" th:href="@{/admin/customers/list}">
+          <i class="fas fa-fw fa-user-tie"></i>
+          <span>Customer Management</span></a>
+      </li>
+    </ul>
+  </div>
+  <div id="main">
+    <button class="openbtn" onclick="openNav()">☰</button>
+  </div>
 </div>
 
 </html>

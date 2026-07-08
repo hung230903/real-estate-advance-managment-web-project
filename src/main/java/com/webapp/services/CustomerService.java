@@ -9,15 +9,16 @@ import com.webapp.pagination.PaginationResult;
 import java.util.List;
 
 public interface CustomerService {
-    PaginationResult<CustomerDTO> getCustomers(CustomerSearchRequest searchRequest, int page, int maxResult, int maxNavigationPage);
+  PaginationResult<CustomerDTO> getCustomers(CustomerSearchRequest searchRequest, int page, int maxResult,
+      int maxNavigationPage);
 
-    CustomerDTO findById(Long id);
+  CustomerDTO findById(Long id);
 
-    void saveOrUpdate(CustomerDTO customerDTO);
+  void saveOrUpdate(CustomerDTO customerDTO);
 
-    void deleteCustomers(List<Long> ids);
+  void deleteCustomers(List<Long> ids);
 
-    ResponseDTO loadStaffsByCustomerId(Long customerId);
+  ResponseDTO loadStaffsByCustomerId(Long customerId);
 
-    void updateAssignmentCustomer(AssignmentCustomerDTO assignmentCustomerDTO);
+  void updateAssignmentCustomer(AssignmentCustomerDTO assignmentCustomerDTO);
 }

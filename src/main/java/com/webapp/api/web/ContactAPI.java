@@ -15,19 +15,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ContactAPI {
 
-    private final CustomerService customerService;
+  private final CustomerService customerService;
 
-    @PostMapping
-    public ResponseEntity<ResponseDTO> receiveContact(@RequestBody CustomerDTO customerDTO) {
-        ResponseDTO responseDTO = new ResponseDTO();
-        try {
-            customerDTO.setStatus("DANG_XU_LY");
-            customerService.saveOrUpdate(customerDTO);
-            responseDTO.setMessage("Message sent successfully!");
-            return ResponseEntity.ok(responseDTO);
-        } catch (Exception e) {
-            responseDTO.setMessage("Failed to send message: " + e.getMessage());
-            return ResponseEntity.internalServerError().body(responseDTO);
-        }
+  @PostMapping
+  public ResponseEntity<ResponseDTO> receiveContact(@RequestBody CustomerDTO customerDTO) {
+    ResponseDTO responseDTO = new ResponseDTO();
+    try {
+      customerDTO.setStatus("DANG_XU_LY");
+      customerService.saveOrUpdate(customerDTO);
+      responseDTO.setMessage("Message sent successfully!");
+      return ResponseEntity.ok(responseDTO);
+    } catch (Exception e) {
+      responseDTO.setMessage("Failed to send message: " + e.getMessage());
+      return ResponseEntity.internalServerError().body(responseDTO);
     }
+  }
 }

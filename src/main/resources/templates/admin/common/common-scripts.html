@@ -1,44 +1,44 @@
-<!DOCTYPE html>
+<!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
 <th:block th:fragment="jquery">
-    <script th:src="@{/admin_dashboard/vendor/jquery/jquery.min.js}"></script>
-    <script th:src="@{/admin_dashboard/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
-    <script th:src="@{/admin_dashboard/vendor/jquery-easing/jquery.easing.min.js}"></script>
-    <script th:src="@{/admin_dashboard/js/sb-admin-2.min.js}"></script>
-    <script th:src="@{/admin_dashboard/js/custom.js}"></script>
-    <script>
-        function openNav() {
-            document.getElementById("mySidepanel").style.width = "250px";
-        }
+  <script th:src="@{/admin_dashboard/vendor/jquery/jquery.min.js}"></script>
+  <script th:src="@{/admin_dashboard/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+  <script th:src="@{/admin_dashboard/vendor/jquery-easing/jquery.easing.min.js}"></script>
+  <script th:src="@{/admin_dashboard/js/sb-admin-2.min.js}"></script>
+  <script th:src="@{/admin_dashboard/js/custom.js}"></script>
+  <script>
+    function openNav() {
+      document.getElementById("mySidepanel").style.width = "250px";
+    }
 
-        function closeNav() {
-            document.getElementById("mySidepanel").style.width = "0";
-        }
+    function closeNav() {
+      document.getElementById("mySidepanel").style.width = "0";
+    }
 
-        function confirmLogout() {
-            Swal.fire({
-                title: 'Ready to Leave?',
-                text: "Select 'Logout' below if you are ready to end your current session.",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#4e73df',
-                cancelButtonColor: '#858796',
-                confirmButtonText: 'Logout',
-                cancelButtonText: 'Cancel'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = '/logout';
-                }
-            })
+    function confirmLogout() {
+      Swal.fire({
+        title: "Ready to Leave?",
+        text: "Select 'Logout' below if you are ready to end your current session.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#4e73df",
+        cancelButtonColor: "#858796",
+        confirmButtonText: "Logout",
+        cancelButtonText: "Cancel",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = "/logout";
         }
+      });
+    }
 
-        // Giải quyết lỗi Back/Forward Cache khi quay lại bằng nút back của trình duyệt
-        window.addEventListener("pageshow", function (event) {
-            if (event.persisted) {
-                window.location.reload();
-            }
-        });
-    </script>
+    // Giải quyết lỗi Back/Forward Cache khi quay lại bằng nút back của trình duyệt
+    window.addEventListener("pageshow", function (event) {
+      if (event.persisted) {
+        window.location.reload();
+      }
+    });
+  </script>
 </th:block>
 
 </html>

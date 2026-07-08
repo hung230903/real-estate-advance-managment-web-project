@@ -26,86 +26,85 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CustomerServiceImpl implements CustomerService {
 
-    private final CustomerRepository customerRepository;
-    private final CustomerConverter customerConverter;
-    private final UserConverter userConverter;
-    private final UserRepository userRepository;
+  private final CustomerRepository customerRepository;
+  private final CustomerConverter customerConverter;
+  private final UserConverter userConverter;
+  private final UserRepository userRepository;
 
-    @Override
-    public PaginationResult<CustomerDTO> getCustomers(CustomerSearchRequest searchRequest, int page, int maxResult, int maxNavigationPage) {
-        List<CustomerEntity> entities = customerRepository.searchCustomers(searchRequest, page, maxResult);
-        int totalItems = customerRepository.countAll(searchRequest);
+  @Override
+  public PaginationResult<CustomerDTO> getCustomers(CustomerSearchRequest searchRequest, int page, int maxResult,
+      int maxNavigationPage) {
+    List<CustomerEntity> entities = customerRepository.searchCustomers(searchRequest, page, maxResult);
+    int totalItems = customerRepository.countAll(searchRequest);
 
-        List<CustomerDTO> dtos = entities.stream()
-                .map(customerConverter::toCustomerDTO)
-                .toList();
+    List<CustomerDTO> dtos = entities.stream()
+        .map(customerConverter::toCustomerDTO)
+        .toList();
 
-        return new PaginationResult<>(dtos, totalItems, page, maxResult, maxNavigationPage);
+    return new PaginationResult<>(dtos, totalItems, page, maxResult, maxNavigationPage);
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public CustomerDTO findById(Long id) {
+    CustomerEntity entity = customerRepository.findById(id)
+        .orElseThrow(() -> new RuntimeException("Customer not found"));
+    return customerConverter.toCustomerDTO(entity);
+  }
+
+  @Override
+  @Transactional
+  public void saveOrUpdate(CustomerDTO customerDTO) {
+    CustomerEntity entity;
+    if (customerDTO.getId() != null) {
+      entity = customerRepository.findById(customerDTO.getId()).orElse(new CustomerEntity());
+      customerConverter.updateEntity(customerDTO, entity);
+    } else {
+      entity = customerConverter.toCustomerEntity(customerDTO);
+      entity.setIsActive(1);
     }
+    customerRepository.save(entity);
+  }
 
-
-    @Override
-    @Transactional(readOnly = true)
-    public CustomerDTO findById(Long id) {
-        CustomerEntity entity = customerRepository.findById(id).orElseThrow(()
-                -> new RuntimeException("Customer not found"));
-        return customerConverter.toCustomerDTO(entity);
+  @Override
+  @Transactional
+  public void deleteCustomers(List<Long> ids) {
+    for (Long id : ids) {
+      CustomerEntity entity = customerRepository.findById(id)
+          .orElseThrow(() -> new RuntimeException("Customer not found"));
+      entity.setIsActive(0);
+      customerRepository.save(entity);
     }
+  }
 
-    @Override
-    @Transactional
-    public void saveOrUpdate(CustomerDTO customerDTO) {
-        CustomerEntity entity;
-        if (customerDTO.getId() != null) {
-            entity = customerRepository.findById(customerDTO.getId()).orElse(new CustomerEntity());
-            customerConverter.updateEntity(customerDTO, entity);
-        } else {
-            entity = customerConverter.toCustomerEntity(customerDTO);
-            entity.setIsActive(1);
-        }
-        customerRepository.save(entity);
-    }
+  @Override
+  public ResponseDTO loadStaffsByCustomerId(Long customerId) {
+    CustomerEntity customer = customerRepository.findById(customerId)
+        .orElseThrow(() -> new RuntimeException("Customer not found"));
 
-    @Override
-    @Transactional
-    public void deleteCustomers(List<Long> ids) {
-        for (Long id : ids) {
-            CustomerEntity entity = customerRepository.findById(id).orElseThrow(()
-                    -> new RuntimeException("Customer not found"));
-            entity.setIsActive(0);
-            customerRepository.save(entity);
-        }
-    }
+    List<UserEntity> staffList = userRepository.findByActiveAndUserRole(true, SystemConstant.STAFF_ROLE);
+    Set<Long> assignedStaffIds = customer.getUserEntities().stream()
+        .map(UserEntity::getId)
+        .collect(Collectors.toSet());
 
+    List<StaffResponseDTO> staffResponses = staffList.stream()
+        .map(user -> userConverter.toStaffResponseDTO(user, assignedStaffIds))
+        .toList();
 
-    @Override
-    public ResponseDTO loadStaffsByCustomerId(Long customerId) {
-        CustomerEntity customer = customerRepository.findById(customerId)
-                .orElseThrow(() -> new RuntimeException("Customer not found"));
+    ResponseDTO responseDTO = new ResponseDTO();
+    responseDTO.setData(staffResponses);
+    responseDTO.setMessage("Load Staffs successfully");
+    return responseDTO;
+  }
 
-        List<UserEntity> staffList = userRepository.findByActiveAndUserRole(true, SystemConstant.STAFF_ROLE);
-        Set<Long> assignedStaffIds = customer.getUserEntities().stream()
-                .map(UserEntity::getId)
-                .collect(Collectors.toSet());
+  @Override
+  @Transactional
+  public void updateAssignmentCustomer(AssignmentCustomerDTO assignmentCustomerDTO) {
+    CustomerEntity customer = customerRepository.findById(assignmentCustomerDTO.getCustomerId())
+        .orElseThrow(() -> new RuntimeException("Customer not found"));
 
-        List<StaffResponseDTO> staffResponses = staffList.stream()
-                .map(user -> userConverter.toStaffResponseDTO(user, assignedStaffIds))
-                .toList();
-
-        ResponseDTO responseDTO = new ResponseDTO();
-        responseDTO.setData(staffResponses);
-        responseDTO.setMessage("Load Staffs successfully");
-        return responseDTO;
-    }
-
-    @Override
-    @Transactional
-    public void updateAssignmentCustomer(AssignmentCustomerDTO assignmentCustomerDTO) {
-        CustomerEntity customer = customerRepository.findById(assignmentCustomerDTO.getCustomerId())
-                .orElseThrow(() -> new RuntimeException("Customer not found"));
-
-        List<UserEntity> staffs = userRepository.findAllById(assignmentCustomerDTO.getStaffIds());
-        customer.setUserEntities(staffs);
-        customerRepository.save(customer);
-    }
+    List<UserEntity> staffs = userRepository.findAllById(assignmentCustomerDTO.getStaffIds());
+    customer.setUserEntities(staffs);
+    customerRepository.save(customer);
+  }
 }

@@ -6,6 +6,7 @@ import com.webapp.models.request.CustomerSearchRequest;
 import java.util.List;
 
 public interface CustomerRepositoryCustom {
-    List<CustomerEntity> searchCustomers(CustomerSearchRequest searchRequest, int page, int maxResult);
-    int countAll(CustomerSearchRequest searchRequest);
+  List<CustomerEntity> searchCustomers(CustomerSearchRequest searchRequest, int page, int maxResult);
+
+  int countAll(CustomerSearchRequest searchRequest);
 }

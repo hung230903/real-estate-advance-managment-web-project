@@ -17,48 +17,48 @@ import java.util.List;
 @Component
 public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
+  private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
-    private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
+  @Override
+  public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+      Authentication authentication) throws IOException, ServletException {
+    handle(request, response, authentication);
+  }
 
-    @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        handle(request, response, authentication);
+  @Override
+  public void handle(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
+      throws IOException {
+    String targetUrl = determineTargetUrl(authentication);
+
+    if (response.isCommitted()) {
+      return;
     }
 
-    @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
-        String targetUrl = determineTargetUrl(authentication);
+    redirectStrategy.sendRedirect(request, response, targetUrl);
+  }
 
-        if (response.isCommitted()) {
-            return;
-        }
+  private String determineTargetUrl(Authentication authentication) {
+    List<String> roles = authentication.getAuthorities().stream()
+        .map(GrantedAuthority::getAuthority)
+        .toList();
 
-        redirectStrategy.sendRedirect(request, response, targetUrl);
+    if (isAdmin(roles)) {
+      return SystemConstant.ADMIN_HOME;
     }
 
-    private String determineTargetUrl(Authentication authentication) {
-        List<String> roles = authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .toList();
-
-
-        if (isAdmin(roles)) {
-            return SystemConstant.ADMIN_HOME;
-        }
-
-        if (isUser(roles)) {
-            return "/";
-        }
-
-        return "/login?accessDenied";
+    if (isUser(roles)) {
+      return "/";
     }
 
-    private boolean isAdmin(List<String> roles) {
-        return roles.stream().anyMatch(role -> role.equalsIgnoreCase(SystemConstant.MANAGER_ROLE)
-                || role.equalsIgnoreCase(SystemConstant.STAFF_ROLE));
-    }
+    return "/login?accessDenied";
+  }
 
-    private boolean isUser(List<String> roles) {
-        return roles.contains(SystemConstant.USER_ROLE);
-    }
+  private boolean isAdmin(List<String> roles) {
+    return roles.stream().anyMatch(role -> role.equalsIgnoreCase(SystemConstant.MANAGER_ROLE)
+        || role.equalsIgnoreCase(SystemConstant.STAFF_ROLE));
+  }
+
+  private boolean isUser(List<String> roles) {
+    return roles.contains(SystemConstant.USER_ROLE);
+  }
 }

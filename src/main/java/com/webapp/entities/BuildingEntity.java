@@ -16,106 +16,100 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BuildingEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  Long id;
 
-    @Column(name = "name", length = 255, nullable = false)
-    String name;
+  @Column(name = "name", length = 255, nullable = false)
+  String name;
 
-    @Column(name = "street", length = 255, nullable = false)
-    String street;
+  @Column(name = "street", length = 255, nullable = false)
+  String street;
 
-    @Column(name = "ward", length = 255, nullable = false)
-    String ward;
+  @Column(name = "ward", length = 255, nullable = false)
+  String ward;
 
-    @Column(name = "district", length = 255, nullable = false)
-    String district;
+  @Column(name = "district", length = 255, nullable = false)
+  String district;
 
-    @Column(name = "rentprice", nullable = false)
-    Double rentPrice;
+  @Column(name = "rentprice", nullable = false)
+  Double rentPrice;
 
-    @Column(name = "managername")
-    String managerName;
+  @Column(name = "managername")
+  String managerName;
 
-    @Column(name = "managerphone", length = 12)
-    String managerPhone;
+  @Column(name = "managerphone", length = 12)
+  String managerPhone;
 
-    @Column(name = "numberofbasement")
-    Long numberOfBasement;
+  @Column(name = "numberofbasement")
+  Long numberOfBasement;
 
-    @Column(name = "floorarea")
-    Long floorArea;
+  @Column(name = "floorarea")
+  Long floorArea;
 
-    @Column(name = "brokeragefee")
-    Double brokerageFee;
+  @Column(name = "brokeragefee")
+  Double brokerageFee;
 
-    @Column(name = "servicefee")
-    String serviceFee;
+  @Column(name = "servicefee")
+  String serviceFee;
 
-    @Column(name = "structure")
-    String structure;
+  @Column(name = "structure")
+  String structure;
 
-    @Column(name = "type")
-    String typeCode;
+  @Column(name = "type")
+  String typeCode;
 
-    @Column(name = "level")
-    String level;
+  @Column(name = "level")
+  String level;
 
-    @Column(name = "rentpricedescription")
-    String rentPriceDescription;
+  @Column(name = "rentpricedescription")
+  String rentPriceDescription;
 
-    @Column(name = "direction")
-    String direction;
+  @Column(name = "direction")
+  String direction;
 
-    @Column(name = "carfee")
-    String carFee;
+  @Column(name = "carfee")
+  String carFee;
 
-    @Column(name = "waterfee")
-    String waterFee;
+  @Column(name = "waterfee")
+  String waterFee;
 
-    @Column(name = "motofee")
-    String motoFee;
+  @Column(name = "motofee")
+  String motoFee;
 
-    @Column(name = "overtimefee")
-    String overtimeFee;
+  @Column(name = "overtimefee")
+  String overtimeFee;
 
-    @Column(name = "electricityfee")
-    String electricityFee;
+  @Column(name = "electricityfee")
+  String electricityFee;
 
-    @Column(name = "deposit")
-    String deposit;
+  @Column(name = "deposit")
+  String deposit;
 
-    @Column(name = "payment")
-    String payment;
+  @Column(name = "payment")
+  String payment;
 
-    @Column(name = "renttime")
-    String rentTime;
+  @Column(name = "renttime")
+  String rentTime;
 
-    @Column(name = "decorationtime")
-    String decorationTime;
+  @Column(name = "decorationtime")
+  String decorationTime;
 
-    @Column(name = "note")
-    String note;
+  @Column(name = "note")
+  String note;
 
-    @Lob
-    @Column(name = "image", length = Integer.MAX_VALUE, nullable = true)
-    private byte[] image;
+  @Lob
+  @Column(name = "image", length = Integer.MAX_VALUE, nullable = true)
+  private byte[] image;
 
-    // Quan hệ với bảng rentarea - One
-    @OneToMany(mappedBy = "building",
-            fetch = FetchType.LAZY,
-            // PERSIST: save, MERGE: update
-            cascade = {CascadeType.ALL},
-            orphanRemoval = true
-    )
-    List<RentAreaEntity> rentAreaEntities = new ArrayList<>();
+  // Quan hệ với bảng rentarea - One
+  @OneToMany(mappedBy = "building", fetch = FetchType.LAZY,
+      // PERSIST: save, MERGE: update
+      cascade = { CascadeType.ALL }, orphanRemoval = true)
+  List<RentAreaEntity> rentAreaEntities = new ArrayList<>();
 
-    // Quan hệ với bảng assignmentbuilding - ManyToMany
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "assignmentbuilding",
-            joinColumns = @JoinColumn(name = "buildingid", nullable = false),
-            inverseJoinColumns = @JoinColumn(name = "staffid", nullable = false)
-    )
-    List<UserEntity> userEntities = new ArrayList<>();
+  // Quan hệ với bảng assignmentbuilding - ManyToMany
+  @ManyToMany(fetch = FetchType.LAZY)
+  @JoinTable(name = "assignmentbuilding", joinColumns = @JoinColumn(name = "buildingid", nullable = false), inverseJoinColumns = @JoinColumn(name = "staffid", nullable = false))
+  List<UserEntity> userEntities = new ArrayList<>();
 }

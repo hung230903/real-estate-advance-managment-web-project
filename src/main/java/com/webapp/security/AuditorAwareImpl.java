@@ -9,9 +9,9 @@ import java.util.Optional;
 @Component
 public class AuditorAwareImpl implements AuditorAware<String> {
 
-    @Override
-    public Optional<String> getCurrentAuditor() {
-        return Optional.ofNullable(SecurityUtils.getPrincipal())
-                .map(MyUser::getFullName);
-    }
+  @Override
+  public Optional<String> getCurrentAuditor() {
+    return Optional.ofNullable(SecurityUtils.getPrincipal())
+        .map(MyUser::getFullName);
+  }
 }

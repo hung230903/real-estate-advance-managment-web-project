@@ -17,25 +17,25 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDTO extends AbstractDTO {
-    @NotBlank(message = "UserName is required")
-    private String userName;
-    @NotBlank(message = "FullName is required")
-    private String fullName;
-    @Size(min = 3)
-    private String password;
-    private Integer status;
-    private MultipartFile fileData;
-    private Map<String, String> roleDTO;
-    private String roleCode;
-    private String phone;
+  @NotBlank(message = "UserName is required")
+  private String userName;
+  @NotBlank(message = "FullName is required")
+  private String fullName;
+  @Size(min = 3)
+  private String password;
+  private Integer status;
+  private MultipartFile fileData;
+  private Map<String, String> roleDTO;
+  private String roleCode;
+  private String phone;
 
-    private String base64Image;
-    private String imageName;
+  private String base64Image;
+  private String imageName;
 
-    public void initRoles() {
-        this.roleDTO = new HashMap<>();
-        this.roleDTO.put(SystemConstant.MANAGER_ROLE, "Manager");
-        this.roleDTO.put(SystemConstant.STAFF_ROLE, "Staff");
-        this.roleDTO.put(SystemConstant.USER_ROLE, "User");
-    }
+  public void initRoles() {
+    this.roleDTO = new HashMap<>();
+    this.roleDTO.put(SystemConstant.MANAGER_ROLE, "Manager");
+    this.roleDTO.put(SystemConstant.STAFF_ROLE, "Staff");
+    this.roleDTO.put(SystemConstant.USER_ROLE, "User");
+  }
 }
